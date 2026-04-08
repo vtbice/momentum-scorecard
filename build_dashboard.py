@@ -1,0 +1,2573 @@
+#!/usr/bin/env python3
+"""
+Build Prosper Momentum Scorecard Dashboard (MERGED)
+
+Reads scorecard_data.json and generates a standalone HTML dashboard
+with tabbed navigation, market pulse analysis, sectors, and stock screener.
+All data embedded as JavaScript variables. No React, no build tools.
+"""
+
+import json
+import math
+from datetime import datetime
+from pathlib import Path
+
+# Paths
+SCRIPT_DIR = Path(__file__).parent
+INPUT_JSON = SCRIPT_DIR / 'scorecard_data.json'
+OUTPUT_HTML = SCRIPT_DIR.parent / 'Dashboards' / 'Momentum Scorecard' / 'index.html'
+
+# ============================================================================
+# Load Data
+# ============================================================================
+with open(INPUT_JSON, 'r') as f:
+    data = json.load(f)
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def format_market_cap(mc):
+    """Format market cap in millions to B/T/M"""
+    if mc >= 1000:
+        return '%.1fT' % (mc/1000)
+    elif mc >= 1:
+        return '%.0fB' % mc
+    else:
+        return '%.0fM' % (mc*1000)
+
+def calculate_150ma(prices):
+    """Calculate 150-day moving average"""
+    if len(prices) < 150:
+        return None
+    return sum(prices[-150:]) / 150
+
+def get_tier_color(tier):
+    """Return color class for tier"""
+    if tier <= 2:
+        return 'tier-dark-green'
+    elif tier <= 4:
+        return 'tier-green'
+    elif tier <= 6:
+        return 'tier-amber'
+    elif tier <= 8:
+        return 'tier-red-orange'
+    else:
+        return 'tier-dark-red'
+
+def get_trend_badge_color(trend):
+    """Return color class for trend badge"""
+    if trend == 'Uptrend':
+        return 'badge-green'
+    elif trend == 'Pullback':
+        return 'badge-amber'
+    elif trend == 'Downtrend':
+        return 'badge-red'
+    elif trend == 'Snapback':
+        return 'badge-blue'
+    return 'badge-gray'
+
+def health_color(score, total):
+    """Return color class for health score"""
+    pct = (score / total) * 100 if total > 0 else 0
+    if pct >= 67:
+        return 'health-green'
+    elif pct >= 45:
+        return 'health-amber'
+    else:
+        return 'health-red'
+
+def health_status_label(score, total):
+    """Get status label for health score"""
+    pct = (score / total) * 100 if total > 0 else 0
+    if pct >= 67:
+        return 'Strong'
+    elif pct >= 45:
+        return 'Cautious'
+    else:
+        return 'Challenged'
+
+# ============================================================================
+# Generate HTML
+# ============================================================================
+
+# Prepare data for JavaScript embedding
+js_data = {
+    'market': data['market'],
+    'sectors': data['sectors'],
+    'stocks': data['stocks'],
+    'sp500_daily_dates': data['sp500_daily_dates'],
+    'sp500_daily_prices': data['sp500_daily_prices'],
+    'generated': data['_generated'],
+    'stocks_count': data['_stocks_count'],
+    'pullbackStats': data.get('pullbackStats', {}),
+}
+
+# Hardcoded breadth historical context
+breadth_history = [
+    {"range": "Above 90%", "pctTime": 0.8, "fwd": 10.7},
+    {"range": "80-90%", "pctTime": 9.3, "fwd": 13.2},
+    {"range": "70-80%", "pctTime": 15.2, "fwd": 13.9},
+    {"range": "60-70%", "pctTime": 22.3, "fwd": 12.6},
+    {"range": "50-60%", "pctTime": 18.9, "fwd": 6.9},
+    {"range": "40-50%", "pctTime": 14.9, "fwd": 6.7},
+    {"range": "30-40%", "pctTime": 8.7, "fwd": 6.2},
+    {"range": "20-30%", "pctTime": 4.7, "fwd": 9.5},
+    {"range": "10-20%", "pctTime": 3.8, "fwd": 22.2},
+    {"range": "Below 10%", "pctTime": 1.4, "fwd": 44.1},
+]
+
+html_content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momentum Scorecard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            color: #0f172a;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 20px 32px;
+            border-bottom: 3px solid #10b981;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .header-title {
+            font-family: 'Fraunces', serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: white;
+        }
+
+        .header-title .momentum {
+            color: #10b981;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .header-right {
+            text-align: right;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* Tabs */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .tab-btn:hover {
+            color: #334155;
+        }
+
+        .tab-btn.active {
+            color: #10b981;
+            border-bottom-color: #10b981;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Sub-tabs */
+        .subtab-nav {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-left: 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .subtab-btn {
+            padding: 10px 24px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .subtab-btn:hover {
+            background: #e0e0e0;
+            color: #334155;
+        }
+
+        .subtab-btn.active {
+            background: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .subtab-content {
+            display: none;
+        }
+
+        .subtab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #0f172a;
+            text-align: center;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Health Score Banner */
+        .health-banner {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at top right, #10b98120, transparent 70%);
+            pointer-events: none;
+        }
+
+        .health-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .health-banner-left {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-right: 40px;
+        }
+
+        .health-score-pct {
+            font-family: 'Fraunces', serif;
+            font-size: 52px;
+            font-weight: 900;
+        }
+
+        .health-score-total {
+            font-size: 18px;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .health-banner-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .health-banner-right {
+            text-align: right;
+        }
+
+        .health-counts {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .health-toggle {
+            font-size: 12px;
+            color: #64748b;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .health-detail-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .health-column h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .health-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .health-item-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .health-wins .health-item-icon {
+            color: #10b981;
+        }
+
+        .health-misses .health-item-icon {
+            color: #ef4444;
+        }
+
+        .health-item-text {
+            flex: 1;
+        }
+
+        .health-item-label {
+            color: #e2e8f0;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .health-item-weight {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .full-width-card {
+            grid-column: 1 / -1;
+        }
+
+        /* Indicator cards */
+        .indicator-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #cbd5e1;
+        }
+
+        .indicator-card:has(+ .indicator-card .indicator-badge.badge-positive),
+        .indicator-card:has(.indicator-badge.badge-positive) {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .indicator-card:has(.indicator-badge.badge-neutral) {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .indicator-card:has(.indicator-badge.badge-negative) {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .indicator-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .indicator-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .indicator-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-positive {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-neutral {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-negative {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-amber { background: #fef3c7; color: #92400e; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-gray { background: #e2e8f0; color: #475569; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Metric rows */
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .metric-row:first-child {
+            border-top: none;
+        }
+
+        .metric-label {
+            color: #334155;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 16px;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-threshold {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #64748b;
+            z-index: 2;
+        }
+
+        /* Chart */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-top: 16px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* Sector table */
+        .sector-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .sector-table thead {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .sector-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .sector-table th:nth-child(2) {
+            text-align: center;
+        }
+
+        .sector-table th:nth-child(3),
+        .sector-table th:nth-child(4),
+        .sector-table th:nth-child(5) {
+            text-align: right;
+        }
+
+        .sector-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .sector-table tbody tr:hover {
+            background: #f8fafc;
+            cursor: pointer;
+        }
+
+        .sector-name {
+            font-weight: 600;
+            color: #0f172a;
+            cursor: pointer;
+        }
+
+        .sector-name:hover {
+            color: #10b981;
+        }
+
+        .pct-cell {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .pct-cell.high { color: #10b981; font-weight: 600; }
+        .pct-cell.med { color: #f59e0b; font-weight: 600; }
+        .pct-cell.low { color: #ef4444; font-weight: 600; }
+
+        /* Trend bar */
+        .trend-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #e2e8f0;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .trend-up { background: #10b981; }
+        .trend-pb { background: #f59e0b; }
+        .trend-dn { background: #ef4444; }
+        .trend-sb { background: #3b82f6; }
+
+        .trend-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        /* Stock table */
+        .stock-controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .stock-table thead {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .stock-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13px;
+        }
+
+        .stock-table th:hover {
+            background: #f1f5f9;
+            cursor: pointer;
+        }
+
+        .stock-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .stock-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .stock-ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 900;
+            font-size: 14px;
+            color: #0f172a;
+            cursor: pointer;
+        }
+
+        .stock-ticker:hover {
+            color: #10b981;
+        }
+
+        .stock-company {
+            color: #64748b;
+        }
+
+        .trend-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .trend-up-badge { background: #d1fae5; color: #065f46; }
+        .trend-pb-badge { background: #fef3c7; color: #92400e; }
+        .trend-dn-badge { background: #fecaca; color: #991b1b; }
+        .trend-sb-badge { background: #dbeafe; color: #1e40af; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .page-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Color classes */
+        .color-green { color: #10b981; }
+        .color-amber { color: #f59e0b; }
+        .color-red { color: #ef4444; }
+        .color-blue { color: #3b82f6; }
+
+        /* Synthesis */
+        .synthesis-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .synthesis-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .synthesis-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .synthesis-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .synthesis-view {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .synthesis-desc {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* Breadth detail */
+        .breadth-detail {
+            margin-top: 16px;
+        }
+
+        .breadth-table {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        .breadth-table th,
+        .breadth-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .breadth-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .breadth-range {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .breadth-num {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card { padding: 16px; }
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .health-detail-panel {
+                grid-template-columns: 1fr;
+            }
+            .synthesis-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            .header-right {
+                text-align: center;
+            }
+            .sub-tabs { flex-wrap: wrap; }
+            .stock-table { font-size: 13px; }
+            .stock-table th, .stock-table td { padding: 8px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div>
+            <div class="header-title"><span class="momentum">Momentum</span> Scorecard</div>
+        </div>
+        <div class="header-right" id="headerDate"></div>
+    </div>
+</header>
+
+<div style="max-width: 1400px; margin: 8px auto 0; padding: 0 24px;">
+    <div style="font-size: 12px; color: #64748b; line-height: 1.5; padding: 8px 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">For educational and analytical purposes only — not investment advice. Past performance does not guarantee future results. All data is sourced from public APIs and may be delayed.</div>
+</div>
+
+<main>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('pulse')">Market Pulse</button>
+        <button class="tab-btn" onclick="switchTab('sectors')">Sectors</button>
+        <button class="tab-btn" onclick="switchTab('screener')">Stock Screener</button>
+        <button class="tab-btn" onclick="switchTab('sources')">Sources</button>
+    </div>
+
+    <!-- TAB 1: MARKET PULSE -->
+    <div id="pulse" class="tab-content active">
+        <!-- Health Score Banner (compact — score + gauge only) -->
+        <div class="health-banner">
+            <div class="health-banner-content" style="flex-direction: column; align-items: center; text-align: center;">
+                <div class="health-banner-label" id="healthScore" style="font-size: 20px; letter-spacing: 1px; text-transform: uppercase;"></div>
+                <div class="health-score-pct"><span id="healthPct"></span><span class="health-score-total">/ 100</span></div>
+                <div class="health-banner-label" id="healthLabel" style="font-size: 22px; margin-top: 4px;"></div>
+                <!-- Spectrum Gauge -->
+                <div id="spectrumGauge" style="width: 100%; max-width: 500px; margin: 16px auto 8px;"></div>
+                <div class="health-counts" id="healthCounts" style="margin-top: 8px;"></div>
+            </div>
+        </div>
+
+        <!-- Sub-tabs — right after the health score so they never get buried -->
+        <div class="subtab-nav">
+            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview')">Overview</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro')">Macro</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals')">Fundamentals</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals')">Technicals</button>
+        </div>
+
+        <!-- Overview Sub-tab -->
+        <div id="pulse-overview" class="subtab-content active">
+            <!-- Tailwinds / Headwinds detail (inside Overview so it swaps when tabs change) -->
+            <div class="health-banner" style="margin-bottom: 24px;">
+                <div id="healthDetail" class="health-detail-panel">
+                    <div class="health-column health-wins">
+                        <h3>Tailwinds</h3>
+                        <div id="tailwindsList"></div>
+                    </div>
+                    <div class="health-column health-misses">
+                        <h3>Headwinds</h3>
+                        <div id="headwindsList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Indicator Summary Cards -->
+            <div class="grid-4" style="margin-bottom: 24px;">
+                <div class="indicator-card" id="trendCard">
+                    <div class="indicator-label">Market Trend</div>
+                    <div class="indicator-value" id="trendScore"></div>
+                </div>
+                <div class="indicator-card" id="breadthCard">
+                    <div class="indicator-label">Market Breadth</div>
+                    <div class="indicator-value" id="breadthValue"></div>
+                </div>
+                <div class="indicator-card" id="earningsCard">
+                    <div class="indicator-label">Earnings</div>
+                    <div class="indicator-value" id="earningsValue"></div>
+                </div>
+                <div class="indicator-card" id="valuationCard">
+                    <div class="indicator-label">Valuation</div>
+                    <div class="indicator-value" id="valuationValue"></div>
+                </div>
+            </div>
+
+            <!-- S&P 500 Trend Chart (full width, V1 style) -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card-title">S&P 500 Trend</div>
+                <div class="chart-container" id="sp500Chart" style="height: 320px;"></div>
+            </div>
+
+            <!-- Historical Context (NEW placement) -->
+            <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
+
+            <!-- Trend & Breadth side-by-side -->
+            <div style="margin-bottom: 24px;">
+                <!-- Market Trend Card -->
+                <div class="card">
+                    <div class="card-title">Market Trend Analysis</div>
+                    <div id="trendCardContent"></div>
+                </div>
+
+                <!-- Market Breadth Card -->
+                <div class="card">
+                    <div class="card-title">Market Breadth</div>
+                    <div id="breadthCardContent"></div>
+                </div>
+            </div>
+
+            <!-- Strategic Synthesis -->
+            <div class="card">
+                <div class="card-title">Strategic Synthesis</div>
+                <div class="synthesis-grid" id="synthesisContent"></div>
+            </div>
+        </div>
+
+        <!-- Macro Sub-tab -->
+        <div id="pulse-macro" class="subtab-content">
+            <div id="macroContent"></div>
+        </div>
+
+        <!-- Fundamentals Sub-tab -->
+        <div id="pulse-fundamentals" class="subtab-content">
+            <div id="fundamentalsContent"></div>
+        </div>
+
+        <!-- Technicals Sub-tab -->
+        <div id="pulse-technicals" class="subtab-content">
+            <div id="technicalsContent"></div>
+        </div>
+    </div>
+
+    <!-- TAB 2: SECTORS -->
+    <div id="sectors" class="tab-content">
+        <div class="card">
+            <div class="card-title">Sector Momentum Analysis</div>
+            <!-- Trend Mix Color Legend -->
+            <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: #64748b; align-items: center;">
+                <span style="font-weight: 600;">Trend Mix:</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #10b981; display: inline-block;"></span> Uptrend</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #f59e0b; display: inline-block;"></span> Pullback</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #ef4444; display: inline-block;"></span> Downtrend</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #3b82f6; display: inline-block;"></span> Snapback</span>
+            </div>
+            <table class="sector-table" id="sectorsTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortSectors('name')" style="cursor: pointer;">Sector</th>
+                        <th onclick="sortSectors('trend')" style="cursor: pointer; text-align: center;">Trend Mix</th>
+                        <th onclick="sortSectors('uptrend')" style="cursor: pointer; text-align: right;">% Uptrend</th>
+                        <th onclick="sortSectors('momentum')" style="cursor: pointer; text-align: right;">Rel. Momentum</th>
+                        <th onclick="sortSectors('count')" style="cursor: pointer; text-align: right;"># Stocks</th>
+                    </tr>
+                </thead>
+                <tbody id="sectorsTableBody"></tbody>
+            </table>
+        </div>
+        <div id="expandedSector" class="card" style="display: none; margin-top: 24px;">
+            <div class="card-title" id="expandedSectorTitle"></div>
+            <table class="stock-table" id="expandedStocksTable">
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Company</th>
+                        <th>Trend</th>
+                        <th>1 Wk Ago</th>
+                        <th>1M Ret %</th>
+                        <th>12M Ret %</th>
+                    </tr>
+                </thead>
+                <tbody id="expandedStocksBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 3: STOCK SCREENER -->
+    <div id="screener" class="tab-content">
+        <div class="card">
+            <div class="card-title">Stock Momentum Screener</div>
+
+            <!-- Controls -->
+            <div class="stock-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search ticker or company..." onkeyup="filterStocks()">
+                </div>
+                <select class="filter-select" id="sectorFilter" onchange="filterStocks()">
+                    <option value="">All Sectors</option>
+                </select>
+                <select class="filter-select" id="trendFilter" onchange="filterStocks()">
+                    <option value="">All Trends</option>
+                    <option value="Uptrend">Uptrend</option>
+                    <option value="Pullback">Pullback</option>
+                    <option value="Downtrend">Downtrend</option>
+                    <option value="Snapback">Snapback</option>
+                </select>
+            </div>
+
+            <!-- Summary Strip -->
+            <div id="summaryStrip" style="background: #f8fafc; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; display: flex; gap: 20px; flex-wrap: wrap;"></div>
+
+            <!-- Stock Table -->
+            <table class="stock-table" id="stockTable">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">#</th>
+                        <th onclick="sortStocks('ticker')">Ticker</th>
+                        <th onclick="sortStocks('sector')">Sector</th>
+                        <th onclick="sortStocks('price')">Price</th>
+                        <th onclick="sortStocks('ma150')">150d MA</th>
+                        <th onclick="sortStocks('trend')">Trend</th>
+                        <th onclick="sortStocks('tr1wk')">1 Wk Ago</th>
+                        <th onclick="sortStocks('trChg')">Trend Chg</th>
+                        <th onclick="sortStocks('momentum')">Rel. Mom</th>
+                        <th onclick="sortStocks('vsMa')">vs 150MA</th>
+                        <th onclick="sortStocks('ret1m')">1M Ret</th>
+                        <th onclick="sortStocks('ret12m')">12M Ret</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTableBody"></tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <!-- TAB 4: SOURCES & METHODOLOGY -->
+    <div id="sources" class="tab-content">
+        <div id="sourcesContent"></div>
+    </div>
+</main>
+
+<!-- Stock Detail Modal -->
+<div id="stockModal" class="modal" onclick="closeStockModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeStockModal()">×</button>
+        <div id="stockModalBody"></div>
+    </div>
+</div>
+
+<script>
+// ============================================================================
+// EMBEDDED DATA
+// ============================================================================
+
+const DATA = ''' + json.dumps(js_data) + ''';
+
+const MARKET = DATA.market;
+const SECTORS = DATA.sectors;
+const STOCKS = DATA.stocks;
+const SP500_PRICES = DATA.sp500_daily_prices;
+const SP500_DATES = DATA.sp500_daily_dates;
+const PULLBACK_STATS = DATA.pullbackStats || {};
+
+const BREADTH_HISTORY = ''' + json.dumps(breadth_history) + ''';
+
+// Colors
+const C = {
+    emerald: '#10b981', emeraldDark: '#059669', emeraldLight: '#d1fae5',
+    red: '#ef4444', redLight: '#fecaca',
+    amber: '#f59e0b', amberLight: '#fef3c7',
+    indigo: '#6366f1',
+    blue: '#3b82f6', blueLight: '#dbeafe',
+    purple: '#a855f7',
+    s50: '#f8fafc', s100: '#f1f5f9', s200: '#e2e8f0',
+    s400: '#94a3b8', s500: '#64748b', s600: '#475569', s700: '#334155', s800: '#1e293b', s900: '#0f172a'
+};
+
+// ============================================================================
+// STATE
+// ============================================================================
+
+let currentTab = 'pulse';
+let currentSubtab = {};
+let filteredStocks = STOCKS.slice();
+let sortColumn = 'momentum';
+let sortAsc = false;
+let currentPage = 1;
+const ITEMS_PER_PAGE = 25;
+
+// ============================================================================
+// INIT
+// ============================================================================
+
+window.addEventListener('DOMContentLoaded', function() {
+    renderHeader();
+    renderMarketPulse();
+    renderSectors();
+    renderStockScreener();
+});
+
+// Plain-English explanations for each health indicator
+var INDICATOR_WHY = {
+    'Labor Market': 'Low unemployment means people have jobs and spending power — the engine of economic growth.',
+    'GDP Growth': 'A growing economy supports corporate profits and stock prices. Below 2% signals a slowdown.',
+    'Inflation': 'Stable prices mean the Fed is less likely to raise rates and slow things down.',
+    'Credit Spreads': 'Tight spreads mean lenders are confident — companies can borrow cheaply to invest and grow.',
+    'Consumer Confidence': 'When people feel good about the economy, they spend more — and spending drives growth.',
+    'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
+    'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
+    'ISM Manufacturing': 'The single best leading indicator of economic turns. Above 50 means factories are expanding; below 50 signals contraction.',
+    'Earnings Growth': 'Companies making more money than last year — the fundamental driver of stock prices.',
+    'Profit Margins': 'How much companies keep from each dollar of revenue — a sign of pricing power and efficiency.',
+    'Earnings Revisions': 'Whether analysts are raising or cutting estimates — tracks where the trend is heading.',
+    'Valuation': 'How expensive stocks are relative to earnings. High P/E means less room for error.',
+    'Free Cash Flow': 'Real cash generated after expenses — fuel for dividends, buybacks, and future growth.',
+    'Long-Term Trend': 'The S&P 500 vs its 4-year moving average — the big-picture direction of the market.',
+    'Medium-Term Trend': 'The S&P 500 vs its 150-day moving average — the intermediate trend direction.',
+    'Market Breadth': 'How many stocks are participating in the move — broad is healthy, narrow is fragile.',
+    'Volatility': 'The VIX fear gauge — low means calm markets, high means uncertainty and hedging activity.',
+    'Sentiment': 'Options market positioning — shows whether traders are confident or fearfully hedging.'
+};
+
+function getIndicatorWhy(label) {
+    for (var key in INDICATOR_WHY) {
+        if (label.indexOf(key) !== -1) return INDICATOR_WHY[key];
+    }
+    return '';
+}
+
+// Format an ISO date string (e.g. "2026-03-14") into a readable short date
+function fmtAsOf(isoStr) {
+    if (!isoStr) return '';
+    try {
+        var d = new Date(isoStr + 'T00:00:00');
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch(e) { return isoStr; }
+}
+
+// Check how many days old a date string is
+function daysOld(isoStr) {
+    if (!isoStr) return 999;
+    try {
+        var d = new Date(isoStr + 'T00:00:00');
+        var now = new Date();
+        return Math.floor((now - d) / (1000 * 60 * 60 * 24));
+    } catch(e) { return 999; }
+}
+
+// Get the most recent asOf date from a list of FRED keys, with staleness warning
+function latestAsOf(keys) {
+    var asOf = MARKET.dataAsOf || {};
+    var latest = '';
+    keys.forEach(function(k) {
+        if (asOf[k] && asOf[k] > latest) latest = asOf[k];
+    });
+    if (!latest) return '';
+    var age = daysOld(latest);
+    // Manual data thresholds: fundamentals >100 days, weekly data >14 days, FRED >30 days
+    var isManualFundamental = keys.some(function(k) { return k === 'fundamentals'; });
+    var isManualWeekly = keys.some(function(k) { return k === 'putCall' || k === 'aaii'; });
+    var staleThreshold = isManualFundamental ? 100 : isManualWeekly ? 14 : 30;
+    var formatted = fmtAsOf(latest);
+    if (age > staleThreshold) {
+        formatted += ' <span style="color: #f59e0b; font-weight: 600;">(⚠ ' + age + ' days old — may need updating)</span>';
+    }
+    return formatted;
+}
+
+function renderHeader() {
+    // Use last S&P 500 trading date as the closing date
+    var closingDateStr = SP500_DATES.length > 0 ? SP500_DATES[SP500_DATES.length - 1] : '';
+    var closingDateFormatted = closingDateStr ? new Date(closingDateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : MARKET.date;
+
+    const health_pct = Math.round((MARKET.healthScore / MARKET.healthTotal) * 100);
+    const health_color = health_pct >= 80 ? C.emerald : health_pct >= 60 ? '#f59e0b' : health_pct >= 40 ? '#f97316' : C.red;
+    const totalIndicators = MARKET.healthWins.length + MARKET.healthMisses.length;
+
+    document.getElementById('headerDate').innerHTML = 'Closing prices as of ' + closingDateFormatted;
+
+    // Health banner
+    document.getElementById('healthScore').textContent = 'Market Health Indicators';
+    document.getElementById('healthPct').textContent = health_pct;
+    document.getElementById('healthLabel').textContent = MARKET.healthLabel;
+    document.getElementById('healthLabel').style.color = health_color;
+    document.getElementById('healthCounts').textContent = totalIndicators + ' indicators tracked · ' + MARKET.healthWins.length + ' tailwinds · ' + MARKET.healthMisses.length + ' headwinds';
+
+    // Spectrum gauge
+    var zones = [
+        { label: 'Risk Off', min: 0, max: 25, color: '#ef4444' },
+        { label: 'Defensive', min: 25, max: 40, color: '#f97316' },
+        { label: 'Cautious', min: 40, max: 60, color: '#f59e0b' },
+        { label: 'Optimistic', min: 60, max: 80, color: '#84cc16' },
+        { label: 'Bullish', min: 80, max: 100, color: '#10b981' }
+    ];
+    var gauge_html = '<div style="position: relative; height: 36px; border-radius: 18px; overflow: hidden; display: flex; margin-bottom: 4px;">';
+    zones.forEach(function(z) {
+        var w = z.max - z.min;
+        var isActive = health_pct >= z.min && health_pct < z.max || (z.max === 100 && health_pct === 100);
+        gauge_html += '<div style="width: ' + w + '%; background: ' + z.color + '; opacity: ' + (isActive ? '1' : '0.3') + '; display: flex; align-items: center; justify-content: center;' + (isActive ? ' box-shadow: inset 0 0 0 2px white;' : '') + '">';
+        gauge_html += '<span style="font-size: 12px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px;">' + z.label + '</span></div>';
+    });
+    gauge_html += '</div>';
+    // Pointer
+    var pointerLeft = Math.min(Math.max(health_pct, 2), 98);
+    gauge_html += '<div style="position: relative; height: 12px;">';
+    gauge_html += '<div style="position: absolute; left: ' + pointerLeft + '%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid white;"></div>';
+    gauge_html += '</div>';
+    document.getElementById('spectrumGauge').innerHTML = gauge_html;
+
+    // Health detail with one-liner explanations
+    let tailwinds = '';
+    MARKET.healthWins.forEach(function(win) {
+        var why = getIndicatorWhy(win.label);
+        tailwinds += '<div class="health-item"><div class="health-item-icon">✓</div><div class="health-item-text"><span class="health-item-label">' + win.label + '</span><span class="health-item-weight">' + win.weight + 'pts</span>';
+        if (why) tailwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
+        tailwinds += '</div></div>';
+    });
+    document.getElementById('tailwindsList').innerHTML = tailwinds;
+
+    let headwinds = '';
+    MARKET.healthMisses.forEach(function(miss) {
+        var why = getIndicatorWhy(miss.label);
+        headwinds += '<div class="health-item"><div class="health-item-icon">✗</div><div class="health-item-text"><span class="health-item-label">' + miss.label + ' — NOT MET</span><span class="health-item-weight">' + miss.weight + 'pts</span>';
+        if (why) headwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
+        headwinds += '</div></div>';
+    });
+    document.getElementById('headwindsList').innerHTML = headwinds;
+}
+
+function renderMarketPulse() {
+    // Overview indicators
+    const trend_score = MARKET.trend.score || 'Neutral';
+    const breadth_pct = Math.round(MARKET.breadth.pctAbove);
+    const earnings_growth = MARKET.fundamental.earningsGrowth.toFixed(1);
+    const forward_pe = MARKET.fundamental.forwardPE.toFixed(1);
+
+    document.getElementById('trendScore').textContent = trend_score;
+    document.getElementById('breadthValue').textContent = breadth_pct + '%';
+    document.getElementById('earningsValue').textContent = earnings_growth + '%';
+    document.getElementById('valuationValue').textContent = 'P/E ' + forward_pe;
+
+    // Dynamic card colors based on actual data
+    function colorCard(id, isGood, isWarn) {
+        var card = document.getElementById(id);
+        if (!card) return;
+        if (isGood) { card.style.borderLeftColor = '#10b981'; card.style.background = '#f0fdf4'; }
+        else if (isWarn) { card.style.borderLeftColor = '#f59e0b'; card.style.background = '#fffbeb'; }
+        else { card.style.borderLeftColor = '#ef4444'; card.style.background = '#fef2f2'; }
+    }
+    var trendPos = trend_score === 'Positive';
+    var trendWarn = trend_score === 'Neutral';
+    colorCard('trendCard', trendPos, trendWarn);
+    colorCard('breadthCard', breadth_pct >= 60, breadth_pct >= 40 && breadth_pct < 60);
+    colorCard('earningsCard', parseFloat(earnings_growth) > 5, parseFloat(earnings_growth) > 0 && parseFloat(earnings_growth) <= 5);
+    colorCard('valuationCard', parseFloat(forward_pe) < 18, parseFloat(forward_pe) >= 18 && parseFloat(forward_pe) < 22);
+
+    // Helper: color a metric value based on bullish/bearish
+    function cv(val, isGood) {
+        var c = isGood ? '#10b981' : '#ef4444';
+        return '<span class="metric-value" style="color:' + c + ';">' + val + '</span>';
+    }
+
+    // Trend card (metrics only — chart is now full-width above)
+    var sp = MARKET.technical;
+    var aboveMA150 = MARKET.trend.r3kVs150MA === 'Above';
+    var slopeUp = MARKET.trend.maSlope === 'Rising' || MARKET.trend.maSlope === 'Positive';
+    var above4yr = sp.sp500 > sp.sp500MA4yr;
+    var above150d = sp.sp500 > sp.sp500MA150;
+
+    const trend_html = '<div class="metric-row"><span class="metric-label">S&P 500 vs 150-Day MA</span>' + cv(MARKET.trend.r3kVs150MA, aboveMA150) + '</div>' +
+        '<div class="metric-row"><span class="metric-label">MA Slope</span>' + cv(MARKET.trend.maSlope, slopeUp) + '</div>' +
+        '<div class="metric-row"><span class="metric-label">S&P 500</span><span class="metric-value">' + sp.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</span></div>' +
+        '<div class="metric-row"><span class="metric-label">4-Year MA</span>' + cv(sp.sp500MA4yr.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}), above4yr) + '</div>' +
+        '<div class="metric-row"><span class="metric-label">150-Day MA</span>' + cv(sp.sp500MA150.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}), above150d) + '</div>';
+
+    document.getElementById('trendCardContent').innerHTML = trend_html;
+    setTimeout(function() { drawSP500Chart(); }, 100);
+
+    // Breadth card with spectrum gauge
+    var bPct = breadth_pct;
+    var bValColor = bPct >= 60 ? '#10b981' : bPct >= 40 ? '#f59e0b' : '#ef4444';
+
+    var breadthZones = [
+        { label: 'Oversold', min: 0, max: 20, color: '#991b1b' },
+        { label: 'Weak', min: 20, max: 40, color: '#ef4444' },
+        { label: 'Narrow', min: 40, max: 60, color: '#f59e0b' },
+        { label: 'Healthy', min: 60, max: 80, color: '#84cc16' },
+        { label: 'Strong', min: 80, max: 100, color: '#10b981' }
+    ];
+    var bGauge = '<div style="position: relative; height: 32px; border-radius: 16px; overflow: hidden; display: flex; margin: 12px 0 4px;">';
+    breadthZones.forEach(function(z) {
+        var w = z.max - z.min;
+        var isActive = bPct >= z.min && (bPct < z.max || (z.max === 100 && bPct === 100));
+        bGauge += '<div style="width: ' + w + '%; background: ' + z.color + '; opacity: ' + (isActive ? '1' : '0.25') + '; display: flex; align-items: center; justify-content: center;' + (isActive ? ' box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6);' : '') + '">';
+        bGauge += '<span style="font-size: 12px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.3px;">' + z.label + '</span></div>';
+    });
+    bGauge += '</div>';
+    var pointerLeft = Math.min(Math.max(bPct, 2), 98);
+    bGauge += '<div style="position: relative; height: 10px;"><div style="position: absolute; left: ' + pointerLeft + '%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid #1e293b;"></div></div>';
+
+    const breadth_html = '<div class="metric-row"><span class="metric-label">% Above 150-Day MA</span><span class="metric-value" style="color:' + bValColor + '; font-size: 28px;">' + Math.round(parseFloat(breadth_pct)) + '%</span></div>' +
+        bGauge +
+        '<div class="breadth-detail"><table class="breadth-table"><thead><tr><th>Breadth Range</th><th class="breadth-num">% of Time</th><th class="breadth-num">1yr Fwd %</th></tr></thead><tbody id="breadthHistoryTable"></tbody></table></div>';
+
+    document.getElementById('breadthCardContent').innerHTML = breadth_html;
+
+    let breadth_rows = '';
+    BREADTH_HISTORY.forEach(function(row) {
+        breadth_rows += '<tr><td class="breadth-range">' + row.range + '</td><td class="breadth-num">' + row.pctTime.toFixed(1) + '%</td><td class="breadth-num">' + row.fwd.toFixed(1) + '%</td></tr>';
+    });
+    document.getElementById('breadthHistoryTable').innerHTML = breadth_rows;
+
+    // Synthesis
+    const synth_html = renderSynthesis();
+    document.getElementById('synthesisContent').innerHTML = synth_html;
+
+    // Macro
+    const macro_html = renderMacroCards();
+    document.getElementById('macroContent').innerHTML = macro_html;
+
+    // Fundamentals
+    const fund_html = renderFundamentalsCards();
+    document.getElementById('fundamentalsContent').innerHTML = fund_html;
+
+    // Technicals
+    const tech_html = renderTechnicalsCards();
+    document.getElementById('technicalsContent').innerHTML = tech_html;
+
+    // Historical Context (on overview)
+    document.getElementById('historicalContextContent').innerHTML = renderHistoricalContext();
+}
+
+function renderSynthesis() {
+    const synth = MARKET.synthesis;
+    let html = '';
+
+    // Generate dynamic descriptions based on market data
+    var m = MARKET.macro;
+    var f = MARKET.fundamental;
+    var t = MARKET.technical;
+    var healthPct = Math.round((MARKET.healthScore / MARKET.healthTotal) * 100);
+
+    // EQUITIES: Regime-based logic
+    var eqDesc;
+    if (MARKET.breadth.pctAbove < 50 && t.vix > 20 && f.earningsGrowth > 5) {
+        eqDesc = 'Markets are in a selective environment — strong earnings support prices but narrow breadth and elevated volatility call for focusing on momentum leaders with proven uptrends.';
+    } else if (MARKET.breadth.pctAbove >= 60 && t.vix < 20) {
+        eqDesc = 'Broad participation and low volatility create a favorable environment for risk assets. Lean into quality growth and sector leaders.';
+    } else if (healthPct < 45) {
+        eqDesc = 'Multiple headwinds are stacking up. Reduce exposure, tighten stops, and focus only on the strongest relative momentum names.';
+    } else {
+        eqDesc = f.earningsGrowth > 5 ? 'Solid earnings growth at +' + f.earningsGrowth.toFixed(1) + '% ' : 'Earnings growth at +' + f.earningsGrowth.toFixed(1) + '% is modest. ';
+        eqDesc += MARKET.breadth.pctAbove < 60 ? 'Narrowing breadth calls for selectivity — favor momentum leaders.' : 'Broad participation supports risk-on positioning.';
+        eqDesc += t.vix > 20 ? ' VIX above 20 suggests hedging pullback risk.' : '';
+    }
+
+    // FIXED INCOME: Regime-based logic
+    var fiDesc;
+    var ycVal = m.tenYear - m.twoYear;
+    if (ycVal < 0) {
+        fiDesc = 'An inverted yield curve historically signals economic slowdown within 12-18 months. Favor short duration and high quality. Avoid reaching for yield in lower-quality credit.';
+    } else if (ycVal >= 0 && m.hySpread < 4) {
+        fiDesc = 'Normal curve with calm credit markets. Attractive entry for quality duration as rates stabilize.';
+    } else {
+        fiDesc = 'Yields are ' + (m.tenYear > 4 ? 'attractive with the 10-year at ' + m.tenYear.toFixed(2) + '%.' : 'moderate.') + ' ';
+        fiDesc += ycVal >= 0 ? 'A normal curve supports duration exposure.' : 'Inverted curve — stay short duration.';
+        fiDesc += ' HY spread at ' + m.hySpread.toFixed(2) + '% signals ' + (m.hySpread < 4 ? 'calm credit markets.' : 'caution in lower quality.');
+    }
+
+    // CASH: Regime-based logic
+    var cashDesc;
+    if (healthPct >= 60 && t.vix < 25) {
+        cashDesc = 'With a supportive backdrop, excess cash creates drag. Deploy into risk assets during pullbacks but maintain a 5-10% reserve.';
+    } else if (healthPct < 45) {
+        cashDesc = 'Elevated uncertainty favors higher cash allocation. Keep dry powder ready — the best opportunities emerge when markets are fearful.';
+    } else {
+        cashDesc = 'With inflation at ' + m.inflation.toFixed(1) + '% and real rates ' + (m.fedFunds - m.inflation > 0 ? 'positive' : 'negative') + ', ';
+        cashDesc += healthPct >= 60 ? 'excess cash creates drag. Deploy into risk assets on pullbacks.' : 'keeping dry powder makes sense given elevated uncertainty.';
+    }
+
+    const assets = [
+        { key: 'equities', label: 'Equities', default_desc: eqDesc },
+        { key: 'fixedIncome', label: 'Fixed Income', default_desc: fiDesc },
+        { key: 'cash', label: 'Cash', default_desc: cashDesc }
+    ];
+
+    assets.forEach(function(asset) {
+        const data = synth[asset.key];
+        const view = data.view || 'Neutral';
+        const view_class = view === 'Positive' ? 'badge-positive' : view === 'Negative' ? 'badge-negative' : 'badge-neutral';
+        const desc = data.desc || asset.default_desc;
+
+        html += '<div class="synthesis-card"><div class="synthesis-header"><div class="synthesis-title">' + asset.label + '</div><span class="synthesis-view ' + view_class + '">' + view + '</span></div><div class="synthesis-desc">' + desc + '</div></div>';
+    });
+
+    return html;
+}
+
+function renderMacroCards() {
+    const m = MARKET.macro;
+    const cards = [
+        {
+            title: 'Economic Growth',
+            asOf: latestAsOf(['gdp', 'sentiment', 'ismPmi']),
+            rows: [
+                { label: 'Real GDP Growth', value: '+' + m.gdp.toFixed(1) + '%', color: m.gdp > 2 ? '#10b981' : '#ef4444', sub: (m.gdp > 2 ? 'Healthy: above 2% · ' : 'Weak: below 2% · ') + 'A growing economy supports corporate profits. Below 2% signals a slowdown that can drag stocks lower.' },
+                { label: 'Consumer Sentiment', value: m.sentiment.toFixed(1), color: m.sentiment > 70 ? '#10b981' : '#ef4444', sub: (m.sentiment > 70 ? 'Healthy: above 70 · ' : 'Weak: below 70 · ') + 'When people feel good about the economy, they spend more — and spending drives 70% of GDP.' },
+                { label: 'ISM Manufacturing PMI', value: (m.ismPmi || 50).toFixed(1), color: (m.ismPmi || 50) >= 50 ? '#10b981' : '#ef4444', sub: ((m.ismPmi || 50) >= 50 ? 'Healthy: above 50 · ' : 'Contracting: below 50 · ') + 'The single best leading indicator of economic turns — above 50 means factories are expanding.' },
+                { label: 'Regular Gas Price', value: '$' + (m.gasPrice || 0).toFixed(2), sub: 'Impacts daily budgets — high prices eat into consumer spending and corporate margins.' }
+            ],
+            desc: (function() {
+                var gdpNote = m.gdp < 1 ? 'GDP at just ' + m.gdp.toFixed(1) + '% is flashing a slowdown warning — well below the 2% healthy threshold.' : m.gdp > 3 ? 'GDP at ' + m.gdp.toFixed(1) + '% signals strong expansion.' : 'GDP at ' + m.gdp.toFixed(1) + '% shows moderate growth.';
+                var sentNote = m.sentiment < 60 ? ' Consumer sentiment at ' + m.sentiment.toFixed(0) + ' is deeply pessimistic — historically a contrarian buy signal when paired with strong fundamentals.' : '';
+                var ismNote = (m.ismPmi || 50) < 50 ? ' ISM Manufacturing at ' + (m.ismPmi || 50).toFixed(1) + ' signals contraction — factories are pulling back.' : '';
+                return gdpNote + sentNote + ismNote;
+            })()
+        },
+        {
+            title: 'The Dual Mandate',
+            asOf: latestAsOf(['employment', 'joblessClaims', 'inflation']),
+            rows: [
+                { label: 'Unemployment Rate', value: m.employment.toFixed(1) + '%', color: m.employment < 5 ? '#10b981' : '#ef4444', sub: (m.employment < 5 ? 'Healthy: below 5% · ' : 'Elevated: above 5% · ') + 'Low unemployment means jobs and spending power — the engine of economic growth.' },
+                { label: 'Initial Jobless Claims', value: (m.joblessClaims / 1000).toFixed(0) + 'K', sub: 'Weekly pulse of layoffs — rising claims are an early warning of economic trouble.' },
+                { label: 'CPI Inflation', value: m.inflation.toFixed(1) + '%', color: m.inflation < 3 ? '#10b981' : '#ef4444', sub: (m.inflation < 3 ? 'Healthy: below 3% · ' : 'Elevated: above 3% · ') + 'Stable prices mean the Fed is less likely to raise rates and slow things down.' }
+            ],
+            desc: 'The Fed targets maximum employment and stable prices. Unemployment at ' + m.employment.toFixed(1) + '%' + (m.employment < 4.5 ? ' is healthy' : ' is rising') + ' and inflation at ' + m.inflation.toFixed(1) + '%' + (m.inflation < 3 ? ' is contained.' : ' remains elevated — watch for policy response.')
+        },
+        {
+            title: 'Cost of Money & Policy',
+            asOf: latestAsOf(['fedFunds', 'tenYear', 'twoYear', 'mortgage']),
+            rows: [
+                { label: 'Fed Funds Rate', value: m.fedFunds.toFixed(2) + '%', sub: 'The rate the Fed controls — higher rates cool the economy, lower rates stimulate it.' },
+                { label: '10-Year Yield', value: m.tenYear.toFixed(2) + '%', sub: 'Benchmark for mortgages and corporate borrowing — affects the cost of everything.' },
+                { label: '2-Year Yield', value: m.twoYear.toFixed(2) + '%', sub: 'Reflects where markets think the Fed is heading over the next two years.' },
+                { label: 'Yield Curve (10Y-2Y)', value: (m.tenYear - m.twoYear > 0 ? '+' : '') + (m.tenYear - m.twoYear).toFixed(2) + '%', color: (m.tenYear - m.twoYear) >= 0 ? '#10b981' : '#ef4444', sub: ((m.tenYear - m.twoYear) >= 0 ? 'Normal (Positive) · ' : 'INVERTED · ') + 'An inverted curve has preceded every recession since the 1960s.' },
+                { label: '30Y Mortgage Rate', value: m.mortgage.toFixed(2) + '%', color: m.mortgage < 6 ? '#10b981' : '#ef4444', sub: (m.mortgage < 6 ? 'Healthy: below 6% · ' : 'Elevated: above 6% · ') + 'Lower rates boost housing, consumer wealth, and the broader economy.' },
+                { label: 'Monetary Policy', value: m.monetaryPolicy, sub: 'The Fed\\'s current stance on interest rates and money supply.' },
+                { label: 'Fiscal Policy', value: m.fiscalPolicy, sub: 'Government spending and tax direction — supportive policy can cushion slowdowns.' }
+            ],
+            desc: (function() {
+                var ycVal = m.tenYear - m.twoYear;
+                var desc = ycVal < 0 ? 'Warning: Inverted yield curve at ' + ycVal.toFixed(2) + '% — historically precedes recessions by 12-18 months.' : 'A normal yield curve (+' + ycVal.toFixed(2) + '%) with ' + m.monetaryPolicy.toLowerCase() + ' monetary policy is supportive.';
+                desc += m.mortgage >= 6.5 ? ' Mortgage rates at ' + m.mortgage.toFixed(2) + '% are a significant headwind for housing.' : '';
+                return desc;
+            })()
+        },
+        {
+            title: 'Credit & Risk Signals',
+            asOf: latestAsOf(['hySpread']),
+            rows: [
+                { label: 'High Yield Spread', value: m.hySpread.toFixed(2) + '%', color: m.hySpread < 4 ? '#10b981' : '#ef4444', sub: (m.hySpread < 4 ? 'Healthy: below 4% · ' : 'Stress: above 4% · ') + 'Tight spreads mean lenders are confident — companies can borrow cheaply to grow.' },
+                { label: 'IG Spread', value: m.igSpread.toFixed(2) + '%', sub: 'Investment-grade bond risk premium — a widening spread signals growing corporate risk.' },
+                { label: 'WTI Crude Oil', value: '$' + (m.oil || 0).toFixed(2), sub: ((m.oil || 0) > 90 ? 'High — pressures inflation and squeezes consumer budgets.' : 'Moderate — supports growth without fueling inflation.') },
+                { label: 'US Dollar (DXY)', value: (m.dxy || 0).toFixed(1), sub: ((m.dxy || 0) > 105 ? 'Strong dollar — headwind for multinationals earning abroad.' : 'Moderate — balanced for global trade.') },
+                { label: 'Geopolitical Risk', value: m.geopolitical, color: '#f59e0b', sub: 'Wars, tariffs, and trade tensions that can disrupt markets and supply chains.' }
+            ],
+            desc: 'HY spread at ' + m.hySpread.toFixed(2) + '%' + (m.hySpread < 3.5 ? ' is calm — perhaps too calm. Tight spreads mean risk may be underpriced.' : m.hySpread < 5 ? ' signals normal credit conditions.' : ' is widening — a stress signal worth watching closely.')
+        }
+    ];
+
+    let html = '';
+    cards.forEach(function(card) {
+        html += '<div class="card"><div class="card-title">' + card.title + '</div>';
+        if (card.asOf && card.asOf.length > 0) html += '<div style="font-size: 12px; color: #64748b; text-align: center; margin-top: -14px; margin-bottom: 12px;">Data as of ' + card.asOf + '</div>';
+        card.rows.forEach(function(row) {
+            var valStyle = row.color ? 'color:' + row.color + ';' : '';
+            html += '<div style="padding: 10px 0; border-top: 1px solid #e2e8f0;">';
+            html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
+            html += '<span class="metric-label">' + row.label + '</span>';
+            html += '<span class="metric-value" style="' + valStyle + '">' + row.value + '</span>';
+            html += '</div>';
+            if (row.sub) html += '<div style="font-size: 14px; color: #64748b; margin-top: 4px; line-height: 1.5;">' + row.sub + '</div>';
+            html += '</div>';
+        });
+        html += '<p style="font-size: 15px; color: #475569; margin-top: 12px; line-height: 1.6; border-top: 1px solid #e2e8f0; padding-top: 10px;">' + card.desc + '</p></div>';
+    });
+
+    return html;
+}
+
+function renderFundamentalsCards() {
+    const f = MARKET.fundamental;
+    const cards = [
+        {
+            title: 'Growth Engine',
+            asOf: latestAsOf(['fundamentals']),
+            rows: [
+                { label: 'Sales Growth', value: '+' + f.salesGrowth.toFixed(1) + '%', color: f.salesGrowth > 3 ? '#10b981' : '#f59e0b', sub: (f.salesGrowth > 3 ? 'Healthy: above 3% · ' : 'Weak: below 3% · ') + 'Revenue is the top line — growing sales mean companies are selling more, the foundation of profit growth.' },
+                { label: 'Earnings Growth', value: '+' + f.earningsGrowth.toFixed(1) + '%', color: f.earningsGrowth > 5 ? '#10b981' : '#ef4444', sub: (f.earningsGrowth > 5 ? 'Healthy: above 5% · ' : 'Weak: below 5% · ') + 'Companies making more money than last year — the fundamental driver of stock prices.' },
+                { label: 'Earnings Beat Rate', value: f.earningsBeat + '%', color: f.earningsBeat > 70 ? '#10b981' : '#f59e0b', sub: (f.earningsBeat > 70 ? 'Healthy: above 70% · ' : 'Weak: below 70% · ') + 'How many companies exceeded analyst expectations — a gauge of corporate momentum.' },
+                { label: 'Sales Beat Rate', value: f.salesBeat + '%', color: f.salesBeat > 60 ? '#10b981' : '#f59e0b', sub: (f.salesBeat > 60 ? 'Healthy: above 60% · ' : 'Weak: below 60% · ') + 'Revenue surprises show real demand, not just cost-cutting to beat estimates.' },
+                { label: 'Analyst Revisions', value: f.revisions.toFixed(2) + 'x', color: f.revisions > 1 ? '#10b981' : '#ef4444', sub: (f.revisions > 1 ? 'Healthy: above 1.0x · ' : 'Negative: below 1.0x · ') + 'Whether analysts are raising or cutting estimates — tracks where the profit trend is heading.' }
+            ],
+            desc: 'Beat rates above 70% and rising revisions are bullish signals. Earnings growth at +' + f.earningsGrowth.toFixed(1) + '% with sales at +' + f.salesGrowth.toFixed(1) + '% shows ' + (f.earningsGrowth > f.salesGrowth ? 'expanding margins.' : 'revenue-driven growth.')
+        },
+        {
+            title: 'Quality & Profitability',
+            asOf: latestAsOf(['fundamentals']),
+            rows: [
+                { label: 'Net Margin', value: f.netMargin.toFixed(1) + '%', sub: (f.netMargin > 11 ? 'Healthy: above 11% · ' : 'Thin: below 11% · ') + 'How much companies keep from each dollar of revenue — a sign of pricing power.' },
+                { label: 'Capex Spending', value: '+' + f.capex.toFixed(1) + '%', sub: 'Companies investing in future growth — a sign of confidence in the business outlook.' },
+                { label: 'Shareholder Yield', value: (f.buybackYield + f.divYield).toFixed(1) + '%', color: '#10b981', sub: 'Total cash returned to shareholders through buybacks and dividends — fuel for stock prices.' },
+                { label: 'Corporate Leverage', value: f.leverage.toFixed(1) + 'x', sub: (f.leverage < 2 ? 'Healthy: below 2.0x · ' : 'Elevated: above 2.0x · ') + 'How much debt companies carry relative to earnings — lower is safer.' }
+            ],
+            desc: 'High margins indicate pricing power. Shareholder yield of ' + (f.buybackYield + f.divYield).toFixed(1) + '% reflects strong capital returns. Leverage at ' + f.leverage.toFixed(1) + 'x is ' + (f.leverage < 2 ? 'healthy in any rate environment.' : 'worth monitoring as rates stay elevated.')
+        },
+        {
+            title: 'Valuation',
+            asOf: latestAsOf(['fundamentals']),
+            rows: [
+                { label: 'Forward P/E', value: f.forwardPE.toFixed(1) + 'x', color: f.forwardPE < 20 ? '#10b981' : '#ef4444', sub: (f.forwardPE < 20 ? 'Healthy: below 20x · ' : 'Elevated: above 20x · ') + 'How expensive stocks are relative to future earnings. Higher means less room for error.' },
+                { label: '10yr Avg P/E', value: f.historicalPE.toFixed(1) + 'x', sub: 'Historical baseline — the average multiple investors have paid over the past decade.' },
+                { label: 'PEG Ratio', value: f.pegRatio.toFixed(2), sub: (f.pegRatio < 1.5 ? 'Reasonable: below 1.5 · ' : 'Premium: above 1.5 · ') + 'Price relative to growth rate — under 1.5 suggests you\\'re not overpaying for growth.' }
+            ],
+            desc: 'At ' + f.forwardPE.toFixed(1) + 'x vs. the 10-year average of ' + f.historicalPE.toFixed(1) + 'x, markets are ' + (f.forwardPE > f.historicalPE ? 'pricing in continued growth — leaving less room for error.' : 'trading at a discount to historical norms.')
+        }
+    ];
+
+    let html = '';
+    cards.forEach(function(card) {
+        html += '<div class="card"><div class="card-title">' + card.title + '</div>';
+        if (card.asOf && card.asOf.length > 0) html += '<div style="font-size: 12px; color: #64748b; text-align: center; margin-top: -14px; margin-bottom: 12px;">Data as of ' + card.asOf + '</div>';
+        card.rows.forEach(function(row) {
+            var valStyle = row.color ? 'color:' + row.color + ';' : '';
+            html += '<div style="padding: 10px 0; border-top: 1px solid #e2e8f0;">';
+            html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
+            html += '<span class="metric-label">' + row.label + '</span>';
+            html += '<span class="metric-value" style="' + valStyle + '">' + row.value + '</span>';
+            html += '</div>';
+            if (row.sub) html += '<div style="font-size: 14px; color: #64748b; margin-top: 4px; line-height: 1.5;">' + row.sub + '</div>';
+            html += '</div>';
+        });
+        html += '<p style="font-size: 15px; color: #475569; margin-top: 12px; line-height: 1.6; border-top: 1px solid #e2e8f0; padding-top: 10px;">' + card.desc + '</p></div>';
+    });
+
+    return html;
+}
+
+function renderTechnicalsCards() {
+    const t = MARKET.technical;
+    const cards = [
+        {
+            title: 'Trend Structure',
+            asOf: fmtAsOf((MARKET.dataAsOf || {}).prices || ''),
+            rows: (function() {
+                var pct4yr = t.sp500MA4yr > 0 ? ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(1) : 0;
+                var pct150 = t.sp500MA150 > 0 ? ((t.sp500 / t.sp500MA150 - 1) * 100).toFixed(1) : 0;
+                var r3kPct = MARKET.breadth.r3kMA150 > 0 ? ((MARKET.breadth.r3kPrice / MARKET.breadth.r3kMA150 - 1) * 100).toFixed(1) : 0;
+                return [
+                    { label: 'S&P 500 vs 4-Year MA', value: (pct4yr > 0 ? '+' : '') + pct4yr + '%', color: t.sp500 > t.sp500MA4yr ? '#10b981' : '#ef4444', sub: 'S&P ' + t.sp500.toLocaleString() + ' vs MA ' + t.sp500MA4yr.toLocaleString() + ' · ' + (t.sp500 > t.sp500MA4yr ? 'Bull market intact — ' : 'Caution — ') + 'the 4-year MA tracks the full business cycle.' },
+                    { label: 'S&P 500 vs 150-Day MA', value: (pct150 > 0 ? '+' : '') + pct150 + '%', color: t.sp500 > t.sp500MA150 ? '#10b981' : '#ef4444', sub: 'S&P ' + t.sp500.toLocaleString() + ' vs MA ' + t.sp500MA150.toLocaleString() + ' · ' + (t.sp500 > t.sp500MA150 ? 'Intermediate uptrend — ' : 'Intermediate downtrend — ') + 'the line in the sand for the medium-term direction.' },
+                    { label: 'Russell 3000 vs 150-Day MA', value: (r3kPct > 0 ? '+' : '') + r3kPct + '%', color: MARKET.breadth.r3kPrice > MARKET.breadth.r3kMA150 ? '#10b981' : '#ef4444', sub: 'R3K ' + MARKET.breadth.r3kPrice.toLocaleString() + ' vs MA ' + MARKET.breadth.r3kMA150.toLocaleString() + ' · ' + (MARKET.breadth.r3kPrice > MARKET.breadth.r3kMA150 ? 'Broad market healthy — ' : 'Broad market weak — ') + '98% of the U.S. market in one number.' }
+                ];
+            })(),
+            desc: (function() {
+                var pct4yr = t.sp500MA4yr > 0 ? ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(1) : 0;
+                return t.sp500 > t.sp500MA4yr ? 'The S&P is +' + pct4yr + '% above its 4-year moving average — the long-term bull trend is intact. Historically, as long as price stays above this line, the business cycle is working in your favor.' : 'The S&P has slipped below its 4-year moving average — a signal that the long-term cycle may be turning. This has historically preceded extended periods of weakness.';
+            })()
+        },
+        {
+            title: 'Breadth & Participation',
+            asOf: fmtAsOf((MARKET.dataAsOf || {}).prices || ''),
+            rows: [
+                { label: 'Breadth (% > 150d MA)', value: Math.round(MARKET.breadth.pctAbove) + '%', color: MARKET.breadth.pctAbove >= 60 ? '#10b981' : MARKET.breadth.pctAbove >= 40 ? '#f59e0b' : '#ef4444', sub: (MARKET.breadth.pctAbove >= 60 ? 'Healthy: above 60% · ' : 'Narrow: below 60% · ') + 'How many stocks are participating — broad is healthy, narrow is fragile.' },
+                { label: 'Russell 3000 Price', value: MARKET.breadth.r3kPrice.toFixed(2), sub: 'Broad market index covering 3,000 stocks — the most complete view of U.S. equities.' },
+                { label: 'Russell 3000 150d MA', value: MARKET.breadth.r3kMA150.toFixed(2), sub: 'The intermediate trend line — price above = healthy, below = caution.' }
+            ],
+            desc: 'Breadth ' + (MARKET.breadth.pctAbove < 60 ? 'below 60% means the rally is narrow — fewer stocks are participating. Watch for improvement above 60% to confirm broad-based strength.' : 'above 60% signals broad participation — a healthy market where many stocks are contributing to the move.')
+        },
+        {
+            title: 'Sentiment, Volatility & Oversold Signals',
+            asOf: latestAsOf(['putCall', 'aaii']),
+            rows: (function() {
+                var rows = [
+                    { label: 'VIX Index', value: t.vix.toFixed(2), color: t.vix >= 30 ? '#ef4444' : t.vix < 20 ? '#10b981' : '#f59e0b', sub: t.vix >= 30 ? '⚠ OVERSOLD SIGNAL (>30)' : (t.vix < 20 ? t.vix.toFixed(1) + ' · Healthy: below 20 · Calm markets, low uncertainty.' : t.vix.toFixed(1) + ' · Elevated: 20-30 · Fear is present but not extreme — watch for resolution.'), signal: t.vix >= 30 },
+                    { label: 'Put/Call Ratio', value: t.putCall.toFixed(2), color: t.putCall >= 1.2 ? '#ef4444' : t.putCall < 1 ? '#10b981' : '#f59e0b', sub: t.putCall >= 1.2 ? '⚠ OVERSOLD SIGNAL (>1.2)' : (t.putCall < 1 ? 'Healthy: below 1.0 · More calls than puts — traders are positioned for upside.' : 'Hedging elevated · Traders are buying more protection than usual.'), signal: t.putCall >= 1.2 }
+                ];
+                if (t.pctAbove20sma !== null && t.pctAbove20sma !== undefined) {
+                    rows.push({ label: 'Breadth Washout (% > 20d SMA)', value: Math.round(t.pctAbove20sma) + '%', color: t.pctAbove20sma < 20 ? '#ef4444' : t.pctAbove20sma < 40 ? '#f59e0b' : '#10b981', sub: t.pctAbove20sma < 20 ? '⚠ OVERSOLD SIGNAL (<20%)' : (t.pctAbove20sma >= 40 ? 'Normal · Stocks riding above their short-term averages.' : 'Weak · More stocks slipping below their 20-day averages — deteriorating internals.'), signal: t.pctAbove20sma < 20 });
+                }
+                if (t.pctAt20dayLows !== null && t.pctAt20dayLows !== undefined) {
+                    rows.push({ label: 'New Lows Spike (% at 20d Low)', value: Math.round(t.pctAt20dayLows) + '%', color: t.pctAt20dayLows >= 50 ? '#ef4444' : t.pctAt20dayLows >= 30 ? '#f59e0b' : '#10b981', sub: t.pctAt20dayLows >= 50 ? '⚠ OVERSOLD SIGNAL (>50%)' : (t.pctAt20dayLows < 30 ? 'Normal · Few stocks making new lows.' : 'Rising · More stocks hitting 20-day lows — selling pressure building.'), signal: t.pctAt20dayLows >= 50 });
+                }
+                rows.push({ label: 'AAII Bulls', value: t.aaii.toFixed(1) + '%', color: t.aaii > 40 ? '#10b981' : '#f59e0b', sub: t.aaii > 40 ? 'Optimistic · Individual investors are confident — can be a contrarian warning at extremes.' : 'Cautious · Low bullishness is often a contrarian buy signal — when the crowd is fearful, opportunity may be near.' });
+                return rows;
+            })(),
+            desc: (function() {
+                var signals = [];
+                if (t.vix >= 30) signals.push('VIX above 30 (panic)');
+                if (t.putCall >= 1.2) signals.push('Put/Call above 1.2 (extreme fear)');
+                if (t.pctAbove20sma !== null && t.pctAbove20sma < 20) signals.push('Breadth Washout (only ' + t.pctAbove20sma.toFixed(1) + '% above 20d SMA)');
+                if (t.pctAt20dayLows !== null && t.pctAt20dayLows >= 50) signals.push('New Lows Spike (' + t.pctAt20dayLows.toFixed(1) + '% at 20d lows)');
+                if (signals.length > 0) {
+                    return '🔴 ' + signals.length + ' oversold signal' + (signals.length > 1 ? 's' : '') + ' firing: ' + signals.join(', ') + '. Historically, oversold signals mark capitulation zones where sellers are exhausted — often preceding rebounds.';
+                }
+                return 'No oversold signals firing. VIX at ' + t.vix.toFixed(1) + (t.vix > 20 ? ' is elevated but below the 30 panic threshold.' : ' reflects calm conditions.') + ' Put/Call at ' + t.putCall.toFixed(2) + (t.putCall < 1 ? ' shows bullish positioning.' : ' shows hedging activity.');
+            })()
+        }
+    ];
+
+    let html = '';
+    cards.forEach(function(card) {
+        html += '<div class="card"><div class="card-title">' + card.title + '</div>';
+        if (card.asOf && card.asOf.length > 0) html += '<div style="font-size: 12px; color: #64748b; text-align: center; margin-top: -14px; margin-bottom: 12px;">Data as of ' + card.asOf + '</div>';
+        card.rows.forEach(function(row) {
+            var valStyle = row.color ? 'color:' + row.color + ';' : '';
+            var rowBg = row.signal ? 'background: #fef2f2; border-left: 3px solid #ef4444; padding-left: 8px; border-radius: 4px; margin: 2px 0;' : '';
+            html += '<div style="padding: 10px 0; border-top: 1px solid #e2e8f0; ' + rowBg + '">';
+            html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
+            html += '<span class="metric-label">' + row.label + '</span>';
+            html += '<span class="metric-value" style="' + valStyle + '">' + row.value + '</span>';
+            html += '</div>';
+            if (row.sub) {
+                var subColor = row.signal ? '#ef4444' : '#64748b';
+                var subWeight = row.signal ? 'font-weight:600;' : '';
+                html += '<div style="font-size: 13px; color:' + subColor + '; margin-top: 4px; line-height: 1.4;' + subWeight + '">' + row.sub + '</div>';
+            }
+            html += '</div>';
+        });
+        html += '<p style="font-size: 15px; color: #475569; margin-top: 12px; line-height: 1.6; border-top: 1px solid #e2e8f0; padding-top: 10px;">' + card.desc + '</p></div>';
+    });
+
+    return html;
+}
+
+function renderHistoricalContext() {
+    // Data from Mountain Project: S&P 500 daily prices, March 1957 – present (69 years)
+    var t = MARKET.technical;
+    var pctFrom4yr = t.sp500MA4yr > 0 ? ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(1) : 0;
+    var pctFrom150 = t.sp500MA150 > 0 ? ((t.sp500 / t.sp500MA150 - 1) * 100).toFixed(1) : 0;
+
+    var html = '<div class="card"><div class="card-title">Historical Context</div>';
+    var introTotal = PULLBACK_STATS.total || 61;
+    var startPrice = PULLBACK_STATS.start_price || 44;
+    var endPrice = PULLBACK_STATS.end_price || MARKET.technical.sp500;
+    var growthMultiple = startPrice > 0 ? Math.round(endPrice / startPrice) : 150;
+    var investGrowth = (growthMultiple * 1000).toLocaleString();
+    html += '<p style="font-size: 15px; color: #64748b; line-height: 1.6; margin-bottom: 20px;">Since ' + (PULLBACK_STATS.start_year || 1957) + ', the S&P 500 has grown from ' + Math.round(startPrice) + ' to over ' + Math.round(endPrice).toLocaleString() + ' — turning $1,000 into more than $' + investGrowth + '. Along the way, it stumbled ' + introTotal + ' times. Here is how today compares to that history.</p>';
+
+    // ── WHERE ARE WE NOW? (moved to top — the hook) ──
+    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now?</div>';
+
+    // Use pullback engine as single source of truth for current drawdown
+    var cp = PULLBACK_STATS.current_pullback || null;
+    var breadthContext = MARKET.breadth.pctAbove >= 60 ? 'Breadth is healthy with broad participation.' : MARKET.breadth.pctAbove >= 40 ? 'Breadth is narrowing — fewer stocks are participating in the move.' : 'Breadth is weak — the market is being carried by a narrow group of leaders.';
+
+    html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
+
+    if (cp) {
+        // Active pullback — lead with the drawdown story (no contradiction)
+        var cpMag = cp.magnitude || 0;
+        var cpDays = cp.duration || 0;
+        var cpWeeks = Math.round(cpDays / 5);
+        var cpTier = cpMag > -10 ? 'routine' : cpMag > -15 ? 'meaningful' : cpMag > -20 ? 'beyond normal' : 'bear market';
+        var peakPrice = cp.peak_price || 0;
+        var peakDate = cp.peak_date || cp.start_date || '';
+        var peakDateFormatted = peakDate ? new Date(peakDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+
+        // Opening line — anchored to the pullback engine's peak
+        html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, which is <strong style="color: ' + (cpMag < -10 ? '#ef4444' : '#f59e0b') + ';">' + cpMag + '%</strong> from its recent peak';
+        if (peakPrice > 0) {
+            html += ' of ' + peakPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+        }
+        if (peakDateFormatted) {
+            html += ' reached on ' + peakDateFormatted;
+        }
+        html += '. ';
+
+        // Long-term trend context — adds nuance, not contradiction
+        if (t.sp500 > t.sp500MA4yr) {
+            var pctAbove4yr = ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0);
+            html += 'Despite the pullback, the long-term trend remains intact — price is still ' + pctAbove4yr + '% above the 4-year moving average, keeping the broader bull market structure in place. ';
+        } else {
+            html += 'The long-term trend is being tested — price has dropped below the 4-year moving average, a level that separates bull markets from bear markets. ';
+        }
+
+        // Current Pullback callout — bold, visual, standalone
+        var tierColor = cpMag < -20 ? '#ef4444' : cpMag < -15 ? '#f97316' : cpMag < -10 ? '#f59e0b' : '#10b981';
+        html += '</div>';
+        html += '<div style="margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; border-left: 4px solid ' + tierColor + ';">';
+        html += '<strong style="color: ' + tierColor + '; font-size: 16px;">Current Pullback:</strong> ';
+        html += '<span style="color: #334155; font-size: 15px;">Down <strong>' + cpMag + '%</strong> over <strong>' + cpDays + ' trading days</strong> (' + cpWeeks + ' weeks) — placing it in the <strong style="color: ' + tierColor + ';">' + cpTier + '</strong> category so far.</span>';
+        html += '</div>';
+        html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
+    } else {
+        // No active pullback — find ATH from chart data
+        var athPrice = 0, athIdx = 0;
+        for (var i = 0; i < SP500_PRICES.length; i++) {
+            if (SP500_PRICES[i] > athPrice) { athPrice = SP500_PRICES[i]; athIdx = i; }
+        }
+        var athDate = SP500_DATES[athIdx] || '';
+        var athDateFormatted = athDate ? new Date(athDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        var drawdownPct = athPrice > 0 ? ((t.sp500 / athPrice - 1) * 100).toFixed(1) : 0;
+        var atOrNearHigh = Math.abs(drawdownPct) < 1;
+
+        if (atOrNearHigh) {
+            html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, near its all-time high of ' + athPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' reached on ' + athDateFormatted + '. ';
+        } else {
+            html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, which is <strong style="color: ' + (drawdownPct < -10 ? '#ef4444' : '#f59e0b') + ';">' + drawdownPct + '%</strong> from its high of ' + athPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' reached on ' + athDateFormatted + '. ';
+        }
+        var trendStatus = t.sp500 > t.sp500MA4yr ? 'in a bull market' : 'testing bull market support';
+        var currentCyclePct = t.sp500MA4yr > 0 ? '+' + ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0) + '% above the 4-year moving average' : '';
+        html += 'Based on the long-term trend, the market is currently <strong style="color: #0f172a; font-size: 16px;">' + trendStatus + '</strong>, trading ' + currentCyclePct + '. ';
+    }
+
+    // Intermediate trend + breadth + VIX (always shown)
+    html += 'The intermediate trend shows price ' + (t.sp500 > t.sp500MA150 ? 'above' : '<strong style="color: #ef4444;">' + pctFrom150 + '% below</strong>') + ' the 150-day moving average. ';
+    html += breadthContext + ' ';
+    html += 'With a VIX of ' + t.vix.toFixed(1) + ', fear is ' + (t.vix >= 30 ? 'at extreme levels — historically a contrarian buy zone.' : t.vix > 20 ? 'elevated but not yet at panic levels.' : 'low — markets are calm.') + ' ';
+    html += '</div>';
+    html += '</div>';
+
+    // ── PULLBACKS ARE NORMAL ──
+    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
+    var totalPullbacks = PULLBACK_STATS.total || 61;
+    var frequency = PULLBACK_STATS.frequency || 0.88;
+    var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
+    var routinePctStat = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.pct : 62);
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
+    var freqLabel = frequency >= 1.5 ? Math.round(frequency) + 'x per year' : frequency >= 0.75 ? '~1 per year' : 'Every ' + Math.round(1 / frequency) + ' years';
+    html += '<div style="text-align: center; padding: 16px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
+    html += '</div>';
+    // Key insight — highlighted callout to fight bias
+    html += '<div style="padding: 16px 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 10px; border-left: 4px solid #10b981;">';
+    var routineCount = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.count : 38);
+    var routinePct = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.pct : 62);
+    var bearPct = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.bear ? PULLBACK_STATS.tiers.bear.pct : 18);
+    var routineDays = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.median_duration_days : 19);
+    var routineWeeks = Math.round(routineDays / 5);
+    html += '<div style="font-size: 15px; font-weight: 600; color: #0f172a; line-height: 1.6;">More than half of all 5%+ pullbacks never reach -10% and typically resolve in about ' + routineWeeks + ' weeks. Only about 1 in 10 becomes a bear market of -20% or more. The median decline across all pullbacks is ' + medianMag + '% — most are over before the headlines catch up.</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // ── NOT EVERY SLIP IS THE SAME ──
+    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Not Every Slip Is the Same</div>';
+    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 16px;">Of the ' + totalPullbacks + ' pullbacks since 1957, not all were created equal. Here is how they break down by severity:</p>';
+    html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
+
+    // Helper to format duration
+    function formatDuration(days) {
+        if (!days) return '2-6 weeks';
+        if (days < 30) return Math.round(days / 5) + ' weeks';
+        if (days < 180) return Math.round(days / 21) + ' months';
+        return Math.round(days / 30) + ' months';
+    }
+
+    // Build table rows dynamically from PULLBACK_STATS
+    var tiers = PULLBACK_STATS.tiers || {};
+    var routineTier = tiers.routine || { count: 38, pct: 62.3, median_duration_days: 19 };
+    var meaningfulTier = tiers.meaningful || { count: 8, pct: 13.1, median_duration_days: 111 };
+    var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.6, median_duration_days: 62 };
+    var bearTier = tiers.bear || { count: 11, pct: 18.0, median_duration_days: 195 };
+
+    html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>~' + routineTier.count + ' (~' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineTier.median_duration_days) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
+    html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>~' + meaningfulTier.count + ' (~' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulTier.median_duration_days) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
+    html += '<tr><td style="color: #f97316; font-weight: 600;">Beyond Normal</td><td>15-20%</td><td>~' + beyondTier.count + ' (~' + beyondTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(beyondTier.median_duration_days) + '</td><td>Real fear sets in — but technically not a bear market</td></tr>';
+    html += '<tr><td style="color: #ef4444; font-weight: 600;">Bear Market</td><td>20%+</td><td>~' + bearTier.count + ' (~' + bearTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(bearTier.median_duration_days) + '</td><td>Deep valley — painful but historically temporary</td></tr>';
+    html += '</tbody></table>';
+    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; margin-top: 16px;">Corrections of 15% or more (Beyond Normal + Bear) have occurred roughly once every 4-5 years since 1957. Painful, but rare enough that the climb between them does the heavy lifting.</div>';
+
+    // Methodology footnote
+    html += '<div style="margin-top: 16px; padding: 16px 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.6;"><strong style="color: #475569;">How we count pullbacks:</strong> This dashboard uses the traditional method — one pullback per peak-to-trough cycle, not counting a new episode until the market fully recovers above its prior high — which gives ' + totalPullbacks + ' distinct pullbacks since ' + (PULLBACK_STATS.start_year || 1957) + '. A broader "lived experience" method that counts every distinct 5%+ slide — including intermediate dips within larger declines where the market bounces and slides repeatedly — produces 130+ episodes. For example, the 2022 bear market alone contained 7 separate 5%+ drops, each one felt like a new crisis. Both approaches are valid; the traditional method is used here for cleaner per-tier statistics.</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // ── THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ──
+    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">The Climb Is Always Longer Than the Slide</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">';
+    // Bull column
+    html += '<div style="padding: 20px; background: #f0fdf4; border-radius: 12px; border-left: 4px solid #10b981;">';
+    html += '<div style="font-size: 16px; font-weight: 700; color: #10b981; margin-bottom: 10px;">11 Bull Markets</div>';
+    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average gain: <strong style="color: #0f172a; font-size: 16px;">+172%</strong><br/>Average duration: <strong style="color: #0f172a;">56 months</strong> (~4.7 years)<br/>7 of 11 exceeded +79%</div>';
+    html += '</div>';
+    // Bear column
+    html += '<div style="padding: 20px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #ef4444;">';
+    html += '<div style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px;">10 Bear Markets</div>';
+    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average decline: <strong style="color: #0f172a; font-size: 16px;">-36%</strong><br/>Average duration: <strong style="color: #0f172a;">14 months</strong> (~1.2 years)<br/>6 of 10 lasted 18 months or less</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6;">Bulls are roughly 4x longer and deliver 5x the magnitude of bears. The math overwhelmingly favors staying invested — time in the market beats timing the market.</div>';
+    html += '</div>';
+
+    // ── Closing quote ──
+    html += '<div style="margin-top: 24px; padding: 16px 20px; background: linear-gradient(135deg, #f0f9ff, #f0fdf4); border-radius: 10px; border: 1px solid #e2e8f0;">';
+    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; font-style: italic;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
+    html += '</div>';
+
+    html += '<div style="font-size: 13px; color: #64748b; text-align: right; margin-top: 16px;">Source: S&amp;P 500 daily price data, 1957 to present.</div>';
+    html += '</div>';
+
+    return html;
+}
+
+function drawSP500Chart() {
+    const container = document.getElementById('sp500Chart');
+    if (!container) return;
+
+    const prices = SP500_PRICES;
+    const dates = SP500_DATES;
+    const w = container.offsetWidth;
+    const h = container.offsetHeight || 320;
+    const padLeft = 55;
+    const padRight = 15;
+    const padTop = 30;
+    const padBottom = 30;
+
+    if (prices.length < 2) return;
+
+    // Safe min/max for large arrays (avoid stack overflow with spread)
+    var minPrice = prices[0], maxPrice = prices[0];
+    for (var k = 1; k < prices.length; k++) {
+        if (prices[k] < minPrice) minPrice = prices[k];
+        if (prices[k] > maxPrice) maxPrice = prices[k];
+    }
+    var range = maxPrice - minPrice || 1;
+    // Add 2% padding
+    minPrice = minPrice - range * 0.02;
+    maxPrice = maxPrice + range * 0.02;
+    range = maxPrice - minPrice;
+
+    const chartW = w - padLeft - padRight;
+    const chartH = h - padTop - padBottom;
+
+    // Calculate 150-day moving average
+    let ma150 = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (i < 149) {
+            ma150.push(null);
+        } else {
+            let sum = 0;
+            for (let j = i - 149; j <= i; j++) {
+                sum += prices[j];
+            }
+            ma150.push(sum / 150);
+        }
+    }
+
+    let svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" style="display: block; width: 100%; height: 100%;">';
+
+    // Legend at top right
+    svg += '<text x="' + (w - padRight) + '" y="16" font-size="12" fill="#10b981" font-weight="600" text-anchor="end">— S&P 500</text>';
+    svg += '<text x="' + (w - padRight - 100) + '" y="16" font-size="12" fill="#f59e0b" font-weight="600" text-anchor="end">- - 150-day MA</text>';
+
+    // Horizontal grid lines + price labels
+    for (let i = 0; i <= 4; i++) {
+        const y = padTop + (chartH / 4) * i;
+        const price = maxPrice - (range / 4) * i;
+        svg += '<line x1="' + padLeft + '" y1="' + y + '" x2="' + (w - padRight) + '" y2="' + y + '" stroke="#f1f5f9" stroke-width="1"/>';
+        svg += '<text x="' + (padLeft - 8) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" fill="#94a3b8" font-family="JetBrains Mono, monospace">' + price.toFixed(0) + '</text>';
+    }
+
+    // Date labels along x-axis
+    if (dates && dates.length > 0) {
+        var dateStep = Math.floor(dates.length / 6);
+        for (var d = 0; d < dates.length; d += dateStep) {
+            if (d >= dates.length) break;
+            var dx = padLeft + (chartW / (prices.length - 1)) * d;
+            var dateStr = dates[d];
+            // Format: show Mon YYYY from YYYY-MM-DD
+            var parts = dateStr.split('-');
+            if (parts.length >= 2) {
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                var mIdx = parseInt(parts[1], 10) - 1;
+                dateStr = months[mIdx] + ' ' + parts[0].slice(2);
+            }
+            svg += '<text x="' + dx + '" y="' + (h - 6) + '" font-size="10" text-anchor="middle" fill="#94a3b8" font-family="JetBrains Mono, monospace">' + dateStr + '</text>';
+        }
+    }
+
+    // S&P 500 price line (solid green, no fill)
+    let path = '';
+    for (let i = 0; i < prices.length; i++) {
+        const x = padLeft + (chartW / (prices.length - 1)) * i;
+        const y = padTop + chartH - ((prices[i] - minPrice) / range) * chartH;
+        path += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+    }
+    svg += '<path d="' + path + '" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+
+    // 150-day MA line (dashed amber)
+    let maPath = '';
+    let firstPoint = true;
+    for (let i = 0; i < ma150.length; i++) {
+        if (ma150[i] !== null) {
+            const x = padLeft + (chartW / (prices.length - 1)) * i;
+            const y = padTop + chartH - ((ma150[i] - minPrice) / range) * chartH;
+            maPath += (firstPoint ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+            firstPoint = false;
+        }
+    }
+    svg += '<path d="' + maPath + '" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8,4"/>';
+
+    // Left axis line
+    svg += '<line x1="' + padLeft + '" y1="' + padTop + '" x2="' + padLeft + '" y2="' + (padTop + chartH) + '" stroke="#cbd5e1" stroke-width="1"/>';
+    // Bottom axis line
+    svg += '<line x1="' + padLeft + '" y1="' + (padTop + chartH) + '" x2="' + (w - padRight) + '" y2="' + (padTop + chartH) + '" stroke="#cbd5e1" stroke-width="1"/>';
+
+    svg += '</svg>';
+
+    container.innerHTML = svg;
+}
+
+function renderSectors() {
+    let html = '';
+
+    SECTORS.forEach(function(sector) {
+        const up_pct = sector.up || 0;
+        const pb_pct = sector.pb || 0;
+        const dn_pct = sector.dn || 0;
+        const sb_pct = sector.sb || 0;
+        const stockCount = STOCKS.filter(function(s) { return s.sec === sector.name; }).length;
+
+        html += '<tr onclick="expandSector(&quot;' + sector.name + '&quot;)" style="cursor: pointer;">';
+        html += '<td class="sector-name">' + sector.name + '</td>';
+
+        // Trend bar (center-aligned)
+        html += '<td style="text-align: center;"><div class="trend-bar" style="margin: 0 auto; width: 120px;">';
+        if (up_pct > 0) html += '<div class="trend-segment trend-up" style="width: ' + up_pct + '%"></div>';
+        if (pb_pct > 0) html += '<div class="trend-segment trend-pb" style="width: ' + pb_pct + '%"></div>';
+        if (dn_pct > 0) html += '<div class="trend-segment trend-dn" style="width: ' + dn_pct + '%"></div>';
+        if (sb_pct > 0) html += '<div class="trend-segment trend-sb" style="width: ' + sb_pct + '%"></div>';
+        html += '</div></td>';
+
+        // % Uptrend (right-aligned)
+        html += '<td style="text-align: right;" class="pct-cell ' + (up_pct >= 60 ? 'high' : up_pct >= 40 ? 'med' : 'low') + '">' + up_pct.toFixed(1) + '%</td>';
+
+        // Rel. Momentum (right-aligned)
+        var rm = sector.rm || 0;
+        var rmClass = rm >= 55 ? 'high' : rm >= 40 ? 'med' : 'low';
+        html += '<td style="text-align: right;" class="pct-cell ' + rmClass + '">' + rm.toFixed(1) + '</td>';
+
+        // # Stocks (right-aligned)
+        html += '<td style="text-align: right;">' + stockCount + '</td>';
+
+        html += '</tr>';
+    });
+
+    document.getElementById('sectorsTableBody').innerHTML = html;
+}
+
+var sectorSortCol = '';
+var sectorSortAsc = false;
+
+function sortSectors(column) {
+    // Toggle direction if clicking same column
+    if (sectorSortCol === column) {
+        sectorSortAsc = !sectorSortAsc;
+    } else {
+        sectorSortCol = column;
+        sectorSortAsc = false; // default: high to low for numbers, A-Z for name
+    }
+    var dir = sectorSortAsc ? 1 : -1;
+
+    if (column === 'name') {
+        SECTORS.sort(function(a, b) { return dir * a.name.localeCompare(b.name); });
+    } else if (column === 'trend' || column === 'uptrend') {
+        SECTORS.sort(function(a, b) { return dir * ((b.up || 0) - (a.up || 0)); });
+    } else if (column === 'momentum') {
+        SECTORS.sort(function(a, b) { return dir * ((b.rm || 0) - (a.rm || 0)); });
+    } else if (column === 'count') {
+        SECTORS.sort(function(a, b) {
+            const countA = STOCKS.filter(function(s) { return s.sec === a.name; }).length;
+            const countB = STOCKS.filter(function(s) { return s.sec === b.name; }).length;
+            return dir * (countB - countA);
+        });
+    }
+
+    // Update header arrows
+    var headers = document.querySelectorAll('.sector-table th');
+    headers.forEach(function(th) {
+        th.textContent = th.textContent.replace(/ [▲▼]/g, '');
+    });
+    var arrow = sectorSortAsc ? ' ▲' : ' ▼';
+    var colMap = { 'name': 0, 'trend': 1, 'uptrend': 2, 'momentum': 3, 'count': 4 };
+    var idx = colMap[column];
+    if (idx !== undefined && headers[idx]) {
+        headers[idx].textContent = headers[idx].textContent + arrow;
+    }
+
+    renderSectors();
+}
+
+function expandSector(sectorName) {
+    const sector = SECTORS.find(function(s) { return s.name === sectorName; });
+    if (!sector) return;
+
+    const sectorStocks = STOCKS.filter(function(s) { return s.sec === sectorName; });
+
+    document.getElementById('expandedSectorTitle').textContent = sectorName + ' (' + sectorStocks.length + ' stocks)';
+
+    let rows = '';
+    sectorStocks.sort(function(a, b) { return (b.rm || 0) - (a.rm || 0); });
+    sectorStocks.forEach(function(stock) {
+        var trendClass = getTrendClass(stock.tr);
+        var momColor = stock.rm >= 60 ? '#10b981' : stock.rm >= 40 ? '#f59e0b' : '#ef4444';
+        var ret1m = stock.p1 ? ((stock.px - stock.p1) / stock.p1 * 100) : null;
+        var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+        var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
+
+        rows += '<tr style="cursor:pointer;" onclick="openStockModal(&quot;' + stock.t + '&quot;)">';
+        rows += '<td style="font-weight:700; font-family: JetBrains Mono, monospace;">' + stock.t + '</td>';
+        rows += '<td style="color:#475569;">' + stock.co + '</td>';
+        rows += '<td><span class="badge ' + trendClass + '">' + stock.tr + '</span></td>';
+        rows += '<td style="text-align:center; font-weight:600; color:' + momColor + ';">' + stock.rm + '</td>';
+        rows += '<td style="text-align:right; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
+        rows += '</tr>';
+    });
+
+    document.getElementById('expandedStocksBody').innerHTML = rows;
+    document.getElementById('expandedSector').style.display = 'block';
+}
+
+function renderStockScreener() {
+    // Populate sector filter
+    const sectors = [...new Set(STOCKS.map(function(s) { return s.sec; }))].sort();
+    let sectorOptions = '';
+    sectors.forEach(function(sec) {
+        sectorOptions += '<option value="' + sec + '">' + sec + '</option>';
+    });
+    document.getElementById('sectorFilter').innerHTML = '<option value="">All Sectors</option>' + sectorOptions;
+
+    // Initial render
+    filterStocks();
+    updateSummaryStrip();
+}
+
+function filterStocks() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const sector = document.getElementById('sectorFilter').value;
+    const trend = document.getElementById('trendFilter').value;
+
+    filteredStocks = STOCKS.filter(function(s) {
+        const matchSearch = !search || s.t.toLowerCase().includes(search) || s.co.toLowerCase().includes(search);
+        const matchSector = !sector || s.sec === sector;
+        const matchTrend = !trend || s.tr === trend;
+        return matchSearch && matchSector && matchTrend;
+    });
+
+    sortStocks(sortColumn, sortAsc);
+    updateSummaryStrip();
+}
+
+function sortStocks(col, asc) {
+    sortColumn = col;
+
+    if (asc !== undefined) {
+        sortAsc = asc;
+    } else {
+        sortAsc = !sortAsc;
+    }
+
+    filteredStocks.sort(function(a, b) {
+        let aVal, bVal;
+
+        if (col === 'ticker') { aVal = a.t; bVal = b.t; }
+        else if (col === 'sector') { aVal = a.sec; bVal = b.sec; }
+        else if (col === 'price') { aVal = a.px; bVal = b.px; }
+        else if (col === 'ma150') { aVal = a.px / (1 + (a.ov || 0) / 100); bVal = b.px / (1 + (b.ov || 0) / 100); }
+        else if (col === 'trend') { aVal = a.tr; bVal = b.tr; }
+        else if (col === 'tr1wk') { aVal = a.tr1wk || ''; bVal = b.tr1wk || ''; }
+        else if (col === 'momentum') { aVal = a.rm || 0; bVal = b.rm || 0; }
+        else if (col === 'vsMa') { aVal = a.ov || 0; bVal = b.ov || 0; }
+        else if (col === 'ret1m') { aVal = a.p1 ? (a.px - a.p1) / a.p1 : -999; bVal = b.p1 ? (b.px - b.p1) / b.p1 : -999; }
+        else if (col === 'ret12m') { aVal = a.p12 ? (a.px - a.p12) / a.p12 : -999; bVal = b.p12 ? (b.px - b.p12) / b.p12 : -999; }
+        else if (col === 'trChg') {
+            aVal = !a.trChg ? 0 : (a.tr === 'Uptrend' || a.tr === 'Snapback') ? 1 : -1;
+            bVal = !b.trChg ? 0 : (b.tr === 'Uptrend' || b.tr === 'Snapback') ? 1 : -1;
+        }
+
+        if (typeof aVal === 'string') {
+            return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        } else {
+            return sortAsc ? aVal - bVal : bVal - aVal;
+        }
+    });
+
+    currentPage = 1;
+    renderStockTable();
+}
+
+function renderStockTable() {
+    var start = (currentPage - 1) * ITEMS_PER_PAGE;
+    var end = start + ITEMS_PER_PAGE;
+    var page = filteredStocks.slice(start, end);
+
+    var rows = '';
+    page.forEach(function(stock, idx) {
+        var num = start + idx + 1;
+        var mc_str = stock.mc >= 1000 ? (stock.mc / 1000).toFixed(1) + 'T' : stock.mc >= 1 ? stock.mc.toFixed(0) + 'B' : (stock.mc * 1000).toFixed(0) + 'M';
+
+        // Trend badges
+        var trendClass = 'badge-' + (stock.tr === 'Uptrend' ? 'green' : stock.tr === 'Pullback' ? 'amber' : stock.tr === 'Downtrend' ? 'red' : stock.tr === 'Snapback' ? 'blue' : 'gray');
+        var trend1wkClass = 'badge-' + (stock.tr1wk === 'Uptrend' ? 'green' : stock.tr1wk === 'Pullback' ? 'amber' : stock.tr1wk === 'Downtrend' ? 'red' : stock.tr1wk === 'Snapback' ? 'blue' : 'gray');
+
+        // Trend change: + for bullish transitions, - for bearish
+        var trendChgText = '';
+        if (stock.trChg) {
+            if (stock.tr === 'Uptrend' || stock.tr === 'Snapback') {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#10b981;" title="Improved from ' + (stock.tr1wk || '?') + '">+</span>';
+            } else {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#ef4444;" title="Weakened from ' + (stock.tr1wk || '?') + '">−</span>';
+            }
+        }
+
+        // Returns
+        var ret1m = stock.p1 ? ((stock.px - stock.p1) / stock.p1 * 100) : null;
+        var ret12m = stock.p12 ? ((stock.px - stock.p12) / stock.p12 * 100) : null;
+        var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+        var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
+        var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
+        var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
+        var momColor = stock.rm >= 60 ? '#10b981' : stock.rm >= 40 ? '#f59e0b' : '#ef4444';
+        var ovColor = (stock.ov || 0) >= 0 ? '#10b981' : '#ef4444';
+
+        rows += '<tr style="cursor:pointer;" onclick="openStockModal(&quot;' + stock.t + '&quot;)">';
+        rows += '<td style="text-align:center; color:#64748b;">' + num + '</td>';
+        rows += '<td style="font-family:JetBrains Mono,monospace; font-weight:900; font-size:14px;" title="' + stock.co + '">' + stock.t + '</td>';
+        rows += '<td>' + stock.sec + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600;">$' + stock.px.toFixed(2) + '</td>';
+        // Calculate 150-day MA from price and % over MA: ma150 = price / (1 + ov/100)
+        var ma150val = (stock.ov !== null && stock.ov !== undefined && stock.ov !== 0) ? (stock.px / (1 + stock.ov / 100)) : stock.px;
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-size:12px; color:#64748b;">$' + ma150val.toFixed(2) + '</td>';
+        rows += '<td><span class="badge ' + trendClass + '">' + stock.tr + '</span></td>';
+        rows += '<td><span class="badge ' + trend1wkClass + '">' + (stock.tr1wk || '—') + '</span></td>';
+        rows += '<td style="text-align:center;">' + trendChgText + '</td>';
+        rows += '<td style="text-align:center;"><div style="display:inline-flex; align-items:center; gap:5px;"><div style="width:50px; height:5px; border-radius:3px; background:#e2e8f0;"><div style="width:' + (stock.rm || 0) + '%; height:100%; border-radius:3px; background:' + momColor + ';"></div></div><span style="font-family:JetBrains Mono,monospace; font-weight:600; font-size:12px; color:' + momColor + ';">' + (stock.rm || 0) + '</span></div></td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + ovColor + ';">' + ((stock.ov || 0) >= 0 ? '+' : '') + (stock.ov || 0).toFixed(1) + '%</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
+        rows += '</tr>';
+    });
+
+    document.getElementById('stockTableBody').innerHTML = rows;
+
+    // Pagination with smart display for 10+ pages
+    const totalPages = Math.ceil(filteredStocks.length / ITEMS_PER_PAGE);
+    let pageHtml = '';
+
+    if (totalPages <= 10) {
+        // Show all pages
+        for (let i = 1; i <= totalPages; i++) {
+            pageHtml += '<button class="page-btn ' + (i === currentPage ? 'active' : '') + '" onclick="goToPage(' + i + ')">' + i + '</button>';
+        }
+    } else {
+        // Show first 3, ..., last 3, plus current page neighbors
+        let pagesToShow = new Set();
+        pagesToShow.add(1);
+        pagesToShow.add(2);
+        pagesToShow.add(3);
+        pagesToShow.add(totalPages - 2);
+        pagesToShow.add(totalPages - 1);
+        pagesToShow.add(totalPages);
+        pagesToShow.add(currentPage);
+        if (currentPage > 1) pagesToShow.add(currentPage - 1);
+        if (currentPage < totalPages) pagesToShow.add(currentPage + 1);
+
+        const sortedPages = Array.from(pagesToShow).sort((a, b) => a - b);
+        for (let i = 0; i < sortedPages.length; i++) {
+            const p = sortedPages[i];
+            if (i > 0 && sortedPages[i - 1] + 1 < p) {
+                pageHtml += '<span style="color: #64748b; padding: 8px 4px;">...</span>';
+            }
+            pageHtml += '<button class="page-btn ' + (p === currentPage ? 'active' : '') + '" onclick="goToPage(' + p + ')">' + p + '</button>';
+        }
+    }
+
+    document.getElementById('pagination').innerHTML = pageHtml || '<span style="color: #64748b;">No results</span>';
+}
+
+function goToPage(page) {
+    currentPage = page;
+    renderStockTable();
+}
+
+function updateSummaryStrip() {
+    var total = filteredStocks.length;
+    var up = filteredStocks.filter(function(s) { return s.tr === 'Uptrend'; }).length;
+    var pb = filteredStocks.filter(function(s) { return s.tr === 'Pullback'; }).length;
+    var dn = filteredStocks.filter(function(s) { return s.tr === 'Downtrend'; }).length;
+    var sb = filteredStocks.filter(function(s) { return s.tr === 'Snapback'; }).length;
+    var changed = filteredStocks.filter(function(s) { return s.trChg; }).length;
+
+    var html = '<span><strong>Total:</strong> ' + total + '</span>';
+    html += '<span style="color:#10b981;"><strong>Uptrend:</strong> ' + up + '</span>';
+    html += '<span style="color:#f59e0b;"><strong>Pullback:</strong> ' + pb + '</span>';
+    html += '<span style="color:#ef4444;"><strong>Downtrend:</strong> ' + dn + '</span>';
+    html += '<span style="color:#3b82f6;"><strong>Snapback:</strong> ' + sb + '</span>';
+    if (changed > 0) html += '<span style="color:#6366f1;"><strong>Trend Changes:</strong> ' + changed + '</span>';
+    document.getElementById('summaryStrip').innerHTML = html;
+}
+
+function getTrendClass(trend) {
+    if (trend === 'Uptrend') return 'up';
+    if (trend === 'Pullback') return 'pb';
+    if (trend === 'Downtrend') return 'dn';
+    if (trend === 'Snapback') return 'sb';
+    return 'gray';
+}
+
+function openStockModal(ticker) {
+    var stock = STOCKS.find(function(s) { return s.t === ticker; });
+    if (!stock) return;
+
+    var mc_str = stock.mc >= 1000 ? (stock.mc / 1000).toFixed(1) + 'T' : stock.mc >= 1 ? stock.mc.toFixed(0) + 'B' : (stock.mc * 1000).toFixed(0) + 'M';
+    var ret1m = stock.p1 ? ((stock.px - stock.p1) / stock.p1 * 100) : null;
+    var ret12m = stock.p12 ? ((stock.px - stock.p12) / stock.p12 * 100) : null;
+    var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+    var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
+    var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
+    var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
+    var momColor = stock.rm >= 60 ? '#10b981' : stock.rm >= 40 ? '#f59e0b' : '#ef4444';
+    var trendClass = 'badge-' + (stock.tr === 'Uptrend' ? 'green' : stock.tr === 'Pullback' ? 'amber' : stock.tr === 'Downtrend' ? 'red' : stock.tr === 'Snapback' ? 'blue' : 'gray');
+
+    // Signal
+    var sig, sigColor, sigBg;
+    if (stock.rm >= 70 && (stock.tr === 'Uptrend' || stock.tr === 'Pullback')) { sig = '+ Strong Momentum'; sigColor = '#065f46'; sigBg = '#d1fae5'; }
+    else if (stock.rm <= 30 && (stock.tr === 'Downtrend' || stock.tr === 'Snapback')) { sig = '− Weak Momentum'; sigColor = '#991b1b'; sigBg = '#fecaca'; }
+    else { sig = '○ Monitor'; sigColor = '#92400e'; sigBg = '#fef3c7'; }
+
+    var html = '';
+    // Dark header
+    html += '<div style="padding: 24px 28px 18px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 16px 16px 0 0; color: white;">';
+    html += '<div style="display: flex; justify-content: space-between; align-items: start;">';
+    html += '<div>';
+    html += '<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;"><span style="font-family: Fraunces, serif; font-size: 28px; font-weight: 700;">' + stock.t + '</span><span class="badge ' + trendClass + '">' + stock.tr + '</span></div>';
+    html += '<div style="font-size: 13px; color: #cbd5e1;">' + stock.co + '</div>';
+    html += '<div style="font-size: 13px; color: #64748b; margin-top: 2px;">' + stock.sec + ' · ' + (stock.ind || '') + '</div>';
+    html += '</div>';
+    html += '<button onclick="closeStockModal()" style="background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; color: white; font-size: 24px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">×</button>';
+    html += '</div>';
+    html += '<div style="display: flex; align-items: baseline; gap: 10px; margin-top: 14px;">';
+    html += '<span style="font-size: 30px; font-weight: 700;">$' + stock.px.toFixed(2) + '</span>';
+    html += '<span style="font-size: 13px; font-weight: 600; color: ' + r12color + ';">' + r12str + ' (12m)</span>';
+    html += '</div>';
+    html += '<div style="margin-top: 10px; padding: 5px 12px; border-radius: 8px; background: ' + sigBg + '; color: ' + sigColor + '; font-size: 13px; font-weight: 700; display: inline-block;">' + sig + '</div>';
+    html += '</div>';
+
+    // Body
+    html += '<div style="padding: 20px 28px 24px;">';
+
+    // Price Momentum
+    html += '<div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: #1e293b;">Price Momentum</div>';
+    html += '<div style="background: #f8fafc; border-radius: 10px; padding: 10px 14px;">';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">Trend Stage</span><span class="badge ' + trendClass + '" style="font-size: 13px; padding: 2px 8px;">' + stock.tr + '</span></div>';
+    if (stock.tr1wk) html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">1 Week Ago</span><span>' + stock.tr1wk + '</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">Rel. Momentum Rank</span><span style="font-weight: 600; color: ' + momColor + ';">' + stock.rm + 'th pctl</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">% vs 150 MA</span><span style="font-weight: 600; color: ' + (stock.ov >= 0 ? '#10b981' : '#ef4444') + ';">' + (stock.ov > 0 ? '+' : '') + (stock.ov || 0).toFixed(1) + '%</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">12-Month Return</span><span style="font-weight: 600; color: ' + r12color + ';">' + r12str + '</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">1-Month Return</span><span style="font-weight: 600; color: ' + r1color + ';">' + r1str + '</span></div>';
+    html += '</div></div>';
+
+    // Company Profile
+    html += '<div><div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: #1e293b;">Company Profile</div>';
+    html += '<div style="background: #f8fafc; border-radius: 10px; padding: 10px 14px;">';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">Sector</span><span>' + stock.sec + '</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">Industry</span><span>' + (stock.ind || '—') + '</span></div>';
+    html += '<div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px;"><span style="color: #64748b;">Market Cap</span><span>$' + mc_str + '</span></div>';
+    html += '</div></div>';
+
+    html += '<div style="margin-top: 16px; padding: 8px 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a; font-size: 12px; color: #92400e; line-height: 1.5; text-align: center;">Educational analysis only — not investment advice. Past performance does not guarantee future results.</div>';
+    html += '</div>';
+
+    document.getElementById('stockModalBody').innerHTML = html;
+    document.getElementById('stockModal').classList.add('active');
+}
+
+function closeStockModal(e) {
+    // Only close if clicking the dark background, not the content
+    if (e && e.target.id !== 'stockModal') return;
+    document.getElementById('stockModal').classList.remove('active');
+}
+
+function renderSourcesTab() {
+    let html = '';
+
+    // Card 1: Data Sources
+    html += '<div class="card"><div class="card-title">Data Sources</div>';
+    html += '<div class="metric-row"><span class="metric-label">yfinance (Yahoo Finance)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Stock prices, moving averages, VIX, oil, dollar index, sector classification</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FRED (Federal Reserve Economic Data)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">GDP, unemployment, inflation, yields, credit spreads, mortgage rates, consumer sentiment, gas prices</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">CBOE (Chicago Board Options Exchange)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Put/Call ratio (updated weekly, entered manually)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">AAII (American Association of Individual Investors)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Bull/Bear sentiment survey (updated weekly, entered manually)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FactSet Earnings Insight</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">S&P 500 earnings growth, revenue growth, beat rates, profit margins, forward P/E, analyst revisions</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Manual Assessment</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Geopolitical risk level, fiscal policy stance, monetary policy stance</div></div></div>';
+    html += '</div>';
+
+    // Card 2: Health Score Methodology
+    html += '<div class="card"><div class="card-title">Health Score Methodology</div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">The Momentum Scorecard uses an 18-indicator scoring system across three categories. Every indicator gets equal weight — one vote, one voice. No thumb on the scale.</p>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">18 Binary Indicators (equal weight):</strong><br/><span style="font-size: 14px; color: #64748b;">Macro (8) + Fundamental (5) + Technical (5) — each worth 5 points</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Total Possible:</strong><br/><span style="font-size: 14px; color: #64748b;">90 points (18 indicators &times; 5 points each)</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Why Equal Weight?</strong><br/><span style="font-size: 14px; color: #64748b;">Simplicity and transparency. Each indicator gets an equal say. If one area matters more, it shows up naturally by having more indicators (Macro has 8 votes vs 5 for the others). No hidden biases.</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Health Score Bands:</strong><br/>';
+    html += '<div style="font-size: 13px; color: #64748b; margin-top: 8px;"><span style="color: #ef4444; font-weight: 600;">0-25%</span>: Risk Off · <span style="color: #f59e0b; font-weight: 600;">25-40%</span>: Defensive · <span style="color: #ca8a04; font-weight: 600;">40-60%</span>: Cautious · <span style="color: #10b981; font-weight: 600;">60-80%</span>: Optimistic · <span style="color: #059669; font-weight: 600;">80-100%</span>: Bullish</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Card 3: Indicator Thresholds
+    html += '<div class="card"><div class="card-title">All 18 Health Indicators</div>';
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th>Indicator</th><th>Healthy When</th><th>Category</th><th>Why It Matters</th></tr></thead><tbody>';
+    html += '<tr><td>Labor Market</td><td>Below 5%</td><td>Macro</td><td>Jobs = spending power = economic engine</td></tr>';
+    html += '<tr><td>GDP Growth</td><td>Above 2%</td><td>Macro</td><td>Growing economy supports corporate profits</td></tr>';
+    html += '<tr><td>Inflation</td><td>Below 3%</td><td>Macro</td><td>Stable prices keep the Fed from tightening</td></tr>';
+    html += '<tr><td>Credit Spreads</td><td>Below 4%</td><td>Macro</td><td>Tight spreads = confident lenders</td></tr>';
+    html += '<tr><td>Consumer Confidence</td><td>Above 70</td><td>Macro</td><td>Confident consumers spend more</td></tr>';
+    html += '<tr><td>Mortgage Rates</td><td>Below 6%</td><td>Macro</td><td>Lower rates boost housing and wealth</td></tr>';
+    html += '<tr><td>Yield Curve</td><td>Positive (not inverted)</td><td>Macro</td><td>Inverted curve has preceded every recession since 1960s</td></tr>';
+    html += '<tr><td>ISM Manufacturing</td><td>Above 50</td><td>Macro</td><td>Best leading indicator of economic turns</td></tr>';
+    html += '<tr><td>Earnings Growth</td><td>Above 5%</td><td>Fundamental</td><td>Companies making more money drives stocks</td></tr>';
+    html += '<tr><td>Profit Margins</td><td>Above 11%</td><td>Fundamental</td><td>Pricing power and efficiency signal</td></tr>';
+    html += '<tr><td>Earnings Revisions</td><td>Above 1.0x</td><td>Fundamental</td><td>Analysts raising estimates = positive trend</td></tr>';
+    html += '<tr><td>Valuation (Fwd P/E)</td><td>Below 20x</td><td>Fundamental</td><td>Lower P/E = more room for upside</td></tr>';
+    html += '<tr><td>Free Cash Flow Yield</td><td>Above 3.5%</td><td>Fundamental</td><td>Real cash for dividends, buybacks, growth</td></tr>';
+    html += '<tr><td>Long-Term Trend</td><td>S&P above 4-Year MA</td><td>Technical</td><td>Big-picture market direction</td></tr>';
+    html += '<tr><td>Medium-Term Trend</td><td>S&P above 150-Day MA</td><td>Technical</td><td>Intermediate trend direction</td></tr>';
+    html += '<tr><td>Market Breadth</td><td>Above 60%</td><td>Technical</td><td>Broad participation = healthy market</td></tr>';
+    html += '<tr><td>Volatility (VIX)</td><td>Below 20</td><td>Technical</td><td>Low fear = stable conditions</td></tr>';
+    html += '<tr><td>Sentiment (Put/Call)</td><td>Below 1.0</td><td>Technical</td><td>More calls than puts = bullish positioning</td></tr>';
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // Card 4: Oversold Indicators
+    html += '<div class="card"><div class="card-title">Oversold Indicators & Capitulation Signals</div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">Four key signals that indicate extreme selling and potential market bottoms:</p>';
+    html += '<div class="metric-row"><span class="metric-label">Breadth Washout</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">% of stocks above 20-day SMA drops below 20%</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">New Lows Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">50%+ of stocks making 20-day lows</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Put/Call Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">CBOE Put/Call Ratio above 1.2</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">VIX Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">VIX above 30</div></div></div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-top: 16px; line-height: 1.5;">Each signal stands alone — any single signal firing is meaningful. Historically, oversold signals cluster near market bottoms and often precede strong bounces.</p>';
+    html += '</div>';
+
+    // Card 5: Stock Screener Methodology
+    html += '<div class="card"><div class="card-title">Stock Screener Methodology</div>';
+    html += '<div class="metric-row"><span class="metric-label">Trend Stage</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Based on price vs 150-day MA and MA slope direction: Uptrend, Pullback, Downtrend, Snapback</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Rel. Momentum</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">12-month return percentile rank across full universe (100 = top performer, 1 = bottom)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Tier</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">1-10 ranking (1 = strongest, 10 = weakest) derived from relative momentum</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">% Over/Under 150d MA</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">How far price is from its 150-day moving average</div></div></div>';
+    html += '</div>';
+
+    // Card 6: Disclaimer
+    html += '<div class="card"><div class="card-title">Disclaimer</div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; padding: 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">This dashboard is for educational and informational purposes only. It is not investment advice. Past performance does not guarantee future results. The indicators presented are historical patterns and should never be the sole basis for investment decisions. Always consult with a qualified financial advisor before making investment decisions.</p>';
+    html += '</div>';
+
+    return html;
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById(tab).classList.add('active');
+    // Highlight the clicked button
+    var btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(function(btn) {
+        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : 'sources') >= 0) {
+            btn.classList.add('active');
+        }
+    });
+    // Render sources tab content if needed
+    if (tab === 'sources') {
+        document.getElementById('sourcesContent').innerHTML = renderSourcesTab();
+    }
+}
+
+function switchSubtab(parent, subtab) {
+    const prefix = parent + '-';
+    document.querySelectorAll('.subtab-content').forEach(function(el) {
+        if (el.id && el.id.startsWith(prefix)) el.classList.remove('active');
+    });
+    document.querySelectorAll('.subtab-btn').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById(prefix + subtab).classList.add('active');
+    event.target.classList.add('active');
+}
+
+</script>
+
+</body>
+</html>
+'''
+
+# ============================================================================
+# Write Output
+# ============================================================================
+
+OUTPUT_HTML.parent.mkdir(parents=True, exist_ok=True)
+
+with open(OUTPUT_HTML, 'w') as f:
+    f.write(html_content)
+
+print('Dashboard built successfully: ' + str(OUTPUT_HTML))
