@@ -1,0 +1,12 @@
+{
+  "companies": [
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "type": "public",
+      "sector": "Technology",
+      "lastUpdated": "2026-04-09T19:11:55.538675",
+      "file": "NVDA.html"
+    }
+  ]
+}
