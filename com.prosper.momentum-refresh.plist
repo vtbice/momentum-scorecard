@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ═══════════════════════════════════════════════════════════
+   PROSPER MOMENTUM — macOS Scheduler (LaunchAgent)
+  ═══════════════════════════════════════════════════════════
+   This file tells macOS to run daily_refresh.sh every night
+   at 1:15 AM. It will wake the Mac from sleep if needed.
+
+   To install:  Run install_scheduler.command (double-click it)
+   To remove:   Run uninstall_scheduler.command (double-click it)
+   To check:    launchctl list | grep prosper
+  ═══════════════════════════════════════════════════════════
+-->
+<plist version="1.0">
+<dict>
+    <!-- Unique name for this scheduled job -->
+    <key>Label</key>
+    <string>com.prosper.momentum-refresh</string>
+
+    <!-- What to run -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/vernonbice/Documents/momentum-scorecard/daily_refresh.sh</string>
+    </array>
+
+    <!-- When to run: 1:15 AM every day -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>1</integer>
+        <key>Minute</key>
+        <integer>15</integer>
+    </dict>
+
+    <!-- If the Mac was asleep at 1:15 AM, run it as soon as it wakes up -->
+    <!-- (so you never miss a day even if the timing slips) -->
+
+    <!-- Where to save output if the script itself doesn't log -->
+    <key>StandardOutPath</key>
+    <string>/Users/vernonbice/Documents/momentum-scorecard/logs/launchd_stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/vernonbice/Documents/momentum-scorecard/logs/launchd_stderr.log</string>
+
+    <!-- Don't restart if it fails — just try again tomorrow -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- Set working directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/vernonbice/Documents/momentum-scorecard</string>
+</dict>
+</plist>
