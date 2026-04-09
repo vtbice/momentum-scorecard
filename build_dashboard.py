@@ -91,6 +91,16 @@ def health_status_label(score, total):
 # Generate HTML
 # ============================================================================
 
+# Load research index (if any companies have been researched)
+RESEARCH_INDEX_FILE = SCRIPT_DIR / 'research' / 'research_index.json'
+research_index = {"companies": []}
+if RESEARCH_INDEX_FILE.exists():
+    try:
+        with open(RESEARCH_INDEX_FILE) as f:
+            research_index = json.load(f)
+    except Exception:
+        pass
+
 # Prepare data for JavaScript embedding
 js_data = {
     'market': data['market'],
@@ -991,6 +1001,7 @@ html_content = '''<!DOCTYPE html>
         <button class="tab-btn active" onclick="switchTab('pulse')">Market Pulse</button>
         <button class="tab-btn" onclick="switchTab('sectors')">Sectors</button>
         <button class="tab-btn" onclick="switchTab('screener')">Stock Screener</button>
+        <button class="tab-btn" onclick="switchTab('research')">Research</button>
         <button class="tab-btn" onclick="switchTab('sources')">Sources</button>
     </div>
 
@@ -1193,7 +1204,12 @@ html_content = '''<!DOCTYPE html>
         </div>
     </div>
 
-    <!-- TAB 4: SOURCES & METHODOLOGY -->
+    <!-- TAB 4: RESEARCH -->
+    <div id="research" class="tab-content">
+        <div id="researchContent"></div>
+    </div>
+
+    <!-- TAB 5: SOURCES & METHODOLOGY -->
     <div id="sources" class="tab-content">
         <div id="sourcesContent"></div>
     </div>
@@ -1222,6 +1238,8 @@ const SP500_DATES = DATA.sp500_daily_dates;
 const PULLBACK_STATS = DATA.pullbackStats || {};
 
 const BREADTH_HISTORY = ''' + json.dumps(breadth_history) + ''';
+
+const RESEARCH_INDEX = ''' + json.dumps(research_index.get("companies", [])) + ''';
 
 // Colors
 const C = {
@@ -2441,6 +2459,53 @@ function closeStockModal(e) {
     document.getElementById('stockModal').classList.remove('active');
 }
 
+function renderResearchTab() {
+    var html = '';
+
+    // Instructions card
+    html += '<div class="card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">';
+    html += '<div class="card-title" style="text-align: left; border-bottom: none; padding-bottom: 0;">Company Research</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; line-height: 1.6;">Research individual companies by running the research tool from your project folder:</p>';
+    html += '<div style="background: #0f172a; border-radius: 8px; padding: 14px 18px; margin: 12px 0; font-family: JetBrains Mono, monospace; font-size: 13px; color: #10b981;">python3 research.py NVDA</div>';
+    html += '<p style="font-size: 13px; color: #94a3b8;">Or double-click <strong style="color: #e2e8f0;">research_company.command</strong> in Finder and type a ticker. For private companies, type the company name instead.</p>';
+    html += '</div>';
+
+    // Company cards
+    if (RESEARCH_INDEX.length === 0) {
+        html += '<div style="text-align: center; padding: 60px 20px; color: #94a3b8;">';
+        html += '<div style="font-size: 48px; margin-bottom: 16px;">📊</div>';
+        html += '<div style="font-size: 16px; font-weight: 600; color: #64748b; margin-bottom: 8px;">No companies researched yet</div>';
+        html += '<div style="font-size: 14px;">Run the research tool to generate your first company page.</div>';
+        html += '</div>';
+    } else {
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">';
+        RESEARCH_INDEX.forEach(function(company) {
+            var isPublic = company.type === 'public';
+            var icon = isPublic ? '📈' : '🏢';
+            var typeLabel = isPublic ? 'Public' : 'Private';
+            var typeBg = isPublic ? '#dcfce7' : '#e0f2fe';
+            var typeColor = isPublic ? '#166534' : '#1e40af';
+            var updated = company.lastUpdated ? new Date(company.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+
+            html += '<a href="research/' + company.file + '" style="text-decoration: none; color: inherit;">';
+            html += '<div class="card" style="cursor: pointer; transition: all 0.2s; border-left: 3px solid ' + (isPublic ? '#10b981' : '#3b82f6') + ';" onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,0.12)\';" onmouseout="this.style.boxShadow=\'0 1px 3px rgba(0,0,0,0.1)\';">';
+            html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
+            html += '<div>';
+            html += '<div style="font-family: JetBrains Mono, monospace; font-weight: 900; font-size: 18px; color: #0f172a;">' + icon + ' ' + company.ticker + '</div>';
+            html += '<div style="font-size: 13px; color: #64748b; margin-top: 2px;">' + company.name + '</div>';
+            html += '</div>';
+            html += '<span style="background: ' + typeBg + '; color: ' + typeColor + '; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;">' + typeLabel + '</span>';
+            html += '</div>';
+            if (company.sector) html += '<div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">' + company.sector + '</div>';
+            if (updated) html += '<div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">Updated ' + updated + '</div>';
+            html += '</div></a>';
+        });
+        html += '</div>';
+    }
+
+    return html;
+}
+
 function renderSourcesTab() {
     let html = '';
 
@@ -2523,13 +2588,16 @@ function switchTab(tab) {
     // Highlight the clicked button
     var btns = document.querySelectorAll('.tab-btn');
     btns.forEach(function(btn) {
-        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : 'sources') >= 0) {
+        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : tab === 'research' ? 'research' : 'sources') >= 0) {
             btn.classList.add('active');
         }
     });
-    // Render sources tab content if needed
+    // Render tab content on demand
     if (tab === 'sources') {
         document.getElementById('sourcesContent').innerHTML = renderSourcesTab();
+    }
+    if (tab === 'research') {
+        document.getElementById('researchContent').innerHTML = renderResearchTab();
     }
 }
 
