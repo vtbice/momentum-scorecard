@@ -2488,7 +2488,7 @@ function renderResearchTab() {
             var updated = company.lastUpdated ? new Date(company.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
             html += '<a href="research/' + company.file + '" style="text-decoration: none; color: inherit;">';
-            html += '<div class="card" style="cursor: pointer; transition: all 0.2s; border-left: 3px solid ' + (isPublic ? '#10b981' : '#3b82f6') + ';" onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,0.12)\';" onmouseout="this.style.boxShadow=\'0 1px 3px rgba(0,0,0,0.1)\';">';
+            html += '<div class="card" style="cursor: pointer; transition: all 0.2s; border-left: 3px solid ' + (isPublic ? '#10b981' : '#3b82f6') + ';" onmouseover="this.style.boxShadow=&quot;0 4px 12px rgba(0,0,0,0.12)&quot;;" onmouseout="this.style.boxShadow=&quot;0 1px 3px rgba(0,0,0,0.1)&quot;;">';
             html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
             html += '<div>';
             html += '<div style="font-family: JetBrains Mono, monospace; font-weight: 900; font-size: 18px; color: #0f172a;">' + icon + ' ' + company.ticker + '</div>';
