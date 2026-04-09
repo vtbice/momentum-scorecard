@@ -460,22 +460,6 @@ html_content = '''<!DOCTYPE html>
             border-left: 4px solid #cbd5e1;
         }
 
-        .indicator-card:has(+ .indicator-card .indicator-badge.badge-positive),
-        .indicator-card:has(.indicator-badge.badge-positive) {
-            border-left-color: #10b981;
-            background: #f0fdf4;
-        }
-
-        .indicator-card:has(.indicator-badge.badge-neutral) {
-            border-left-color: #f59e0b;
-            background: #fffbeb;
-        }
-
-        .indicator-card:has(.indicator-badge.badge-negative) {
-            border-left-color: #ef4444;
-            background: #fef2f2;
-        }
-
         .indicator-label {
             font-size: 14px;
             font-weight: 700;
@@ -1026,10 +1010,10 @@ html_content = '''<!DOCTYPE html>
 
         <!-- Sub-tabs — right after the health score so they never get buried -->
         <div class="subtab-nav">
-            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview')">Overview</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro')">Macro</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals')">Fundamentals</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals')">Technicals</button>
+            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview', this)">Overview</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro', this)">Macro</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals', this)">Fundamentals</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals', this)">Technicals</button>
         </div>
 
         <!-- Overview Sub-tab -->
@@ -2174,18 +2158,22 @@ function expandSector(sectorName) {
     let rows = '';
     sectorStocks.sort(function(a, b) { return (b.rm || 0) - (a.rm || 0); });
     sectorStocks.forEach(function(stock) {
-        var trendClass = getTrendClass(stock.tr);
-        var momColor = stock.rm >= 60 ? '#10b981' : stock.rm >= 40 ? '#f59e0b' : '#ef4444';
+        var trendClass = 'badge-' + (stock.tr === 'Uptrend' ? 'green' : stock.tr === 'Pullback' ? 'amber' : stock.tr === 'Downtrend' ? 'red' : stock.tr === 'Snapback' ? 'blue' : 'gray');
+        var trend1wkClass = 'badge-' + ((stock.tr1wk || '') === 'Uptrend' ? 'green' : (stock.tr1wk || '') === 'Pullback' ? 'amber' : (stock.tr1wk || '') === 'Downtrend' ? 'red' : (stock.tr1wk || '') === 'Snapback' ? 'blue' : 'gray');
         var ret1m = stock.p1 ? ((stock.px - stock.p1) / stock.p1 * 100) : null;
+        var ret12m = stock.p12 ? ((stock.px - stock.p12) / stock.p12 * 100) : null;
         var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+        var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
         var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
+        var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
 
         rows += '<tr style="cursor:pointer;" onclick="openStockModal(&quot;' + stock.t + '&quot;)">';
         rows += '<td style="font-weight:700; font-family: JetBrains Mono, monospace;">' + stock.t + '</td>';
         rows += '<td style="color:#475569;">' + stock.co + '</td>';
         rows += '<td><span class="badge ' + trendClass + '">' + stock.tr + '</span></td>';
-        rows += '<td style="text-align:center; font-weight:600; color:' + momColor + ';">' + stock.rm + '</td>';
+        rows += '<td><span class="badge ' + trend1wkClass + '">' + (stock.tr1wk || '—') + '</span></td>';
         rows += '<td style="text-align:right; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
+        rows += '<td style="text-align:right; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
         rows += '</tr>';
     });
 
@@ -2545,14 +2533,14 @@ function switchTab(tab) {
     }
 }
 
-function switchSubtab(parent, subtab) {
+function switchSubtab(parent, subtab, btn) {
     const prefix = parent + '-';
     document.querySelectorAll('.subtab-content').forEach(function(el) {
         if (el.id && el.id.startsWith(prefix)) el.classList.remove('active');
     });
     document.querySelectorAll('.subtab-btn').forEach(function(el) { el.classList.remove('active'); });
     document.getElementById(prefix + subtab).classList.add('active');
-    event.target.classList.add('active');
+    if (btn) btn.classList.add('active');
 }
 
 </script>

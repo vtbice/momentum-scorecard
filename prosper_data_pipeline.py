@@ -42,6 +42,16 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
+# Load API keys from .env file (keeps secrets out of the code)
+_ENV_FILE = Path(__file__).parent / ".env"
+if _ENV_FILE.exists():
+    with open(_ENV_FILE) as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _key, _val = _line.split("=", 1)
+                os.environ.setdefault(_key.strip(), _val.strip())
+
 # ─── CONFIGURATION ───────────────────────────────────────
 
 # Where to save output
@@ -54,7 +64,7 @@ HISTORY_DAYS = 400
 
 # ─── API KEYS ────────────────────────────────────────────
 # Nasdaq Data Link (formerly Quandl) — free tier, used for AAII sentiment
-NASDAQ_DATA_LINK_KEY = os.environ.get("NASDAQ_DATA_LINK_KEY", "jhH4QyMyZgxpyY3oB1Px")
+NASDAQ_DATA_LINK_KEY = os.environ.get("NASDAQ_DATA_LINK_KEY", "")
 
 # ─── Tickers to process ─────────────────────────────────
 # Option 1: Full R3000 via CSV (slow but comprehensive)
@@ -506,15 +516,13 @@ def fetch_edgar_fundamentals():
                 "RevenueFromContractWithCustomerExcludingAssessedTax", "USD", curr_period
             )
             _time.sleep(0.15)
-            rev2_total, rev2_n = _aggregate_for_sp500(rev_curr_data2, sp500_ciks)
-            if rev2_n > rev_curr_n:
-                rev_curr_sp500, rev_curr_n = rev2_total, rev2_n
-                # Merge unique CIKs
-                seen_ciks = {r["cik"] for r in rev_curr_data if r["cik"] in sp500_ciks}
-                for r in rev_curr_data2:
-                    if r["cik"] in sp500_ciks and r["cik"] not in seen_ciks:
-                        rev_curr_sp500 += float(r.get("val", 0))
-                        rev_curr_n += 1
+            # Merge both sources: start with primary, add unique companies from alternate
+            seen_ciks = {r["cik"] for r in rev_curr_data if r["cik"] in sp500_ciks}
+            for r in rev_curr_data2:
+                if r["cik"] in sp500_ciks and r["cik"] not in seen_ciks:
+                    rev_curr_sp500 += float(r.get("val", 0))
+                    rev_curr_n += 1
+                    seen_ciks.add(r["cik"])
 
         rev_prior_data = _fetch_xbrl_frame("Revenues", "USD", prior_period)
         _time.sleep(0.15)
@@ -524,14 +532,13 @@ def fetch_edgar_fundamentals():
                 "RevenueFromContractWithCustomerExcludingAssessedTax", "USD", prior_period
             )
             _time.sleep(0.15)
-            rev2_total, rev2_n = _aggregate_for_sp500(rev_prior_data2, sp500_ciks)
-            if rev2_n > rev_prior_n:
-                rev_prior_sp500, rev_prior_n = rev2_total, rev2_n
-                seen_ciks = {r["cik"] for r in rev_prior_data if r["cik"] in sp500_ciks}
-                for r in rev_prior_data2:
-                    if r["cik"] in sp500_ciks and r["cik"] not in seen_ciks:
-                        rev_prior_sp500 += float(r.get("val", 0))
-                        rev_prior_n += 1
+            # Merge both sources: start with primary, add unique companies from alternate
+            seen_ciks = {r["cik"] for r in rev_prior_data if r["cik"] in sp500_ciks}
+            for r in rev_prior_data2:
+                if r["cik"] in sp500_ciks and r["cik"] not in seen_ciks:
+                    rev_prior_sp500 += float(r.get("val", 0))
+                    rev_prior_n += 1
+                    seen_ciks.add(r["cik"])
 
         # ── Net Income (current & prior quarter) ──────────────
         print(f"  📊 Fetching earnings data...")
@@ -785,7 +792,7 @@ def pull_stock_data(tickers):
                 sector = info.get('sector', 'Unknown')
                 industry = info.get('industry', 'Unknown')
                 mktcap = info.get('marketCap', 0)
-            except:
+            except Exception:
                 company = ticker
                 sector = "Unknown"
                 industry = "Unknown"
@@ -1422,9 +1429,9 @@ def analyze_pullbacks():
 # ═══════════════════════════════════════════════════════════
 
 def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_count=0, pullback_stats=None, auto_data=None):
+    """Package everything into the JSON structure the dashboard expects."""
     if auto_data is None:
         auto_data = {}
-    """Package everything into the JSON structure the dashboard expects."""
     
     # Determine trend status
     sp = market.get("sp500", {})

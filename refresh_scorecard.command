@@ -33,8 +33,14 @@ else
     echo ""
 fi
 
-# Set FRED API key
-export FRED_API_KEY="c0af448b1521a7517fc27b6436cb6709"
+# Load API keys from .env file (keeps secrets out of source code)
+if [ -f "$(dirname "$0")/.env" ]; then
+    export $(grep -v '^#' "$(dirname "$0")/.env" | xargs)
+    echo "✅ Loaded API keys from .env"
+else
+    echo "⚠️  No .env file found — API keys may be missing"
+    echo "   Create a .env file with FRED_API_KEY and NASDAQ_DATA_LINK_KEY"
+fi
 
 # Fix SSL certificates — tells Python and curl where to find trusted website list
 export SSL_CERT_FILE=$(python3 -c "import certifi; print(certifi.where())")
