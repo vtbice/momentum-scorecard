@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Research | Momentum Scorecard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f8fafc; color: #0f172a; font-size: 14px; line-height: 1.6; }
+
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 24px 32px; border-bottom: 3px solid #10b981; color: white; text-align: center;
+        }
+        header h1 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; }
+        header h1 .green { color: #10b981; }
+        header .sub { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+        main { max-width: 900px; margin: 32px auto; padding: 0 24px; }
+
+        /* Search box */
+        .search-section { margin-bottom: 32px; }
+        .search-wrap {
+            display: flex; gap: 12px; max-width: 600px; margin: 0 auto;
+        }
+        .search-input {
+            flex: 1; padding: 14px 20px; font-size: 16px; font-family: 'JetBrains Mono', monospace;
+            border: 2px solid #e2e8f0; border-radius: 10px; background: white;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .search-input:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+        .search-input::placeholder { text-transform: none; letter-spacing: normal; font-family: 'DM Sans', sans-serif; color: #94a3b8; }
+        .search-btn {
+            padding: 14px 28px; background: #10b981; color: white; border: none; border-radius: 10px;
+            font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+        }
+        .search-btn:hover { background: #059669; }
+        .search-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .search-hint { text-align: center; font-size: 13px; color: #94a3b8; margin-top: 8px; }
+
+        /* Status */
+        .status {
+            text-align: center; padding: 20px; margin: 20px 0; border-radius: 10px; display: none;
+        }
+        .status.loading { display: block; background: #f0f9ff; color: #0369a1; }
+        .status.error { display: block; background: #fef2f2; color: #dc2626; }
+        .status.success { display: block; background: #f0fdf4; color: #166534; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #e2e8f0; border-top-color: #10b981; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Quick result card */
+        .result-card {
+            background: white; border-radius: 12px; padding: 24px; margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;
+            border-left: 4px solid #10b981; display: none;
+        }
+        .result-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .result-ticker { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+        .result-name { font-size: 14px; color: #64748b; margin-top: 2px; }
+        .result-price { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: #10b981; }
+        .result-meta { font-size: 12px; color: #94a3b8; }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+        .result-metric { background: #f8fafc; border-radius: 8px; padding: 10px 12px; }
+        .result-metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; }
+        .result-metric-value { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+        .result-desc { font-size: 13px; color: #64748b; line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+        .view-full-btn {
+            display: inline-block; margin-top: 16px; padding: 10px 24px;
+            background: #0f172a; color: white; text-decoration: none; border-radius: 8px;
+            font-weight: 600; font-size: 14px;
+        }
+        .view-full-btn:hover { background: #1e293b; }
+
+        /* Company list */
+        .company-list { margin-top: 32px; }
+        .company-list h2 { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; border-left: 3px solid #10b981; padding-left: 12px; }
+        .company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .company-card {
+            background: white; border-radius: 10px; padding: 16px; border: 1px solid #e2e8f0;
+            border-left: 3px solid #10b981; text-decoration: none; color: inherit;
+            transition: box-shadow 0.2s; display: block;
+        }
+        .company-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .company-card .ticker { font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 16px; }
+        .company-card .name { font-size: 13px; color: #64748b; margin-top: 2px; }
+        .company-card .sector { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+        .company-card .updated { font-size: 10px; color: #cbd5e1; margin-top: 4px; }
+        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+        .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><span class="green">Momentum</span> Company Research</h1>
+    <div class="sub">Type any ticker to pull live financial data</div>
+</header>
+
+<main>
+    <div class="search-section">
+        <div class="search-wrap">
+            <input type="text" id="tickerInput" class="search-input" placeholder="Enter ticker (e.g., NVDA, AAPL, TSLA...)" autocomplete="off">
+            <button id="searchBtn" class="search-btn" onclick="doSearch()">Research</button>
+        </div>
+        <div class="search-hint">Press Enter or click Research. Takes 5-10 seconds to pull data.</div>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div id="resultCard" class="result-card"></div>
+    <div id="companyList" class="company-list"></div>
+</main>
+
+<script>
+var input = document.getElementById('tickerInput');
+input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+});
+input.focus();
+
+function doSearch() {
+    var ticker = input.value.trim();
+    if (!ticker) return;
+
+    var btn = document.getElementById('searchBtn');
+    var status = document.getElementById('status');
+    var resultCard = document.getElementById('resultCard');
+
+    btn.disabled = true;
+    btn.textContent = 'Fetching...';
+    resultCard.style.display = 'none';
+    status.className = 'status loading';
+    status.innerHTML = '<span class="spinner"></span>Pulling data for <strong>' + ticker.toUpperCase() + '</strong>... this takes 5-10 seconds';
+
+    fetch('/api/research?ticker=' + encodeURIComponent(ticker))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            btn.textContent = 'Research';
+
+            if (data.error) {
+                status.className = 'status error';
+                status.textContent = 'Error: ' + data.error;
+                return;
+            }
+
+            status.className = 'status success';
+            status.textContent = 'Research page generated for ' + (data.name || data.ticker) + '!';
+
+            if (data.type === 'public' && data.data) {
+                var d = data.data;
+                var html = '<div class="result-header"><div>';
+                html += '<div class="result-ticker">' + data.ticker + '</div>';
+                html += '<div class="result-name">' + (data.name || '') + '</div>';
+                html += '</div><div style="text-align:right;">';
+                html += '<div class="result-price">$' + (d.price ? d.price.toFixed(2) : 'N/A') + '</div>';
+                html += '<div class="result-meta">' + (d.sector || '') + ' · ' + (d.industry || '') + '</div>';
+                html += '</div></div>';
+
+                html += '<div class="result-grid">';
+                if (d.marketCap) html += '<div class="result-metric"><div class="result-metric-label">Market Cap</div><div class="result-metric-value">' + fmtNum(d.marketCap) + '</div></div>';
+                if (d.trailingPE) html += '<div class="result-metric"><div class="result-metric-label">Trailing P/E</div><div class="result-metric-value">' + d.trailingPE.toFixed(1) + 'x</div></div>';
+                if (d.forwardPE) html += '<div class="result-metric"><div class="result-metric-label">Forward P/E</div><div class="result-metric-value">' + d.forwardPE.toFixed(1) + 'x</div></div>';
+                if (d.trailingEps) html += '<div class="result-metric"><div class="result-metric-label">Trailing EPS</div><div class="result-metric-value">$' + d.trailingEps.toFixed(2) + '</div></div>';
+                if (d.revenueGrowth != null) html += '<div class="result-metric"><div class="result-metric-label">Rev Growth</div><div class="result-metric-value">' + (d.revenueGrowth * 100).toFixed(1) + '%</div></div>';
+                if (d.grossMargins != null) html += '<div class="result-metric"><div class="result-metric-label">Gross Margin</div><div class="result-metric-value">' + (d.grossMargins * 100).toFixed(1) + '%</div></div>';
+                if (d.targetMean) html += '<div class="result-metric"><div class="result-metric-label">Analyst Target</div><div class="result-metric-value">$' + d.targetMean.toFixed(2) + '</div></div>';
+                if (d.fiftyTwoWeekHigh) html += '<div class="result-metric"><div class="result-metric-label">52-Wk Range</div><div class="result-metric-value">$' + (d.fiftyTwoWeekLow||0).toFixed(0) + ' – $' + d.fiftyTwoWeekHigh.toFixed(0) + '</div></div>';
+                html += '</div>';
+
+                if (d.description) {
+                    html += '<div class="result-desc">' + d.description + (d.description.length >= 500 ? '...' : '') + '</div>';
+                }
+
+                html += '<a href="' + data.file + '" class="view-full-btn" target="_blank">View Full Research Page →</a>';
+
+                resultCard.innerHTML = html;
+                resultCard.style.display = 'block';
+            } else {
+                resultCard.innerHTML = '<div style="font-size:15px;"><strong>' + data.name + '</strong> — private company template created.</div><a href="' + data.file + '" class="view-full-btn" target="_blank">Open Template →</a>';
+                resultCard.style.display = 'block';
+            }
+
+            // Refresh company list
+            loadCompanyList();
+            input.value = '';
+            input.focus();
+        })
+        .catch(function(err) {
+            btn.disabled = false;
+            btn.textContent = 'Research';
+            status.className = 'status error';
+            status.textContent = 'Network error: ' + err.message;
+        });
+}
+
+function fmtNum(val) {
+    if (!val) return 'N/A';
+    if (val >= 1e12) return '$' + (val / 1e12).toFixed(1) + 'T';
+    if (val >= 1e9) return '$' + (val / 1e9).toFixed(1) + 'B';
+    if (val >= 1e6) return '$' + (val / 1e6).toFixed(0) + 'M';
+    return '$' + val.toFixed(0);
+}
+
+function loadCompanyList() {
+    fetch('/api/research/list')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var list = document.getElementById('companyList');
+            var companies = data.companies || [];
+
+            if (companies.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="icon">📊</div><div>No companies researched yet. Type a ticker above to get started.</div></div>';
+                return;
+            }
+
+            var html = '<h2>Previously Researched (' + companies.length + ')</h2><div class="company-grid">';
+            companies.forEach(function(c) {
+                var updated = c.lastUpdated ? new Date(c.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+                html += '<a href="research/' + c.file + '" class="company-card" target="_blank">';
+                html += '<div class="ticker">' + (c.type === 'public' ? '📈' : '🏢') + ' ' + c.ticker + '</div>';
+                html += '<div class="name">' + c.name + '</div>';
+                if (c.sector) html += '<div class="sector">' + c.sector + '</div>';
+                if (updated) html += '<div class="updated">Updated ' + updated + '</div>';
+                html += '</a>';
+            });
+            html += '</div>';
+            list.innerHTML = html;
+        });
+}
+
+// Load existing companies on page load
+loadCompanyList();
+</script>
+
+</body>
+</html>
