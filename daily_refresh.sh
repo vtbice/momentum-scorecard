@@ -66,6 +66,21 @@ if [ -f "$PROJECT_DIR/build_dashboard.py" ]; then
     /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 "$PROJECT_DIR/build_dashboard.py"
     if [ $? -eq 0 ]; then
         echo "✅ Dashboard updated"
+
+        # Copy to root for GitHub Pages and push
+        DASHBOARD_HTML="$PROJECT_DIR/../Dashboards/Momentum Scorecard/index.html"
+        if [ -f "$DASHBOARD_HTML" ]; then
+            cp "$DASHBOARD_HTML" "$PROJECT_DIR/index.html"
+            cd "$PROJECT_DIR"
+            git add index.html
+            git commit -m "Auto-update dashboard $(date '+%Y-%m-%d')" 2>/dev/null
+            git push origin main 2>/dev/null
+            if [ $? -eq 0 ]; then
+                echo "✅ GitHub Pages updated — live link refreshed"
+            else
+                echo "⚠️  Git push failed — dashboard is fresh locally but GitHub Pages not updated"
+            fi
+        fi
     else
         echo "⚠️  Dashboard update failed — scorecard_data.json is still fresh"
     fi
