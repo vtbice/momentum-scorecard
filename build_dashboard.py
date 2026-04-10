@@ -2725,19 +2725,13 @@ function renderResearchTab() {
     // Search box
     html += '<div class="card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">';
     html += '<div class="card-title" style="text-align: left; border-bottom: none; padding-bottom: 0;">Company Research</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; margin-bottom: 12px;">Type a ticker to pull live financial data. Requires the research server to be running.</p>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; margin-bottom: 12px;">Type any ticker to see detailed financials, valuation, and momentum data.</p>';
     html += '<div style="display: flex; gap: 12px; max-width: 600px;">';
     html += '<input type="text" id="researchTickerInput" placeholder="Enter ticker (e.g., NVDA, AAPL, TSLA...)" style="flex:1; padding: 12px 16px; font-size: 15px; font-family: JetBrains Mono, monospace; border: 2px solid #e2e8f0; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;" onkeydown="if(event.key===&quot;Enter&quot;)doResearchSearch();">';
     html += '<button onclick="doResearchSearch()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: DM Sans, sans-serif;">Research</button>';
     html += '</div>';
     html += '<div id="researchStatus" style="margin-top: 10px; font-size: 13px; color: #94a3b8;"></div>';
     html += '<div id="researchResult" style="margin-top: 12px;"></div>';
-    html += '</div>';
-
-    // How to start section
-    html += '<div id="researchServerHelp" style="display:none; margin-bottom: 24px; padding: 16px 20px; background: #fffbeb; border-radius: 10px; border: 1px solid #fde68a;">';
-    html += '<div style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 6px;">Research server is not running</div>';
-    html += '<div style="font-size: 13px; color: #92400e; line-height: 1.6;">To use live research, double-click <strong>start_research_server.command</strong> in your momentum-scorecard folder first. Then come back here and type a ticker.</div>';
     html += '</div>';
 
     // Previously researched company cards
@@ -2773,37 +2767,109 @@ function renderResearchTab() {
 
 function doResearchSearch() {
     var input = document.getElementById('researchTickerInput');
-    var ticker = input.value.trim();
-    if (!ticker) return;
+    var query = input.value.trim().toUpperCase();
+    if (!query) return;
 
     var status = document.getElementById('researchStatus');
     var result = document.getElementById('researchResult');
-    var help = document.getElementById('researchServerHelp');
 
-    status.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid #e2e8f0;border-top-color:#10b981;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:8px;"></span>Pulling data for <strong>' + ticker.toUpperCase() + '</strong>... takes 5-10 seconds';
-    status.style.color = '#0369a1';
-    result.innerHTML = '';
-    help.style.display = 'none';
+    // Search embedded stock data
+    var stock = STOCKS.find(function(s) { return s.t === query; });
+    if (!stock) {
+        // Try partial match on ticker or company name
+        var matches = STOCKS.filter(function(s) {
+            return s.t.indexOf(query) === 0 || s.co.toUpperCase().indexOf(query) >= 0;
+        }).slice(0, 5);
+        if (matches.length > 0) {
+            status.innerHTML = 'No exact match for "' + query + '". Did you mean:';
+            status.style.color = '#64748b';
+            var suggestions = '';
+            matches.forEach(function(m) {
+                suggestions += '<span style="display:inline-block; margin:4px; padding:6px 12px; background:#f0fdf4; border:1px solid #10b981; border-radius:6px; cursor:pointer; font-family:JetBrains Mono,monospace; font-weight:600; font-size:13px;" onclick="document.getElementById(&quot;researchTickerInput&quot;).value=&quot;' + m.t + '&quot;;doResearchSearch();">' + m.t + ' <span style="font-family:DM Sans,sans-serif;font-weight:400;color:#64748b;">(' + m.co + ')</span></span>';
+            });
+            result.innerHTML = suggestions;
+        } else {
+            status.innerHTML = 'No stock found for "' + query + '". Try a different ticker.';
+            status.style.color = '#dc2626';
+            result.innerHTML = '';
+        }
+        return;
+    }
 
-    fetch('http://localhost:8765/api/research?ticker=' + encodeURIComponent(ticker))
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (data.error) {
-                status.innerHTML = 'Error: ' + data.error;
-                status.style.color = '#dc2626';
-                return;
-            }
-            status.innerHTML = 'Research page generated for <strong>' + (data.name || data.ticker) + '</strong>';
-            status.style.color = '#166534';
+    status.innerHTML = '';
+    input.value = '';
 
-            var rhtml = '<a href="http://localhost:8765/' + data.file + '" target="_blank" style="display:inline-block; margin-top:8px; padding:10px 20px; background:#0f172a; color:white; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">View Full Research Page for ' + data.ticker + ' →</a>';
-            result.innerHTML = rhtml;
-            input.value = '';
-        })
-        .catch(function(err) {
-            status.innerHTML = '';
-            help.style.display = 'block';
-        });
+    // Build inline research view
+    var s = stock;
+    var mc_str = (s.mc || 0) >= 1000 ? ((s.mc / 1000).toFixed(1) + 'T') : (s.mc || 0) >= 1 ? ((s.mc).toFixed(0) + 'B') : ((s.mc * 1000).toFixed(0) + 'M');
+    var ret12m = s.p12 ? ((s.px - s.p12) / s.p12 * 100) : null;
+    var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
+    var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
+    var trendClass = 'badge-' + (s.tr === 'Uptrend' ? 'green' : s.tr === 'Pullback' ? 'amber' : s.tr === 'Downtrend' ? 'red' : s.tr === 'Snapback' ? 'blue' : 'gray');
+    var upside = s.tgt && s.px ? ((s.tgt / s.px - 1) * 100) : null;
+    var upsideStr = upside !== null ? ((upside >= 0 ? '+' : '') + upside.toFixed(1) + '%') : '';
+
+    var html = '';
+    // Header
+    html += '<div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:12px;padding:20px 24px;color:white;margin-bottom:20px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">';
+    html += '<div><div style="font-family:Fraunces,serif;font-size:24px;font-weight:700;">' + s.t + ' <span style="color:#10b981;">·</span> ' + s.co + '</div>';
+    html += '<div style="font-size:12px;color:#94a3b8;margin-top:4px;">' + s.sec + ' · ' + (s.ind || '') + '</div>';
+    html += '<div style="margin-top:8px;"><span class="badge ' + trendClass + '">' + s.tr + '</span> <span style="font-size:12px;color:#64748b;margin-left:8px;">Momentum: ' + (s.rm || 0) + 'th pctl</span></div>';
+    html += '</div>';
+    html += '<div style="text-align:right;"><div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:700;color:#10b981;">$' + s.px.toFixed(2) + '</div>';
+    html += '<div style="font-size:12px;color:#94a3b8;">Mkt Cap: $' + mc_str + '</div>';
+    if (s.hi52 && s.lo52) html += '<div style="font-size:12px;color:#94a3b8;">52-Wk: $' + s.lo52.toFixed(2) + ' – $' + s.hi52.toFixed(2) + '</div>';
+    html += '</div></div></div>';
+
+    // KPI grid
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;">';
+    function kpi(label, value, highlight) {
+        var border = highlight ? 'border-top:3px solid #10b981;' : 'border-top:3px solid #1e293b;';
+        return '<div style="background:white;border-radius:8px;padding:12px 14px;border:1px solid #e2e8f0;' + border + '"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px;">' + label + '</div><div style="font-family:JetBrains Mono,monospace;font-size:17px;font-weight:700;color:#0f172a;">' + value + '</div></div>';
+    }
+    html += kpi('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
+    html += kpi('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
+    html += kpi('Trailing EPS', s.eps ? '$' + s.eps.toFixed(2) : 'N/A');
+    html += kpi('Rev Growth', s.rg !== null && s.rg !== undefined ? s.rg.toFixed(1) + '%' : 'N/A', s.rg > 0);
+    html += kpi('Gross Margin', s.gm !== null && s.gm !== undefined ? s.gm.toFixed(1) + '%' : 'N/A');
+    html += kpi('Op Margin', s.om !== null && s.om !== undefined ? s.om.toFixed(1) + '%' : 'N/A');
+    html += kpi('Net Margin', s.pm !== null && s.pm !== undefined ? s.pm.toFixed(1) + '%' : 'N/A');
+    html += kpi('Analyst Target', s.tgt ? '$' + s.tgt.toFixed(2) + (upsideStr ? ' (' + upsideStr + ')' : '') : 'N/A', upside > 0);
+    html += '</div>';
+
+    // Valuation + Details grid
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
+
+    // Valuation card
+    html += '<div class="card"><div style="font-family:Fraunces,serif;font-size:16px;font-weight:700;margin-bottom:12px;">Valuation</div>';
+    function valRow(label, value) { return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;"><span style="color:#64748b;">' + label + '</span><span style="font-family:JetBrains Mono,monospace;font-weight:600;">' + value + '</span></div>'; }
+    html += valRow('Market Cap', '$' + mc_str);
+    html += valRow('Enterprise Value', s.ev ? '$' + (s.ev >= 1000 ? (s.ev/1000).toFixed(1) + 'T' : s.ev.toFixed(0) + 'B') : 'N/A');
+    html += valRow('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
+    html += valRow('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
+    html += valRow('EV / Revenue', s.evr ? s.evr.toFixed(1) + 'x' : 'N/A');
+    html += valRow('EV / EBITDA', s.eve ? s.eve.toFixed(1) + 'x' : 'N/A');
+    html += valRow('Price / Book', s.pb ? s.pb.toFixed(1) + 'x' : 'N/A');
+    html += valRow('Dividend Yield', s.dy ? s.dy.toFixed(2) + '%' : 'N/A');
+    html += valRow('Beta', s.beta ? s.beta.toFixed(2) : 'N/A');
+    html += '</div>';
+
+    // Momentum card
+    html += '<div class="card"><div style="font-family:Fraunces,serif;font-size:16px;font-weight:700;margin-bottom:12px;">Momentum Profile</div>';
+    html += valRow('Trend Stage', s.tr);
+    html += valRow('1 Week Ago', s.tr1wk || '—');
+    html += valRow('Trend Changed', s.trChg ? 'Yes' : 'No');
+    html += valRow('Rel. Momentum', (s.rm || 0) + 'th percentile');
+    html += valRow('% vs 150d MA', (s.ov >= 0 ? '+' : '') + (s.ov || 0).toFixed(1) + '%');
+    html += valRow('12-Month Return', '<span style="color:' + r12color + ';">' + r12str + '</span>');
+    if (s.nAn) html += valRow('Analyst Count', s.nAn + ' analysts');
+    if (s.tgt) html += valRow('Mean Target', '$' + s.tgt.toFixed(2) + ' <span style="color:' + (upside >= 0 ? '#10b981' : '#ef4444') + ';">(' + upsideStr + ')</span>');
+    html += '</div>';
+
+    html += '</div>';
+
+    result.innerHTML = html;
 }
 
 function renderSourcesTab() {

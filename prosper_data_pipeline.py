@@ -792,11 +792,33 @@ def pull_stock_data(tickers):
                 sector = info.get('sector', 'Unknown')
                 industry = info.get('industry', 'Unknown')
                 mktcap = info.get('marketCap', 0)
+                # Extra research fields (from the same API call)
+                extra = {
+                    "tpe": round(info['trailingPE'], 1) if info.get('trailingPE') else None,
+                    "fpe": round(info['forwardPE'], 1) if info.get('forwardPE') else None,
+                    "eps": round(info['trailingEps'], 2) if info.get('trailingEps') else None,
+                    "feps": round(info['forwardEps'], 2) if info.get('forwardEps') else None,
+                    "rg": round(info['revenueGrowth'] * 100, 1) if info.get('revenueGrowth') else None,
+                    "gm": round(info['grossMargins'] * 100, 1) if info.get('grossMargins') else None,
+                    "om": round(info['operatingMargins'] * 100, 1) if info.get('operatingMargins') else None,
+                    "pm": round(info['profitMargins'] * 100, 1) if info.get('profitMargins') else None,
+                    "dy": round(info['dividendYield'] * 100, 2) if info.get('dividendYield') else None,
+                    "beta": round(info['beta'], 2) if info.get('beta') else None,
+                    "tgt": round(info['targetMeanPrice'], 2) if info.get('targetMeanPrice') else None,
+                    "nAn": info.get('numberOfAnalystOpinions'),
+                    "hi52": round(info['fiftyTwoWeekHigh'], 2) if info.get('fiftyTwoWeekHigh') else None,
+                    "lo52": round(info['fiftyTwoWeekLow'], 2) if info.get('fiftyTwoWeekLow') else None,
+                    "ev": round(info.get('enterpriseValue', 0) / 1e6) if info.get('enterpriseValue') else None,
+                    "evr": round(info['enterpriseToRevenue'], 1) if info.get('enterpriseToRevenue') else None,
+                    "eve": round(info['enterpriseToEbitda'], 1) if info.get('enterpriseToEbitda') else None,
+                    "pb": round(info['priceToBook'], 1) if info.get('priceToBook') else None,
+                }
             except Exception:
                 company = ticker
                 sector = "Unknown"
                 industry = "Unknown"
                 mktcap = 0
+                extra = {}
             
             stocks.append({
                 "ticker": ticker,
@@ -817,6 +839,7 @@ def pull_stock_data(tickers):
                 "trendChanged": trend != trend_1wk and trend_1wk != "Unknown",
                 "above20sma": above_20sma,
                 "at20dayLow": at_20day_low,
+                **extra,
             })
             
         except Exception as e:
@@ -1633,6 +1656,12 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
             "p1": s["price1m"],
             "tr1wk": s.get("trend1wk", "Unknown"),
             "trChg": s.get("trendChanged", False),
+            # Research fields
+            "tpe": s.get("tpe"), "fpe": s.get("fpe"), "eps": s.get("eps"), "feps": s.get("feps"),
+            "rg": s.get("rg"), "gm": s.get("gm"), "om": s.get("om"), "pm": s.get("pm"),
+            "dy": s.get("dy"), "beta": s.get("beta"), "tgt": s.get("tgt"), "nAn": s.get("nAn"),
+            "hi52": s.get("hi52"), "lo52": s.get("lo52"),
+            "ev": s.get("ev"), "evr": s.get("evr"), "eve": s.get("eve"), "pb": s.get("pb"),
         } for s in sorted(stocks, key=lambda x: x.get("mktCap", 0), reverse=True)],
 
         "skipped": skipped_count,
