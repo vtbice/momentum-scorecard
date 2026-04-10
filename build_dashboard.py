@@ -1001,15 +1001,15 @@ html_content = '''<!DOCTYPE html>
         <button class="tab-btn active" onclick="switchTab('pulse')">Market Pulse</button>
         <button class="tab-btn" onclick="switchTab('sectors')">Sectors</button>
         <button class="tab-btn" onclick="switchTab('screener')">Stock Screener</button>
-        <button class="tab-btn" onclick="switchTab('research')">Research</button>
-        <button class="tab-btn" onclick="switchTab('sources')">Sources</button>
+        <button class="tab-btn" onclick="switchTab('research')">Company Research</button>
+        <button class="tab-btn" onclick="switchTab('sources')">Sources &amp; Definitions</button>
     </div>
 
     <!-- TAB 1: MARKET PULSE -->
     <div id="pulse" class="tab-content active">
         <!-- Health Score Banner (compact — score + gauge only) -->
         <div class="health-banner">
-            <div class="health-banner-content" style="flex-direction: column; align-items: center; text-align: center;">
+            <div class="health-banner-content" style="flex-direction: column; align-items: center; text-align: center; cursor: pointer;" onclick="showExplain('healthScore')" title="Click to learn how this score is calculated">
                 <div class="health-banner-label" id="healthScore" style="font-size: 20px; letter-spacing: 1px; text-transform: uppercase;"></div>
                 <div class="health-score-pct"><span id="healthPct"></span><span class="health-score-total">/ 100</span></div>
                 <div class="health-banner-label" id="healthLabel" style="font-size: 22px; margin-top: 4px;"></div>
@@ -1045,20 +1045,20 @@ html_content = '''<!DOCTYPE html>
 
             <!-- 4 Indicator Summary Cards -->
             <div class="grid-4" style="margin-bottom: 24px;">
-                <div class="indicator-card" id="trendCard">
-                    <div class="indicator-label">Market Trend</div>
+                <div class="indicator-card" id="trendCard" onclick="showExplain('trend')" style="cursor:pointer;" title="Click to learn more">
+                    <div class="indicator-label">Market Trend <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
                     <div class="indicator-value" id="trendScore"></div>
                 </div>
-                <div class="indicator-card" id="breadthCard">
-                    <div class="indicator-label">Market Breadth</div>
+                <div class="indicator-card" id="breadthCard" onclick="showExplain('breadth')" style="cursor:pointer;" title="Click to learn more">
+                    <div class="indicator-label">Market Breadth <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
                     <div class="indicator-value" id="breadthValue"></div>
                 </div>
-                <div class="indicator-card" id="earningsCard">
-                    <div class="indicator-label">Earnings</div>
+                <div class="indicator-card" id="earningsCard" onclick="showExplain('earnings')" style="cursor:pointer;" title="Click to learn more">
+                    <div class="indicator-label">Earnings <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
                     <div class="indicator-value" id="earningsValue"></div>
                 </div>
-                <div class="indicator-card" id="valuationCard">
-                    <div class="indicator-label">Valuation</div>
+                <div class="indicator-card" id="valuationCard" onclick="showExplain('valuation')" style="cursor:pointer;" title="Click to learn more">
+                    <div class="indicator-label">Valuation <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
                     <div class="indicator-value" id="valuationValue"></div>
                 </div>
             </div>
@@ -1122,6 +1122,7 @@ html_content = '''<!DOCTYPE html>
                 <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #ef4444; display: inline-block;"></span> Downtrend</span>
                 <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #3b82f6; display: inline-block;"></span> Snapback</span>
             </div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any sector row to expand and see individual stocks</div>
             <table class="sector-table" id="sectorsTable">
                 <thead>
                     <tr>
@@ -1140,12 +1141,13 @@ html_content = '''<!DOCTYPE html>
             <table class="stock-table" id="expandedStocksTable">
                 <thead>
                     <tr>
-                        <th>Ticker</th>
-                        <th>Company</th>
-                        <th>Trend</th>
-                        <th>1 Wk Ago</th>
-                        <th>1M Ret %</th>
-                        <th>12M Ret %</th>
+                        <th onclick="sortExpandedStocks('ticker')" style="cursor:pointer;">Ticker</th>
+                        <th onclick="sortExpandedStocks('company')" style="cursor:pointer;">Company</th>
+                        <th onclick="sortExpandedStocks('trend')" style="cursor:pointer;">Trend</th>
+                        <th onclick="sortExpandedStocks('tr1wk')" style="cursor:pointer;">1 Wk Ago</th>
+                        <th onclick="sortExpandedStocks('trChg')" style="cursor:pointer;">Trend Chg</th>
+                        <th onclick="sortExpandedStocks('ret1m')" style="cursor:pointer; text-align:right;">1M Ret</th>
+                        <th onclick="sortExpandedStocks('ret12m')" style="cursor:pointer; text-align:right;">12M Ret</th>
                     </tr>
                 </thead>
                 <tbody id="expandedStocksBody"></tbody>
@@ -1220,6 +1222,14 @@ html_content = '''<!DOCTYPE html>
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeStockModal()">×</button>
         <div id="stockModalBody"></div>
+    </div>
+</div>
+
+<!-- Explain Modal -->
+<div id="explainModal" class="modal" onclick="closeExplain(event)">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width:550px;">
+        <button class="modal-close" onclick="closeExplain()" style="color:#0f172a;background:rgba(0,0,0,0.05);">×</button>
+        <div id="explainBody"></div>
     </div>
 </div>
 
@@ -1389,7 +1399,11 @@ function renderHeader() {
     let tailwinds = '';
     MARKET.healthWins.forEach(function(win) {
         var why = getIndicatorWhy(win.label);
-        tailwinds += '<div class="health-item"><div class="health-item-icon">✓</div><div class="health-item-text"><span class="health-item-label">' + win.label + '</span><span class="health-item-weight">' + win.weight + 'pts</span>';
+        var sinceStr = win.sinceDate ? fmtAsOf(win.sinceDate) : '';
+        tailwinds += '<div class="health-item"><div class="health-item-icon">✓</div><div class="health-item-text"><span class="health-item-label">' + win.label + '</span>';
+        tailwinds += '<span class="health-item-weight">' + win.weight + 'pts';
+        if (sinceStr) tailwinds += ' · <span style="color:#10b981;">since ' + sinceStr + '</span>';
+        tailwinds += '</span>';
         if (why) tailwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
         tailwinds += '</div></div>';
     });
@@ -1398,7 +1412,11 @@ function renderHeader() {
     let headwinds = '';
     MARKET.healthMisses.forEach(function(miss) {
         var why = getIndicatorWhy(miss.label);
-        headwinds += '<div class="health-item"><div class="health-item-icon">✗</div><div class="health-item-text"><span class="health-item-label">' + miss.label + ' — NOT MET</span><span class="health-item-weight">' + miss.weight + 'pts</span>';
+        var sinceStr = miss.sinceDate ? fmtAsOf(miss.sinceDate) : '';
+        headwinds += '<div class="health-item"><div class="health-item-icon">✗</div><div class="health-item-text"><span class="health-item-label">' + miss.label + ' — NOT MET</span>';
+        headwinds += '<span class="health-item-weight">' + miss.weight + 'pts';
+        if (sinceStr) headwinds += ' · <span style="color:#ef4444;">since ' + sinceStr + '</span>';
+        headwinds += '</span>';
         if (why) headwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
         headwinds += '</div></div>';
     });
@@ -2165,16 +2183,55 @@ function sortSectors(column) {
     renderSectors();
 }
 
+var currentExpandedSector = '';
+var expandedSortCol = 'rm';
+var expandedSortAsc = false;
+
 function expandSector(sectorName) {
     const sector = SECTORS.find(function(s) { return s.name === sectorName; });
     if (!sector) return;
 
-    const sectorStocks = STOCKS.filter(function(s) { return s.sec === sectorName; });
+    currentExpandedSector = sectorName;
+    expandedSortCol = 'rm';
+    expandedSortAsc = false;
+    renderExpandedSector();
+    document.getElementById('expandedSector').style.display = 'block';
+    document.getElementById('expandedSector').scrollIntoView({ behavior: 'smooth' });
+}
+
+function sortExpandedStocks(col) {
+    if (expandedSortCol === col) { expandedSortAsc = !expandedSortAsc; }
+    else { expandedSortCol = col; expandedSortAsc = col === 'ticker' || col === 'company'; }
+    renderExpandedSector();
+}
+
+function renderExpandedSector() {
+    var sectorName = currentExpandedSector;
+    var sectorStocks = STOCKS.filter(function(s) { return s.sec === sectorName; }).slice();
 
     document.getElementById('expandedSectorTitle').textContent = sectorName + ' (' + sectorStocks.length + ' stocks)';
 
+    // Sort
+    var col = expandedSortCol;
+    var dir = expandedSortAsc ? 1 : -1;
+    sectorStocks.sort(function(a, b) {
+        var aVal, bVal;
+        if (col === 'ticker') { aVal = a.t; bVal = b.t; }
+        else if (col === 'company') { aVal = a.co; bVal = b.co; }
+        else if (col === 'trend') { aVal = a.tr; bVal = b.tr; }
+        else if (col === 'tr1wk') { aVal = a.tr1wk || ''; bVal = b.tr1wk || ''; }
+        else if (col === 'trChg') {
+            aVal = !a.trChg ? 0 : (a.tr === 'Uptrend' || a.tr === 'Snapback') ? 1 : -1;
+            bVal = !b.trChg ? 0 : (b.tr === 'Uptrend' || b.tr === 'Snapback') ? 1 : -1;
+        }
+        else if (col === 'ret1m') { aVal = a.p1 ? (a.px - a.p1) / a.p1 : -999; bVal = b.p1 ? (b.px - b.p1) / b.p1 : -999; }
+        else if (col === 'ret12m') { aVal = a.p12 ? (a.px - a.p12) / a.p12 : -999; bVal = b.p12 ? (b.px - b.p12) / b.p12 : -999; }
+        else { aVal = a.rm || 0; bVal = b.rm || 0; }
+        if (typeof aVal === 'string') return dir * aVal.localeCompare(bVal);
+        return dir * (aVal - bVal);
+    });
+
     let rows = '';
-    sectorStocks.sort(function(a, b) { return (b.rm || 0) - (a.rm || 0); });
     sectorStocks.forEach(function(stock) {
         var trendClass = 'badge-' + (stock.tr === 'Uptrend' ? 'green' : stock.tr === 'Pullback' ? 'amber' : stock.tr === 'Downtrend' ? 'red' : stock.tr === 'Snapback' ? 'blue' : 'gray');
         var trend1wkClass = 'badge-' + ((stock.tr1wk || '') === 'Uptrend' ? 'green' : (stock.tr1wk || '') === 'Pullback' ? 'amber' : (stock.tr1wk || '') === 'Downtrend' ? 'red' : (stock.tr1wk || '') === 'Snapback' ? 'blue' : 'gray');
@@ -2185,18 +2242,27 @@ function expandSector(sectorName) {
         var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
         var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
 
+        var trendChgText = '';
+        if (stock.trChg) {
+            if (stock.tr === 'Uptrend' || stock.tr === 'Snapback') {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#10b981;" title="Improved from ' + (stock.tr1wk || '?') + '">+</span>';
+            } else {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#ef4444;" title="Weakened from ' + (stock.tr1wk || '?') + '">−</span>';
+            }
+        }
+
         rows += '<tr style="cursor:pointer;" onclick="openStockModal(&quot;' + stock.t + '&quot;)">';
         rows += '<td style="font-weight:700; font-family: JetBrains Mono, monospace;">' + stock.t + '</td>';
         rows += '<td style="color:#475569;">' + stock.co + '</td>';
         rows += '<td><span class="badge ' + trendClass + '">' + stock.tr + '</span></td>';
         rows += '<td><span class="badge ' + trend1wkClass + '">' + (stock.tr1wk || '—') + '</span></td>';
-        rows += '<td style="text-align:right; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
-        rows += '<td style="text-align:right; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
+        rows += '<td style="text-align:center;">' + trendChgText + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
         rows += '</tr>';
     });
 
     document.getElementById('expandedStocksBody').innerHTML = rows;
-    document.getElementById('expandedSector').style.display = 'block';
 }
 
 function renderStockScreener() {
@@ -2580,6 +2646,95 @@ function renderSourcesTab() {
     return html;
 }
 
+// ============================================================================
+// EXPLAIN POPUPS
+// ============================================================================
+
+var EXPLANATIONS = {
+    trend: {
+        title: 'Market Trend',
+        body: '<p><strong>What it shows:</strong> Whether the stock market is in an uptrend, downtrend, or mixed.</p>' +
+            '<p><strong>How it is calculated:</strong></p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li><strong>Positive</strong> — S&P 500 is above both its 4-year moving average AND 150-day moving average. Both long-term and intermediate trends are up.</li>' +
+            '<li><strong>Neutral</strong> — S&P 500 is above one average but below the other. The trend is mixed.</li>' +
+            '<li><strong>Negative</strong> — S&P 500 is below both averages. Both long-term and intermediate trends are down.</li>' +
+            '</ul>' +
+            '<p><strong>Current reading:</strong> S&P 500 at ' + (typeof MARKET !== 'undefined' ? MARKET.technical.sp500.toLocaleString() : '') + ' vs 4-Year MA at ' + (typeof MARKET !== 'undefined' ? MARKET.technical.sp500MA4yr.toLocaleString() : '') + ' and 150-Day MA at ' + (typeof MARKET !== 'undefined' ? MARKET.technical.sp500MA150.toLocaleString() : '') + '.</p>' +
+            '<p><strong>Why it matters:</strong> The trend is the single most important factor for momentum investors. When price is above its moving averages, the odds favor being invested. When below, the odds favor caution.</p>'
+    },
+    breadth: {
+        title: 'Market Breadth',
+        body: '<p><strong>What it shows:</strong> What percentage of stocks in our universe are trading above their 150-day moving average.</p>' +
+            '<p><strong>How it is calculated:</strong> For each of the ~1,200 stocks tracked, we check if the current price is above its individual 150-day moving average. The percentage that are above is the breadth reading.</p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li><strong>Above 60%</strong> — Healthy. Broad participation, many stocks are in uptrends.</li>' +
+            '<li><strong>40-60%</strong> — Narrow. The market rally is being driven by fewer stocks.</li>' +
+            '<li><strong>Below 40%</strong> — Weak. Most stocks are in downtrends even if indices look OK.</li>' +
+            '<li><strong>Below 20%</strong> — Oversold. Historically a capitulation signal.</li>' +
+            '</ul>' +
+            '<p><strong>Why it matters:</strong> A rising market with narrow breadth is fragile — it depends on a few leaders. Broad breadth means the rally has wide support and is more durable.</p>'
+    },
+    earnings: {
+        title: 'Earnings Growth',
+        body: '<p><strong>What it shows:</strong> The year-over-year earnings growth rate for S&P 500 companies.</p>' +
+            '<p><strong>How it is calculated:</strong> This is the blended EPS growth rate — comparing the current quarter earnings to the same quarter one year ago, across all S&P 500 companies that have reported. Data is sourced from SEC EDGAR filings when available, with FactSet manual fallbacks.</p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li><strong>Above 5%</strong> — Healthy. Companies are growing profits, which supports stock prices.</li>' +
+            '<li><strong>0-5%</strong> — Modest. Growth is positive but not strong enough to drive multiple expansion.</li>' +
+            '<li><strong>Below 0%</strong> — Contracting. An earnings recession typically weighs on stocks.</li>' +
+            '</ul>' +
+            '<p><strong>Why it matters:</strong> Over the long run, stock prices follow earnings. When companies are making more money, stocks tend to rise. When earnings contract, stocks typically fall.</p>'
+    },
+    valuation: {
+        title: 'Valuation (Forward P/E)',
+        body: '<p><strong>What it shows:</strong> How expensive the stock market is relative to expected future earnings.</p>' +
+            '<p><strong>How it is calculated:</strong> Forward P/E = Current S&P 500 price ÷ estimated earnings per share over the next 12 months. This is sourced from FactSet consensus analyst estimates (manual input, updated quarterly).</p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li><strong>Below 18x</strong> — Cheap. Stocks are priced attractively relative to earnings.</li>' +
+            '<li><strong>18-22x</strong> — Fair. Normal range, though on the higher end historically.</li>' +
+            '<li><strong>Above 22x</strong> — Expensive. Less margin for error — if earnings disappoint, stocks can drop sharply.</li>' +
+            '</ul>' +
+            '<p><strong>The 10-year average</strong> is around 18.9x, so anything above that means you are paying a premium.</p>' +
+            '<p><strong>Why it matters:</strong> Valuation does not predict short-term moves, but it strongly predicts long-term returns. Buying at low P/E ratios historically produces better 10-year returns than buying at high P/E ratios.</p>'
+    },
+    healthScore: {
+        title: 'Health Score',
+        body: '<p><strong>What it shows:</strong> An overall reading of market conditions across 18 indicators.</p>' +
+            '<p><strong>How it is calculated:</strong> 18 binary (yes/no) indicators across three categories, each worth 5 points:</p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li><strong>Macro (8 indicators, 40 pts)</strong> — Labor market, GDP, inflation, credit spreads, consumer confidence, mortgage rates, yield curve, ISM manufacturing</li>' +
+            '<li><strong>Fundamental (5 indicators, 25 pts)</strong> — Earnings growth, profit margins, analyst revisions, valuation (P/E), free cash flow yield</li>' +
+            '<li><strong>Technical (5 indicators, 25 pts)</strong> — Long-term trend, medium-term trend, breadth, VIX, put/call ratio</li>' +
+            '</ul>' +
+            '<p><strong>Score bands:</strong></p>' +
+            '<ul style="margin:8px 0 8px 20px;">' +
+            '<li>80-100% = Bullish</li>' +
+            '<li>60-80% = Cautiously Optimistic</li>' +
+            '<li>40-60% = Cautious</li>' +
+            '<li>25-40% = Defensive</li>' +
+            '<li>0-25% = Risk Off</li>' +
+            '</ul>' +
+            '<p><strong>Why equal weight?</strong> Simplicity and transparency. Each indicator gets an equal vote. No hidden biases.</p>'
+    }
+};
+
+function showExplain(key) {
+    var exp = EXPLANATIONS[key];
+    if (!exp) return;
+    var html = '<div style="padding: 4px 0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">' + exp.title + '</div>';
+    html += '<div style="font-size: 14px; color: #475569; line-height: 1.7;">' + exp.body + '</div>';
+    html += '</div>';
+    document.getElementById('explainBody').innerHTML = html;
+    document.getElementById('explainModal').classList.add('active');
+}
+
+function closeExplain(e) {
+    if (e && e.target.id !== 'explainModal') return;
+    document.getElementById('explainModal').classList.remove('active');
+}
+
 function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
@@ -2588,7 +2743,7 @@ function switchTab(tab) {
     // Highlight the clicked button
     var btns = document.querySelectorAll('.tab-btn');
     btns.forEach(function(btn) {
-        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : tab === 'research' ? 'research' : 'sources') >= 0) {
+        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : tab === 'research' ? 'company' : 'sources') >= 0) {
             btn.classList.add('active');
         }
     });

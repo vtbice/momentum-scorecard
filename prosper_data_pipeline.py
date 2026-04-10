@@ -1113,15 +1113,43 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     if auto_data is None:
         auto_data = {}
     print(f"\n🎯 Calculating Health Score...")
-    
+
+    # Load previous indicator dates from last run (so we can track when each changed)
+    prev_indicator_dates = {}
+    prev_indicator_status = {}
+    if OUTPUT_FILE.exists():
+        try:
+            with open(OUTPUT_FILE) as _f:
+                prev_data = json.load(_f)
+            for item in prev_data.get("market", {}).get("healthWins", []):
+                key = item["label"].split(" · ")[0]
+                prev_indicator_dates[key] = item.get("sinceDate", "")
+                prev_indicator_status[key] = True
+            for item in prev_data.get("market", {}).get("healthMisses", []):
+                key = item["label"].split(" · ")[0]
+                prev_indicator_dates[key] = item.get("sinceDate", "")
+                prev_indicator_status[key] = False
+        except Exception:
+            pass
+
+    today_str = datetime.today().strftime("%Y-%m-%d")
+
     checks = []
-    
+
     def add(passed, category, label, weight=5):
+        # Determine "since" date: if status changed or is new, use today; otherwise keep old date
+        key = label.split(" · ")[0]
+        prev_status = prev_indicator_status.get(key)
+        if prev_status is None or prev_status != passed:
+            since = today_str
+        else:
+            since = prev_indicator_dates.get(key, today_str)
         checks.append({
             "pass": passed,
             "cat": category,
             "label": label,
-            "weight": weight
+            "weight": weight,
+            "sinceDate": since,
         })
     
     # ── Macro checks (8 indicators, all equal weight) ──
@@ -1202,8 +1230,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         "total": total,
         "label": label,
         "overall": overall,
-        "wins": [{"label": w["label"], "weight": w["weight"], "cat": w["cat"]} for w in wins],
-        "misses": [{"label": m["label"], "weight": m["weight"], "cat": m["cat"]} for m in misses],
+        "wins": [{"label": w["label"], "weight": w["weight"], "cat": w["cat"], "sinceDate": w["sinceDate"]} for w in wins],
+        "misses": [{"label": m["label"], "weight": m["weight"], "cat": m["cat"], "sinceDate": m["sinceDate"]} for m in misses],
     }
 
 
@@ -1459,7 +1487,11 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
             "healthMisses": signals["misses"],
             
             "trend": {
-                "score": signals["overall"],
+                "score": (
+                    "Positive" if sp.get("price", 0) > sp.get("ma150", float('inf')) and sp.get("price", 0) > sp.get("ma4yr", float('inf'))
+                    else "Negative" if sp.get("price", 0) < sp.get("ma150", float('inf')) and sp.get("price", 0) < sp.get("ma4yr", float('inf'))
+                    else "Neutral"
+                ),
                 "r3kVs150MA": r3k_above,
                 "maSlope": r3k.get("maSlope", "Unknown"),
             },
