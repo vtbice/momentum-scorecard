@@ -39,14 +39,11 @@ else
     echo "❌ No .env file found — API keys missing, some data will use fallbacks"
 fi
 
-# Fix SSL certificates
-SSL_PATH=$(/Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -c "import certifi; print(certifi.where())" 2>/dev/null)
-if [ -n "$SSL_PATH" ]; then
-    export SSL_CERT_FILE="$SSL_PATH"
-    export REQUESTS_CA_BUNDLE="$SSL_PATH"
-    export CURL_CA_BUNDLE="$SSL_PATH"
-    echo "🔐 SSL certificates configured"
-fi
+# Fix SSL certificates (use macOS system certs — the Python certifi bundle doesn't work with curl_cffi)
+export SSL_CERT_FILE="/etc/ssl/cert.pem"
+export REQUESTS_CA_BUNDLE="/etc/ssl/cert.pem"
+export CURL_CA_BUNDLE="/etc/ssl/cert.pem"
+echo "🔐 SSL certificates configured"
 
 # Run the data pipeline
 echo ""

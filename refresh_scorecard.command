@@ -42,11 +42,11 @@ else
     echo "   Create a .env file with FRED_API_KEY and NASDAQ_DATA_LINK_KEY"
 fi
 
-# Fix SSL certificates — tells Python and curl where to find trusted website list
-export SSL_CERT_FILE=$(python3 -c "import certifi; print(certifi.where())")
-export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
-export CURL_CA_BUNDLE="$SSL_CERT_FILE"
-echo "🔐 SSL certificates: $SSL_CERT_FILE"
+# Fix SSL certificates (use macOS system certs — works with curl_cffi)
+export SSL_CERT_FILE="/etc/ssl/cert.pem"
+export REQUESTS_CA_BUNDLE="/etc/ssl/cert.pem"
+export CURL_CA_BUNDLE="/etc/ssl/cert.pem"
+echo "🔐 SSL certificates configured"
 
 # Run the pipeline
 echo "🚀 Starting pipeline — this takes 15-20 minutes for 886 stocks..."
