@@ -2628,13 +2628,15 @@ function updateSummaryStrip() {
     var dn = filteredStocks.filter(function(s) { return s.tr === 'Downtrend'; }).length;
     var sb = filteredStocks.filter(function(s) { return s.tr === 'Snapback'; }).length;
     var changed = filteredStocks.filter(function(s) { return s.trChg; }).length;
+    var posChanges = filteredStocks.filter(function(s) { return s.trChg && (s.tr === 'Uptrend' || s.tr === 'Snapback'); }).length;
+    var negChanges = filteredStocks.filter(function(s) { return s.trChg && (s.tr === 'Downtrend' || s.tr === 'Pullback'); }).length;
 
     var html = '<span><strong>Total:</strong> ' + total + '</span>';
     html += '<span style="color:#10b981;"><strong>Uptrend:</strong> ' + up + '</span>';
     html += '<span style="color:#f59e0b;"><strong>Pullback:</strong> ' + pb + '</span>';
     html += '<span style="color:#ef4444;"><strong>Downtrend:</strong> ' + dn + '</span>';
     html += '<span style="color:#3b82f6;"><strong>Snapback:</strong> ' + sb + '</span>';
-    if (changed > 0) html += '<span style="color:#6366f1;"><strong>Trend Changes:</strong> ' + changed + '</span>';
+    if (changed > 0) html += '<span style="color:#6366f1;"><strong>Trend Changes:</strong> ' + changed + ' (<span style="color:#10b981;">+' + posChanges + '</span> / <span style="color:#ef4444;">-' + negChanges + '</span>)</span>';
     document.getElementById('summaryStrip').innerHTML = html;
 }
 
