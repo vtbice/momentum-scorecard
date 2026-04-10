@@ -1236,18 +1236,23 @@ html_content = '''<!DOCTYPE html>
             <table class="stock-table" id="stockTable">
                 <thead>
                     <tr>
-                        <th style="width: 40px;">#</th>
-                        <th onclick="sortStocks('ticker')">Ticker</th>
-                        <th onclick="sortStocks('sector')">Sector</th>
-                        <th onclick="sortStocks('price')">Price</th>
-                        <th onclick="sortStocks('ma150')">150d MA</th>
-                        <th onclick="sortStocks('trend')">Trend</th>
-                        <th onclick="sortStocks('tr1wk')">1 Wk Ago</th>
-                        <th onclick="sortStocks('trChg')">Trend Chg</th>
-                        <th onclick="sortStocks('momentum')">Rel. Mom</th>
-                        <th onclick="sortStocks('vsMa')">vs 150MA</th>
-                        <th onclick="sortStocks('ret1m')">1M Ret</th>
-                        <th onclick="sortStocks('ret12m')">12M Ret</th>
+                        <th style="width:36px;text-align:center;">#</th>
+                        <th onclick="sortStocks('ticker')" style="text-align:left;">Ticker</th>
+                        <th onclick="sortStocks('sector')" style="text-align:left;">Sector</th>
+                        <th onclick="sortStocks('price')" style="text-align:right;">Price</th>
+                        <th onclick="sortStocks('ma150')" style="text-align:right;">150d MA</th>
+                        <th onclick="sortStocks('trend')" style="text-align:center;">Trend</th>
+                        <th onclick="sortStocks('tr1wk')" style="text-align:center;">1 Wk Ago</th>
+                        <th onclick="sortStocks('trChg')" style="text-align:center;">Chg</th>
+                        <th onclick="sortStocks('momentum')" style="text-align:center;">Rel. Mom</th>
+                        <th onclick="sortStocks('vsMa')" style="text-align:right;">vs MA</th>
+                        <th onclick="sortStocks('ret1m')" style="text-align:right;">1M Ret</th>
+                        <th onclick="sortStocks('ret12m')" style="text-align:right;">12M Ret</th>
+                        <th onclick="sortStocks('rasr')" style="text-align:center;cursor:pointer;background:#1a3a5c;" title="Click to expand RASR into its 4 components">RASR <span id="rasrToggle" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation();toggleRASR();">+</span></th>
+                        <th onclick="sortStocks('step')" class="rasr-detail" style="text-align:center;display:none;">STEP</th>
+                        <th onclick="sortStocks('epsRev')" class="rasr-detail" style="text-align:center;display:none;">EPS Rev</th>
+                        <th onclick="sortStocks('absMom')" class="rasr-detail" style="text-align:center;display:none;">Abs Mom</th>
+                        <th onclick="sortStocks('relMomR')" class="rasr-detail" style="text-align:center;display:none;">Rel Mom</th>
                     </tr>
                 </thead>
                 <tbody id="stockTableBody"></tbody>
@@ -1325,6 +1330,7 @@ let currentSubtab = {};
 let filteredStocks = STOCKS.slice();
 let sortColumn = 'momentum';
 let sortAsc = false;
+let rasrExpanded = false;
 let currentPage = 1;
 const ITEMS_PER_PAGE = 25;
 
@@ -2527,6 +2533,14 @@ function sortStocks(col, asc) {
     renderStockTable();
 }
 
+function toggleRASR() {
+    rasrExpanded = !rasrExpanded;
+    var details = document.querySelectorAll('.rasr-detail');
+    details.forEach(function(el) { el.style.display = rasrExpanded ? '' : 'none'; });
+    var toggle = document.getElementById('rasrToggle');
+    if (toggle) toggle.textContent = rasrExpanded ? '−' : '+';
+}
+
 function renderStockTable() {
     var start = (currentPage - 1) * ITEMS_PER_PAGE;
     var end = start + ITEMS_PER_PAGE;
@@ -2576,6 +2590,14 @@ function renderStockTable() {
         rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + ovColor + ';">' + ((stock.ov || 0) >= 0 ? '+' : '') + (stock.ov || 0).toFixed(1) + '%</td>';
         rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
         rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
+        // RASR score (placeholder — no data yet)
+        rows += '<td style="text-align:center; font-family:JetBrains Mono,monospace; font-weight:700; color:#94a3b8;">—</td>';
+        // RASR detail columns (hidden by default)
+        var rasrVis = rasrExpanded ? '' : 'display:none;';
+        rows += '<td class="rasr-detail" style="text-align:center; font-family:JetBrains Mono,monospace; color:#94a3b8;' + rasrVis + '">—</td>';
+        rows += '<td class="rasr-detail" style="text-align:center; font-family:JetBrains Mono,monospace; color:#94a3b8;' + rasrVis + '">—</td>';
+        rows += '<td class="rasr-detail" style="text-align:center; font-family:JetBrains Mono,monospace; color:#94a3b8;' + rasrVis + '">—</td>';
+        rows += '<td class="rasr-detail" style="text-align:center; font-family:JetBrains Mono,monospace; color:#94a3b8;' + rasrVis + '">—</td>';
         rows += '</tr>';
     });
 
