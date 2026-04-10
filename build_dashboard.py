@@ -2736,34 +2736,6 @@ function renderResearchTab() {
     html += '<div id="researchResult" style="margin-top: 12px;"></div>';
     html += '</div>';
 
-    // Previously researched company cards
-    if (RESEARCH_INDEX.length > 0) {
-        html += '<div style="font-family: Fraunces, serif; font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Previously Researched (' + RESEARCH_INDEX.length + ')</div>';
-        html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">';
-        RESEARCH_INDEX.forEach(function(company) {
-            var isPublic = company.type === 'public';
-            var icon = isPublic ? '📈' : '🏢';
-            var typeLabel = isPublic ? 'Public' : 'Private';
-            var typeBg = isPublic ? '#dcfce7' : '#e0f2fe';
-            var typeColor = isPublic ? '#166534' : '#1e40af';
-            var updated = company.lastUpdated ? new Date(company.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-
-            html += '<a href="research/' + company.file + '" target="_blank" style="text-decoration: none; color: inherit;">';
-            html += '<div class="card" style="cursor: pointer; transition: all 0.2s; border-left: 3px solid ' + (isPublic ? '#10b981' : '#3b82f6') + ';" onmouseover="this.style.boxShadow=&quot;0 4px 12px rgba(0,0,0,0.12)&quot;;" onmouseout="this.style.boxShadow=&quot;0 1px 3px rgba(0,0,0,0.1)&quot;;">';
-            html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
-            html += '<div>';
-            html += '<div style="font-family: JetBrains Mono, monospace; font-weight: 900; font-size: 18px; color: #0f172a;">' + icon + ' ' + company.ticker + '</div>';
-            html += '<div style="font-size: 13px; color: #64748b; margin-top: 2px;">' + company.name + '</div>';
-            html += '</div>';
-            html += '<span style="background: ' + typeBg + '; color: ' + typeColor + '; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;">' + typeLabel + '</span>';
-            html += '</div>';
-            if (company.sector) html += '<div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">' + company.sector + '</div>';
-            if (updated) html += '<div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">Updated ' + updated + '</div>';
-            html += '</div></a>';
-        });
-        html += '</div>';
-    }
-
     return html;
 }
 
@@ -2807,68 +2779,125 @@ function doResearchSearch() {
     var ret12m = s.p12 ? ((s.px - s.p12) / s.p12 * 100) : null;
     var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
     var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
+    var ret1m = s.p1 ? ((s.px - s.p1) / s.p1 * 100) : null;
+    var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+    var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
     var trendClass = 'badge-' + (s.tr === 'Uptrend' ? 'green' : s.tr === 'Pullback' ? 'amber' : s.tr === 'Downtrend' ? 'red' : s.tr === 'Snapback' ? 'blue' : 'gray');
     var upside = s.tgt && s.px ? ((s.tgt / s.px - 1) * 100) : null;
     var upsideStr = upside !== null ? ((upside >= 0 ? '+' : '') + upside.toFixed(1) + '%') : '';
 
+    // Helper for section headers
+    function secTitle(title) { return '<div style="font-family:Fraunces,serif;font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px;border-left:3px solid #10b981;padding-left:12px;">' + title + '</div>'; }
+    function valRow(label, value) { return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:13px;"><span style="color:#64748b;">' + label + '</span><span style="font-family:JetBrains Mono,monospace;font-weight:600;">' + value + '</span></div>'; }
+    function placeholder(text) { return '<div style="background:#f8fafc;border:2px dashed #e2e8f0;border-radius:10px;padding:16px;color:#94a3b8;font-style:italic;font-size:13px;line-height:1.6;">' + text + '</div>'; }
+
     var html = '';
-    // Header
+
+    // ── HEADER ──
     html += '<div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:12px;padding:20px 24px;color:white;margin-bottom:20px;">';
     html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">';
     html += '<div><div style="font-family:Fraunces,serif;font-size:24px;font-weight:700;">' + s.t + ' <span style="color:#10b981;">·</span> ' + s.co + '</div>';
     html += '<div style="font-size:12px;color:#94a3b8;margin-top:4px;">' + s.sec + ' · ' + (s.ind || '') + '</div>';
-    html += '<div style="margin-top:8px;"><span class="badge ' + trendClass + '">' + s.tr + '</span> <span style="font-size:12px;color:#64748b;margin-left:8px;">Momentum: ' + (s.rm || 0) + 'th pctl</span></div>';
+    html += '<div style="margin-top:8px;"><span class="badge ' + trendClass + '">' + s.tr + '</span> <span style="font-size:12px;color:#64748b;margin-left:8px;">Rel. Momentum: ' + (s.rm || 0) + 'th pctl</span></div>';
     html += '</div>';
     html += '<div style="text-align:right;"><div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:700;color:#10b981;">$' + s.px.toFixed(2) + '</div>';
     html += '<div style="font-size:12px;color:#94a3b8;">Mkt Cap: $' + mc_str + '</div>';
     if (s.hi52 && s.lo52) html += '<div style="font-size:12px;color:#94a3b8;">52-Wk: $' + s.lo52.toFixed(2) + ' – $' + s.hi52.toFixed(2) + '</div>';
     html += '</div></div></div>';
 
-    // KPI grid
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;">';
+    // ── 1. COMPANY DESCRIPTION ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('Company Description');
+    html += placeholder('What does ' + s.co + ' do? Describe their core business, products/services, and how they make money.');
+    html += '</div>';
+
+    // ── 2. HOW PEOPLE USE THE PRODUCT ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('How the Average Person Uses Their Product');
+    html += placeholder('How does a typical customer interact with ' + s.co + '? What problem does it solve for them in everyday life?');
+    html += '</div>';
+
+    // ── 3. MARKET OPPORTUNITY ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('Market Opportunity');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:12px;">';
+    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Total Addressable Market</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
+    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Market Share</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
+    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Market Position</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
+    html += '</div>';
+    html += placeholder('What is the total addressable market? How much share does ' + s.co + ' have? Who are the top competitors and where does ' + s.co + ' rank?');
+    html += '</div>';
+
+    // ── 4. FUNDAMENTALS ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('Fundamentals');
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;">';
     function kpi(label, value, highlight) {
         var border = highlight ? 'border-top:3px solid #10b981;' : 'border-top:3px solid #1e293b;';
         return '<div style="background:white;border-radius:8px;padding:12px 14px;border:1px solid #e2e8f0;' + border + '"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px;">' + label + '</div><div style="font-family:JetBrains Mono,monospace;font-size:17px;font-weight:700;color:#0f172a;">' + value + '</div></div>';
     }
-    html += kpi('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
-    html += kpi('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
-    html += kpi('Trailing EPS', s.eps ? '$' + s.eps.toFixed(2) : 'N/A');
-    html += kpi('Rev Growth', s.rg !== null && s.rg !== undefined ? s.rg.toFixed(1) + '%' : 'N/A', s.rg > 0);
+    html += kpi('Revenue Growth', s.rg !== null && s.rg !== undefined ? s.rg.toFixed(1) + '%' : 'N/A', s.rg > 0);
     html += kpi('Gross Margin', s.gm !== null && s.gm !== undefined ? s.gm.toFixed(1) + '%' : 'N/A');
     html += kpi('Op Margin', s.om !== null && s.om !== undefined ? s.om.toFixed(1) + '%' : 'N/A');
     html += kpi('Net Margin', s.pm !== null && s.pm !== undefined ? s.pm.toFixed(1) + '%' : 'N/A');
-    html += kpi('Analyst Target', s.tgt ? '$' + s.tgt.toFixed(2) + (upsideStr ? ' (' + upsideStr + ')' : '') : 'N/A', upside > 0);
+    html += kpi('Trailing EPS', s.eps ? '$' + s.eps.toFixed(2) : 'N/A');
+    html += kpi('Forward EPS', s.feps ? '$' + s.feps.toFixed(2) : 'N/A');
+    html += kpi('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
+    html += kpi('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
     html += '</div>';
 
-    // Valuation + Details grid
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">';
-
-    // Valuation card
-    html += '<div class="card"><div style="font-family:Fraunces,serif;font-size:16px;font-weight:700;margin-bottom:12px;">Valuation</div>';
-    function valRow(label, value) { return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;"><span style="color:#64748b;">' + label + '</span><span style="font-family:JetBrains Mono,monospace;font-weight:600;">' + value + '</span></div>'; }
+    // Valuation detail
+    html += '<div style="margin-top:12px;">';
     html += valRow('Market Cap', '$' + mc_str);
     html += valRow('Enterprise Value', s.ev ? '$' + (s.ev >= 1000 ? (s.ev/1000).toFixed(1) + 'T' : s.ev.toFixed(0) + 'B') : 'N/A');
-    html += valRow('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
-    html += valRow('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
     html += valRow('EV / Revenue', s.evr ? s.evr.toFixed(1) + 'x' : 'N/A');
     html += valRow('EV / EBITDA', s.eve ? s.eve.toFixed(1) + 'x' : 'N/A');
     html += valRow('Price / Book', s.pb ? s.pb.toFixed(1) + 'x' : 'N/A');
     html += valRow('Dividend Yield', s.dy ? s.dy.toFixed(2) + '%' : 'N/A');
-    html += valRow('Beta', s.beta ? s.beta.toFixed(2) : 'N/A');
+    html += valRow('Analyst Target', s.tgt ? '$' + s.tgt.toFixed(2) + ' (' + upsideStr + ')' : 'N/A');
+    html += valRow('Analyst Count', s.nAn ? s.nAn + ' analysts' : 'N/A');
     html += '</div>';
 
-    // Momentum card
-    html += '<div class="card"><div style="font-family:Fraunces,serif;font-size:16px;font-weight:700;margin-bottom:12px;">Momentum Profile</div>';
-    html += valRow('Trend Stage', s.tr);
+    // Forward expectations placeholder
+    html += '<div style="margin-top:16px;">';
+    html += '<div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:8px;">Forward Expectations</div>';
+    html += placeholder('What are the consensus estimates for next year sales and earnings growth? Are estimates being revised up or down?');
+    html += '</div>';
+    html += '</div>';
+
+    // ── 5. TECHNICAL / MOMENTUM PROFILE ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('Technical / Momentum Profile');
+
+    // Price level visualization
+    var ma150val = s.ov !== null && s.ov !== undefined && s.ov !== 0 ? (s.px / (1 + s.ov / 100)) : null;
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;">';
+    html += kpi('Price', '$' + s.px.toFixed(2));
+    html += kpi('150-Day MA', ma150val ? '$' + ma150val.toFixed(2) : 'N/A');
+    html += kpi('vs 150d MA', (s.ov >= 0 ? '+' : '') + (s.ov || 0).toFixed(1) + '%', s.ov > 0);
+    html += kpi('1M Return', r1str, ret1m > 0);
+    html += kpi('12M Return', r12str, ret12m > 0);
+    html += kpi('Beta', s.beta ? s.beta.toFixed(2) : 'N/A');
+    html += '</div>';
+
+    html += valRow('Trend Stage', '<span class="badge ' + trendClass + '">' + s.tr + '</span>');
     html += valRow('1 Week Ago', s.tr1wk || '—');
-    html += valRow('Trend Changed', s.trChg ? 'Yes' : 'No');
-    html += valRow('Rel. Momentum', (s.rm || 0) + 'th percentile');
-    html += valRow('% vs 150d MA', (s.ov >= 0 ? '+' : '') + (s.ov || 0).toFixed(1) + '%');
-    html += valRow('12-Month Return', '<span style="color:' + r12color + ';">' + r12str + '</span>');
-    if (s.nAn) html += valRow('Analyst Count', s.nAn + ' analysts');
-    if (s.tgt) html += valRow('Mean Target', '$' + s.tgt.toFixed(2) + ' <span style="color:' + (upside >= 0 ? '#10b981' : '#ef4444') + ';">(' + upsideStr + ')</span>');
+    html += valRow('Trend Changed', s.trChg ? '<span style="color:' + (s.tr === 'Uptrend' || s.tr === 'Snapback' ? '#10b981' : '#ef4444') + ';font-weight:700;">Yes</span>' : 'No');
+    html += valRow('Rel. Momentum Rank', (s.rm || 0) + 'th percentile');
+    html += valRow('Tier', s.ti || '—');
+    if (s.hi52 && s.lo52) {
+        var rangePos = s.hi52 > s.lo52 ? Math.round((s.px - s.lo52) / (s.hi52 - s.lo52) * 100) : 50;
+        html += '<div style="margin-top:12px;"><div style="font-size:12px;color:#64748b;margin-bottom:4px;">52-Week Range Position</div>';
+        html += '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:#64748b;">$' + s.lo52.toFixed(0) + '</span>';
+        html += '<div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;position:relative;"><div style="width:' + rangePos + '%;height:100%;background:#10b981;border-radius:4px;"></div></div>';
+        html += '<span style="font-size:11px;color:#64748b;">$' + s.hi52.toFixed(0) + '</span></div></div>';
+    }
     html += '</div>';
 
+    // ── 6. INVESTMENT NOTES ──
+    html += '<div class="card" style="margin-bottom:20px;">';
+    html += secTitle('Investment Notes');
+    html += placeholder('What is your thesis for ' + s.co + '? Key catalysts, risks, what would make you buy or sell? What are you watching for?');
     html += '</div>';
 
     result.innerHTML = html;
