@@ -105,6 +105,7 @@ if RESEARCH_INDEX_FILE.exists():
 js_data = {
     'market': data['market'],
     'sectors': data['sectors'],
+    'industries': data.get('industries', []),
     'stocks': data['stocks'],
     'sp500_daily_dates': data['sp500_daily_dates'],
     'sp500_daily_prices': data['sp500_daily_prices'],
@@ -1000,6 +1001,7 @@ html_content = '''<!DOCTYPE html>
     <div class="tab-nav">
         <button class="tab-btn active" onclick="switchTab('pulse')">Market Pulse</button>
         <button class="tab-btn" onclick="switchTab('sectors')">Sectors</button>
+        <button class="tab-btn" onclick="switchTab('industries')">Industries</button>
         <button class="tab-btn" onclick="switchTab('screener')">Stock Screener</button>
         <button class="tab-btn" onclick="switchTab('research')">Company Research</button>
         <button class="tab-btn" onclick="switchTab('sources')">Sources &amp; Definitions</button>
@@ -1155,7 +1157,57 @@ html_content = '''<!DOCTYPE html>
         </div>
     </div>
 
-    <!-- TAB 3: STOCK SCREENER -->
+    <!-- TAB 3: INDUSTRIES -->
+    <div id="industries" class="tab-content">
+        <div class="card">
+            <div class="card-title">Industry Momentum Analysis</div>
+            <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: #64748b; align-items: center;">
+                <span style="font-weight: 600;">Trend Mix:</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #10b981; display: inline-block;"></span> Uptrend</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #f59e0b; display: inline-block;"></span> Pullback</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #ef4444; display: inline-block;"></span> Downtrend</span>
+                <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #3b82f6; display: inline-block;"></span> Snapback</span>
+            </div>
+            <div style="margin-bottom: 12px;">
+                <select class="filter-select" id="industrySectorFilter" onchange="renderIndustries()">
+                    <option value="">All Sectors</option>
+                </select>
+            </div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any industry row to expand and see individual stocks</div>
+            <table class="sector-table" id="industriesTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortIndustries('name')" style="cursor: pointer;">Industry</th>
+                        <th onclick="sortIndustries('sector')" style="cursor: pointer;">Sector</th>
+                        <th onclick="sortIndustries('trend')" style="cursor: pointer; text-align: center;">Trend Mix</th>
+                        <th onclick="sortIndustries('uptrend')" style="cursor: pointer; text-align: right;">% Uptrend</th>
+                        <th onclick="sortIndustries('momentum')" style="cursor: pointer; text-align: right;">Rel. Mom</th>
+                        <th onclick="sortIndustries('count')" style="cursor: pointer; text-align: right;"># Stocks</th>
+                    </tr>
+                </thead>
+                <tbody id="industriesTableBody"></tbody>
+            </table>
+        </div>
+        <div id="expandedIndustry" class="card" style="display: none; margin-top: 24px;">
+            <div class="card-title" id="expandedIndustryTitle"></div>
+            <table class="stock-table" id="expandedIndustryStocksTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortExpandedIndustryStocks('ticker')" style="cursor:pointer;">Ticker</th>
+                        <th onclick="sortExpandedIndustryStocks('company')" style="cursor:pointer;">Company</th>
+                        <th onclick="sortExpandedIndustryStocks('trend')" style="cursor:pointer;">Trend</th>
+                        <th onclick="sortExpandedIndustryStocks('tr1wk')" style="cursor:pointer;">1 Wk Ago</th>
+                        <th onclick="sortExpandedIndustryStocks('trChg')" style="cursor:pointer;">Trend Chg</th>
+                        <th onclick="sortExpandedIndustryStocks('ret1m')" style="cursor:pointer; text-align:right;">1M Ret</th>
+                        <th onclick="sortExpandedIndustryStocks('ret12m')" style="cursor:pointer; text-align:right;">12M Ret</th>
+                    </tr>
+                </thead>
+                <tbody id="expandedIndustryStocksBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 4: STOCK SCREENER -->
     <div id="screener" class="tab-content">
         <div class="card">
             <div class="card-title">Stock Momentum Screener</div>
@@ -1242,6 +1294,7 @@ const DATA = ''' + json.dumps(js_data) + ''';
 
 const MARKET = DATA.market;
 const SECTORS = DATA.sectors;
+const INDUSTRIES = DATA.industries || [];
 const STOCKS = DATA.stocks;
 const SP500_PRICES = DATA.sp500_daily_prices;
 const SP500_DATES = DATA.sp500_daily_dates;
@@ -1284,6 +1337,14 @@ window.addEventListener('DOMContentLoaded', function() {
     renderMarketPulse();
     renderSectors();
     renderStockScreener();
+    // Populate industry sector filter and render industries
+    var indSectors = [...new Set(INDUSTRIES.map(function(i) { return i.sector; }))].sort();
+    var indFilterHtml = '<option value="">All Sectors</option>';
+    indSectors.forEach(function(s) { indFilterHtml += '<option value="' + s + '">' + s + '</option>'; });
+    if (document.getElementById('industrySectorFilter')) {
+        document.getElementById('industrySectorFilter').innerHTML = indFilterHtml;
+    }
+    renderIndustries();
 });
 
 // Plain-English explanations for each health indicator
@@ -2265,6 +2326,139 @@ function renderExpandedSector() {
     document.getElementById('expandedStocksBody').innerHTML = rows;
 }
 
+// ============================================================================
+// INDUSTRIES TAB
+// ============================================================================
+
+var industrySortCol = 'uptrend';
+var industrySortAsc = false;
+
+function renderIndustries() {
+    var sectorFilter = document.getElementById('industrySectorFilter').value;
+    var filtered = INDUSTRIES;
+    if (sectorFilter) {
+        filtered = INDUSTRIES.filter(function(ind) { return ind.sector === sectorFilter; });
+    }
+
+    // Sort
+    var col = industrySortCol;
+    var dir = industrySortAsc ? 1 : -1;
+    var sorted = filtered.slice();
+    if (col === 'name') { sorted.sort(function(a, b) { return dir * a.name.localeCompare(b.name); }); }
+    else if (col === 'sector') { sorted.sort(function(a, b) { return dir * a.sector.localeCompare(b.sector); }); }
+    else if (col === 'trend' || col === 'uptrend') { sorted.sort(function(a, b) { return dir * ((b.up || 0) - (a.up || 0)); }); }
+    else if (col === 'momentum') { sorted.sort(function(a, b) { return dir * ((b.rm || 0) - (a.rm || 0)); }); }
+    else if (col === 'count') { sorted.sort(function(a, b) { return dir * ((b.n || 0) - (a.n || 0)); }); }
+
+    var html = '';
+    sorted.forEach(function(ind) {
+        var up_pct = ind.up || 0;
+        var pb_pct = ind.pb || 0;
+        var dn_pct = ind.dn || 0;
+        var sb_pct = ind.sb || 0;
+
+        html += '<tr onclick="expandIndustry(&quot;' + ind.name.replace(/'/g, "\\'") + '&quot;)" style="cursor: pointer;">';
+        html += '<td class="sector-name">' + ind.name + '</td>';
+        html += '<td style="color:#64748b; font-size:12px;">' + (ind.sector || '') + '</td>';
+        html += '<td style="text-align: center;"><div class="trend-bar" style="margin: 0 auto; width: 120px;">';
+        if (up_pct > 0) html += '<div class="trend-segment trend-up" style="width: ' + up_pct + '%"></div>';
+        if (pb_pct > 0) html += '<div class="trend-segment trend-pb" style="width: ' + pb_pct + '%"></div>';
+        if (dn_pct > 0) html += '<div class="trend-segment trend-dn" style="width: ' + dn_pct + '%"></div>';
+        if (sb_pct > 0) html += '<div class="trend-segment trend-sb" style="width: ' + sb_pct + '%"></div>';
+        html += '</div></td>';
+        html += '<td style="text-align: right;" class="pct-cell ' + (up_pct >= 60 ? 'high' : up_pct >= 40 ? 'med' : 'low') + '">' + up_pct.toFixed(1) + '%</td>';
+        var rmClass = (ind.rm || 0) >= 55 ? 'high' : (ind.rm || 0) >= 40 ? 'med' : 'low';
+        html += '<td style="text-align: right;" class="pct-cell ' + rmClass + '">' + (ind.rm || 0).toFixed(1) + '</td>';
+        html += '<td style="text-align: right;">' + (ind.n || 0) + '</td>';
+        html += '</tr>';
+    });
+
+    document.getElementById('industriesTableBody').innerHTML = html;
+}
+
+function sortIndustries(column) {
+    if (industrySortCol === column) { industrySortAsc = !industrySortAsc; }
+    else { industrySortCol = column; industrySortAsc = column === 'name' || column === 'sector'; }
+    renderIndustries();
+}
+
+var currentExpandedIndustry = '';
+var expandedIndSortCol = 'rm';
+var expandedIndSortAsc = false;
+
+function expandIndustry(industryName) {
+    currentExpandedIndustry = industryName;
+    expandedIndSortCol = 'rm';
+    expandedIndSortAsc = false;
+    renderExpandedIndustry();
+    document.getElementById('expandedIndustry').style.display = 'block';
+    document.getElementById('expandedIndustry').scrollIntoView({ behavior: 'smooth' });
+}
+
+function sortExpandedIndustryStocks(col) {
+    if (expandedIndSortCol === col) { expandedIndSortAsc = !expandedIndSortAsc; }
+    else { expandedIndSortCol = col; expandedIndSortAsc = col === 'ticker' || col === 'company'; }
+    renderExpandedIndustry();
+}
+
+function renderExpandedIndustry() {
+    var indName = currentExpandedIndustry;
+    var indStocks = STOCKS.filter(function(s) { return s.ind === indName; }).slice();
+
+    document.getElementById('expandedIndustryTitle').textContent = indName + ' (' + indStocks.length + ' stocks)';
+
+    var col = expandedIndSortCol;
+    var dir = expandedIndSortAsc ? 1 : -1;
+    indStocks.sort(function(a, b) {
+        var aVal, bVal;
+        if (col === 'ticker') { aVal = a.t; bVal = b.t; }
+        else if (col === 'company') { aVal = a.co; bVal = b.co; }
+        else if (col === 'trend') { aVal = a.tr; bVal = b.tr; }
+        else if (col === 'tr1wk') { aVal = a.tr1wk || ''; bVal = b.tr1wk || ''; }
+        else if (col === 'trChg') {
+            aVal = !a.trChg ? 0 : (a.tr === 'Uptrend' || a.tr === 'Snapback') ? 1 : -1;
+            bVal = !b.trChg ? 0 : (b.tr === 'Uptrend' || b.tr === 'Snapback') ? 1 : -1;
+        }
+        else if (col === 'ret1m') { aVal = a.p1 ? (a.px - a.p1) / a.p1 : -999; bVal = b.p1 ? (b.px - b.p1) / b.p1 : -999; }
+        else if (col === 'ret12m') { aVal = a.p12 ? (a.px - a.p12) / a.p12 : -999; bVal = b.p12 ? (b.px - b.p12) / b.p12 : -999; }
+        else { aVal = a.rm || 0; bVal = b.rm || 0; }
+        if (typeof aVal === 'string') return dir * aVal.localeCompare(bVal);
+        return dir * (aVal - bVal);
+    });
+
+    var rows = '';
+    indStocks.forEach(function(stock) {
+        var trendClass = 'badge-' + (stock.tr === 'Uptrend' ? 'green' : stock.tr === 'Pullback' ? 'amber' : stock.tr === 'Downtrend' ? 'red' : stock.tr === 'Snapback' ? 'blue' : 'gray');
+        var trend1wkClass = 'badge-' + ((stock.tr1wk || '') === 'Uptrend' ? 'green' : (stock.tr1wk || '') === 'Pullback' ? 'amber' : (stock.tr1wk || '') === 'Downtrend' ? 'red' : (stock.tr1wk || '') === 'Snapback' ? 'blue' : 'gray');
+        var ret1m = stock.p1 ? ((stock.px - stock.p1) / stock.p1 * 100) : null;
+        var ret12m = stock.p12 ? ((stock.px - stock.p12) / stock.p12 * 100) : null;
+        var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
+        var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
+        var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
+        var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
+        var trendChgText = '';
+        if (stock.trChg) {
+            if (stock.tr === 'Uptrend' || stock.tr === 'Snapback') {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#10b981;">+</span>';
+            } else {
+                trendChgText = '<span style="font-weight:700; font-size:18px; color:#ef4444;">−</span>';
+            }
+        }
+
+        rows += '<tr style="cursor:pointer;" onclick="openStockModal(&quot;' + stock.t + '&quot;)">';
+        rows += '<td style="font-weight:700; font-family: JetBrains Mono, monospace;">' + stock.t + '</td>';
+        rows += '<td style="color:#475569;">' + stock.co + '</td>';
+        rows += '<td><span class="badge ' + trendClass + '">' + stock.tr + '</span></td>';
+        rows += '<td><span class="badge ' + trend1wkClass + '">' + (stock.tr1wk || '—') + '</span></td>';
+        rows += '<td style="text-align:center;">' + trendChgText + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r1color + ';">' + r1str + '</td>';
+        rows += '<td style="text-align:right; font-family:JetBrains Mono,monospace; font-weight:600; color:' + r12color + ';">' + r12str + '</td>';
+        rows += '</tr>';
+    });
+
+    document.getElementById('expandedIndustryStocksBody').innerHTML = rows;
+}
+
 function renderStockScreener() {
     // Populate sector filter
     const sectors = [...new Set(STOCKS.map(function(s) { return s.sec; }))].sort();
@@ -2528,22 +2722,27 @@ function closeStockModal(e) {
 function renderResearchTab() {
     var html = '';
 
-    // Instructions card
+    // Search box
     html += '<div class="card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">';
     html += '<div class="card-title" style="text-align: left; border-bottom: none; padding-bottom: 0;">Company Research</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; line-height: 1.6;">Research individual companies by running the research tool from your project folder:</p>';
-    html += '<div style="background: #0f172a; border-radius: 8px; padding: 14px 18px; margin: 12px 0; font-family: JetBrains Mono, monospace; font-size: 13px; color: #10b981;">python3 research.py NVDA</div>';
-    html += '<p style="font-size: 13px; color: #94a3b8;">Or double-click <strong style="color: #e2e8f0;">research_company.command</strong> in Finder and type a ticker. For private companies, type the company name instead.</p>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; margin-bottom: 12px;">Type a ticker to pull live financial data. Requires the research server to be running.</p>';
+    html += '<div style="display: flex; gap: 12px; max-width: 600px;">';
+    html += '<input type="text" id="researchTickerInput" placeholder="Enter ticker (e.g., NVDA, AAPL, TSLA...)" style="flex:1; padding: 12px 16px; font-size: 15px; font-family: JetBrains Mono, monospace; border: 2px solid #e2e8f0; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;" onkeydown="if(event.key===&quot;Enter&quot;)doResearchSearch();">';
+    html += '<button onclick="doResearchSearch()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: DM Sans, sans-serif;">Research</button>';
+    html += '</div>';
+    html += '<div id="researchStatus" style="margin-top: 10px; font-size: 13px; color: #94a3b8;"></div>';
+    html += '<div id="researchResult" style="margin-top: 12px;"></div>';
     html += '</div>';
 
-    // Company cards
-    if (RESEARCH_INDEX.length === 0) {
-        html += '<div style="text-align: center; padding: 60px 20px; color: #94a3b8;">';
-        html += '<div style="font-size: 48px; margin-bottom: 16px;">📊</div>';
-        html += '<div style="font-size: 16px; font-weight: 600; color: #64748b; margin-bottom: 8px;">No companies researched yet</div>';
-        html += '<div style="font-size: 14px;">Run the research tool to generate your first company page.</div>';
-        html += '</div>';
-    } else {
+    // How to start section
+    html += '<div id="researchServerHelp" style="display:none; margin-bottom: 24px; padding: 16px 20px; background: #fffbeb; border-radius: 10px; border: 1px solid #fde68a;">';
+    html += '<div style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 6px;">Research server is not running</div>';
+    html += '<div style="font-size: 13px; color: #92400e; line-height: 1.6;">To use live research, double-click <strong>start_research_server.command</strong> in your momentum-scorecard folder first. Then come back here and type a ticker.</div>';
+    html += '</div>';
+
+    // Previously researched company cards
+    if (RESEARCH_INDEX.length > 0) {
+        html += '<div style="font-family: Fraunces, serif; font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Previously Researched (' + RESEARCH_INDEX.length + ')</div>';
         html += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">';
         RESEARCH_INDEX.forEach(function(company) {
             var isPublic = company.type === 'public';
@@ -2553,7 +2752,7 @@ function renderResearchTab() {
             var typeColor = isPublic ? '#166534' : '#1e40af';
             var updated = company.lastUpdated ? new Date(company.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
 
-            html += '<a href="research/' + company.file + '" style="text-decoration: none; color: inherit;">';
+            html += '<a href="research/' + company.file + '" target="_blank" style="text-decoration: none; color: inherit;">';
             html += '<div class="card" style="cursor: pointer; transition: all 0.2s; border-left: 3px solid ' + (isPublic ? '#10b981' : '#3b82f6') + ';" onmouseover="this.style.boxShadow=&quot;0 4px 12px rgba(0,0,0,0.12)&quot;;" onmouseout="this.style.boxShadow=&quot;0 1px 3px rgba(0,0,0,0.1)&quot;;">';
             html += '<div style="display: flex; justify-content: space-between; align-items: flex-start;">';
             html += '<div>';
@@ -2570,6 +2769,41 @@ function renderResearchTab() {
     }
 
     return html;
+}
+
+function doResearchSearch() {
+    var input = document.getElementById('researchTickerInput');
+    var ticker = input.value.trim();
+    if (!ticker) return;
+
+    var status = document.getElementById('researchStatus');
+    var result = document.getElementById('researchResult');
+    var help = document.getElementById('researchServerHelp');
+
+    status.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid #e2e8f0;border-top-color:#10b981;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:8px;"></span>Pulling data for <strong>' + ticker.toUpperCase() + '</strong>... takes 5-10 seconds';
+    status.style.color = '#0369a1';
+    result.innerHTML = '';
+    help.style.display = 'none';
+
+    fetch('http://localhost:8765/api/research?ticker=' + encodeURIComponent(ticker))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) {
+                status.innerHTML = 'Error: ' + data.error;
+                status.style.color = '#dc2626';
+                return;
+            }
+            status.innerHTML = 'Research page generated for <strong>' + (data.name || data.ticker) + '</strong>';
+            status.style.color = '#166534';
+
+            var rhtml = '<a href="http://localhost:8765/' + data.file + '" target="_blank" style="display:inline-block; margin-top:8px; padding:10px 20px; background:#0f172a; color:white; text-decoration:none; border-radius:8px; font-weight:600; font-size:14px;">View Full Research Page for ' + data.ticker + ' →</a>';
+            result.innerHTML = rhtml;
+            input.value = '';
+        })
+        .catch(function(err) {
+            status.innerHTML = '';
+            help.style.display = 'block';
+        });
 }
 
 function renderSourcesTab() {
@@ -2638,7 +2872,91 @@ function renderSourcesTab() {
     html += '<div class="metric-row"><span class="metric-label">% Over/Under 150d MA</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">How far price is from its 150-day moving average</div></div></div>';
     html += '</div>';
 
-    // Card 6: Disclaimer
+    // Card 6: Key Definitions & Formulas
+    html += '<div class="card"><div class="card-title">Definitions &amp; Formulas</div>';
+
+    // Market Trend
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Market Trend (Positive / Neutral / Negative)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Compares the S&P 500 price to two moving averages. <strong>Positive</strong> = price is above both the 4-year MA and 150-day MA. <strong>Neutral</strong> = above one but below the other. <strong>Negative</strong> = below both. The 4-year MA captures the full business cycle; the 150-day MA captures the intermediate trend.</div>';
+    html += '</div>';
+
+    // Breadth
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Market Breadth</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: (Number of stocks above their 150-day MA) &divide; (Total stocks tracked) &times; 100. Above 60% = healthy broad participation. Below 40% = weak, narrow market. Below 20% = oversold (capitulation zone).</div>';
+    html += '</div>';
+
+    // Trend Stages
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Trend Stages (Uptrend / Pullback / Downtrend / Snapback)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Each stock is classified by two conditions: (1) Is the 150-day MA rising or falling? (compared to its value 42 trading days ago) (2) Is the price above or below the 150-day MA?</div>';
+    html += '<div style="font-size: 13px; color: #64748b; margin-top: 6px;"><strong style="color:#10b981;">Uptrend</strong> = MA rising + price above MA (ideal). <strong style="color:#f59e0b;">Pullback</strong> = MA rising + price below MA (temporary dip in a healthy trend). <strong style="color:#ef4444;">Downtrend</strong> = MA falling + price below MA (avoid). <strong style="color:#3b82f6;">Snapback</strong> = MA falling + price above MA (potential reversal, watch closely).</div>';
+    html += '</div>';
+
+    // Relative Momentum
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Relative Momentum Rank</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: Percentile rank of each stock\\'s 12-month return across the full universe. A rank of 85 means the stock has a higher 12-month return than 85% of all stocks tracked. Above 60 = strong momentum. Below 40 = weak momentum.</div>';
+    html += '</div>';
+
+    // Tier
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Tier (1-10)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Derived from relative momentum rank. Tier 1 = top 10% (strongest), Tier 10 = bottom 10% (weakest). Formula: Tier = 11 - floor(rank / 10), clamped to 1-10.</div>';
+    html += '</div>';
+
+    // Moving Averages
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Moving Averages (150-Day, 4-Year)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A moving average is the average closing price over the last N trading days. The <strong>150-day MA</strong> (~30 weeks) captures the intermediate trend. The <strong>4-year MA</strong> (~1,000 trading days) captures the full business cycle. When price is above the MA, the trend is considered up. When the MA itself is rising, the trend has momentum.</div>';
+    html += '</div>';
+
+    // Yield Curve
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Yield Curve</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: 10-Year Treasury Yield minus 2-Year Treasury Yield. A <strong>positive</strong> yield curve is normal and healthy. An <strong>inverted</strong> (negative) yield curve has preceded every U.S. recession since the 1960s, typically by 12-18 months.</div>';
+    html += '</div>';
+
+    // P/E Ratio
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Forward P/E Ratio</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: Current S&P 500 Price &divide; Estimated Earnings Per Share (next 12 months). Measures how expensive stocks are relative to expected profits. The 10-year average is ~18.9x. Below 18x is historically cheap; above 22x is expensive.</div>';
+    html += '</div>';
+
+    // PEG Ratio
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">PEG Ratio</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: Forward P/E &divide; Expected EPS Growth Rate. A PEG below 1.0 suggests you are paying less than the growth rate (potentially undervalued). A PEG above 2.0 suggests you are overpaying relative to growth.</div>';
+    html += '</div>';
+
+    // VIX
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">VIX (Volatility Index)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Measures expected market volatility over the next 30 days, derived from S&P 500 options prices. Below 20 = calm. 20-30 = elevated uncertainty. Above 30 = panic / fear (historically a contrarian buy signal).</div>';
+    html += '</div>';
+
+    // Put/Call Ratio
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Put/Call Ratio</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Formula: Total Put Volume &divide; Total Call Volume (from CBOE). Below 1.0 = more calls than puts (bullish positioning). Above 1.0 = more puts (hedging/fear). Above 1.2 = extreme fear (oversold signal).</div>';
+    html += '</div>';
+
+    // Oversold Signals
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Oversold / Capitulation Signals</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Four independent signals that indicate extreme selling: (1) <strong>Breadth Washout</strong>: less than 20% of stocks above their 20-day SMA. (2) <strong>New Lows Spike</strong>: more than 50% of stocks at 20-day lows. (3) <strong>Put/Call Spike</strong>: CBOE ratio above 1.2. (4) <strong>VIX Spike</strong>: VIX above 30. Any single signal firing is meaningful. Multiple signals together suggest capitulation — historically near market bottoms.</div>';
+    html += '</div>';
+
+    // Synthesis
+    html += '<div style="padding: 12px 0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Strategic Synthesis (Equities / Fixed Income / Cash)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Asset class views are derived from the health score. Equities: <strong>Overweight</strong> when score &ge; 70, <strong>Neutral</strong> at 50-69, <strong>Underweight</strong> below 50. Cash: <strong>Underweight</strong> when score &ge; 60 (deploy into risk assets), <strong>Neutral</strong> otherwise. Fixed Income view considers the yield curve and credit spreads.</div>';
+    html += '</div>';
+
+    html += '</div>';
+
+    // Card 7: Disclaimer
     html += '<div class="card"><div class="card-title">Disclaimer</div>';
     html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; padding: 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">This dashboard is for educational and informational purposes only. It is not investment advice. Past performance does not guarantee future results. The indicators presented are historical patterns and should never be the sole basis for investment decisions. Always consult with a qualified financial advisor before making investment decisions.</p>';
     html += '</div>';
@@ -2743,7 +3061,7 @@ function switchTab(tab) {
     // Highlight the clicked button
     var btns = document.querySelectorAll('.tab-btn');
     btns.forEach(function(btn) {
-        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'screener' ? 'stock' : tab === 'research' ? 'company' : 'sources') >= 0) {
+        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'industries' ? 'industr' : tab === 'screener' ? 'stock' : tab === 'research' ? 'company' : 'sources') >= 0) {
             btn.classList.add('active');
         }
     });

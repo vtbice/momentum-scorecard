@@ -1073,7 +1073,40 @@ def calculate_summaries(stocks):
         })
     
     sector_list.sort(key=lambda x: x["up"], reverse=True)
-    
+
+    # ── Industry breakdown ──
+    industries = {}
+    for s in valid:
+        ind = s.get("industry", "Unknown")
+        if ind == "Unknown":
+            continue
+        if ind not in industries:
+            industries[ind] = {"name": ind, "sector": s["sector"], "n": 0,
+                              "Uptrend": 0, "Pullback": 0, "Downtrend": 0, "Snapback": 0}
+        industries[ind]["n"] += 1
+        if s["trend"] in industries[ind]:
+            industries[ind][s["trend"]] += 1
+
+    industry_list = []
+    for ind_data in industries.values():
+        n = ind_data["n"]
+        if n == 0:
+            continue
+        ind_stocks = [s for s in valid if s.get("industry") == ind_data["name"]]
+        avg_mom = np.mean([s["relMomRank"] for s in ind_stocks]) if ind_stocks else 50
+        industry_list.append({
+            "name": ind_data["name"],
+            "sector": ind_data["sector"],
+            "n": n,
+            "up": round(ind_data["Uptrend"] / n * 100, 1),
+            "pb": round(ind_data["Pullback"] / n * 100, 1),
+            "dn": round(ind_data["Downtrend"] / n * 100, 1),
+            "sb": round(ind_data["Snapback"] / n * 100, 1),
+            "rm": round(avg_mom, 1),
+        })
+
+    industry_list.sort(key=lambda x: x["up"], reverse=True)
+
     # ── Oversold indicators (breadth washout & new lows) ──
     stocks_with_20sma = [s for s in valid if s.get("above20sma") is not None]
     stocks_with_20low = [s for s in valid if s.get("at20dayLow") is not None]
@@ -1099,9 +1132,9 @@ def calculate_summaries(stocks):
           f"Pullback: {trend_pcts.get('Pullback', 0)}% | "
           f"Downtrend: {trend_pcts.get('Downtrend', 0)}% | "
           f"Snapback: {trend_pcts.get('Snapback', 0)}%")
-    print(f"  Sectors: {len(sector_list)}")
-    
-    return breadth, sector_list
+    print(f"  Sectors: {len(sector_list)} | Industries: {len(industry_list)}")
+
+    return breadth, sector_list, industry_list
 
 
 # ═══════════════════════════════════════════════════════════
@@ -1456,7 +1489,7 @@ def analyze_pullbacks():
 # STEP 7: ASSEMBLE AND SAVE
 # ═══════════════════════════════════════════════════════════
 
-def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_count=0, pullback_stats=None, auto_data=None):
+def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_count=0, pullback_stats=None, auto_data=None, industries=None):
     """Package everything into the JSON structure the dashboard expects."""
     if auto_data is None:
         auto_data = {}
@@ -1583,6 +1616,7 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
         "sp500_daily_dates": market.get("sp500_daily_dates", []),
         
         "sectors": sectors,
+        "industries": industries or [],
         
         "stocks": [{
             "t": s["ticker"],
@@ -1654,7 +1688,7 @@ def main():
     }
 
     # 5. Calculate summaries
-    breadth, sectors = calculate_summaries(stocks)
+    breadth, sectors, industries = calculate_summaries(stocks)
 
     # 6. Calculate signals (pass auto_data so it uses live put/call if available)
     signals = calculate_signals(market, breadth, macro, auto_data=auto_data)
@@ -1662,7 +1696,7 @@ def main():
     # 7. Assemble and save
     output = assemble_output(stocks, market, macro, breadth, sectors, signals,
                              skipped_count=len(skipped), pullback_stats=pullback_stats,
-                             auto_data=auto_data)
+                             auto_data=auto_data, industries=industries)
     
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(output, f, indent=2, default=str)
