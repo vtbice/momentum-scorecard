@@ -109,35 +109,35 @@
         /* Sub-tabs */
         .subtab-nav {
             display: flex;
-            gap: 16px;
+            gap: 8px;
             margin-bottom: 24px;
             padding-left: 0;
             justify-content: center;
             flex-wrap: wrap;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .subtab-btn {
-            padding: 10px 24px;
+            padding: 10px 20px;
             border: none;
-            background: #f0f0f0;
+            background: none;
             cursor: pointer;
             font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             font-weight: 600;
             color: #64748b;
-            border-radius: 10px;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
             transition: all 0.2s;
         }
 
         .subtab-btn:hover {
-            background: #e0e0e0;
             color: #334155;
         }
 
         .subtab-btn.active {
-            background: #10b981;
-            color: white;
-            border: none;
+            color: #10b981;
+            border-bottom-color: #10b981;
         }
 
         .subtab-content {
