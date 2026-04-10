@@ -879,7 +879,15 @@
 
     <!-- TAB 1: MARKET PULSE -->
     <div id="pulse" class="tab-content active">
-        <!-- Health Score Banner (compact — score + gauge only) -->
+        <!-- Sub-tabs — immediately visible below main tabs -->
+        <div class="subtab-nav" style="margin-top: 0;">
+            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview', this)">Overview</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro', this)">Macro</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals', this)">Fundamentals</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals', this)">Technicals</button>
+        </div>
+
+        <!-- Health Score Banner -->
         <div class="health-banner">
             <div class="health-banner-content" style="flex-direction: column; align-items: center; text-align: center; cursor: pointer;" onclick="showExplain('healthScore')" title="Click to learn how this score is calculated">
                 <div class="health-banner-label" id="healthScore" style="font-size: 20px; letter-spacing: 1px; text-transform: uppercase;"></div>
@@ -889,14 +897,6 @@
                 <div id="spectrumGauge" style="width: 100%; max-width: 500px; margin: 16px auto 8px;"></div>
                 <div class="health-counts" id="healthCounts" style="margin-top: 8px;"></div>
             </div>
-        </div>
-
-        <!-- Sub-tabs — right after the health score so they never get buried -->
-        <div class="subtab-nav">
-            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview', this)">Overview</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro', this)">Macro</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals', this)">Fundamentals</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals', this)">Technicals</button>
         </div>
 
         <!-- Overview Sub-tab -->

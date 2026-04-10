@@ -1009,7 +1009,15 @@ html_content = '''<!DOCTYPE html>
 
     <!-- TAB 1: MARKET PULSE -->
     <div id="pulse" class="tab-content active">
-        <!-- Health Score Banner (compact — score + gauge only) -->
+        <!-- Sub-tabs — immediately visible below main tabs -->
+        <div class="subtab-nav" style="margin-top: 0;">
+            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview', this)">Overview</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro', this)">Macro</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals', this)">Fundamentals</button>
+            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals', this)">Technicals</button>
+        </div>
+
+        <!-- Health Score Banner -->
         <div class="health-banner">
             <div class="health-banner-content" style="flex-direction: column; align-items: center; text-align: center; cursor: pointer;" onclick="showExplain('healthScore')" title="Click to learn how this score is calculated">
                 <div class="health-banner-label" id="healthScore" style="font-size: 20px; letter-spacing: 1px; text-transform: uppercase;"></div>
@@ -1019,14 +1027,6 @@ html_content = '''<!DOCTYPE html>
                 <div id="spectrumGauge" style="width: 100%; max-width: 500px; margin: 16px auto 8px;"></div>
                 <div class="health-counts" id="healthCounts" style="margin-top: 8px;"></div>
             </div>
-        </div>
-
-        <!-- Sub-tabs — right after the health score so they never get buried -->
-        <div class="subtab-nav">
-            <button class="subtab-btn active" onclick="switchSubtab('pulse', 'overview', this)">Overview</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'macro', this)">Macro</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'fundamentals', this)">Fundamentals</button>
-            <button class="subtab-btn" onclick="switchSubtab('pulse', 'technicals', this)">Technicals</button>
         </div>
 
         <!-- Overview Sub-tab -->
@@ -1248,7 +1248,10 @@ html_content = '''<!DOCTYPE html>
                         <th onclick="sortStocks('vsMa')" style="text-align:right;">vs MA</th>
                         <th onclick="sortStocks('ret1m')" style="text-align:right;">1M Ret</th>
                         <th onclick="sortStocks('ret12m')" style="text-align:right;">12M Ret</th>
-                        <th onclick="sortStocks('rasr')" style="text-align:center;cursor:pointer;background:#1a3a5c;" title="Click to expand RASR into its 4 components">RASR <span id="rasrToggle" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation();toggleRASR();">+</span></th>
+                        <th style="text-align:center;">
+                            <span onclick="sortStocks('rasr')" style="cursor:pointer;">RASR</span>
+                            <span id="rasrToggle" onclick="event.stopPropagation();toggleRASR();" style="display:inline-block;width:22px;height:22px;line-height:20px;text-align:center;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:4px;font-size:14px;font-weight:700;cursor:pointer;margin-left:6px;vertical-align:middle;" title="Expand/collapse RASR components">+</span>
+                        </th>
                         <th onclick="sortStocks('step')" class="rasr-detail" style="text-align:center;display:none;">STEP</th>
                         <th onclick="sortStocks('epsRev')" class="rasr-detail" style="text-align:center;display:none;">EPS Rev</th>
                         <th onclick="sortStocks('absMom')" class="rasr-detail" style="text-align:center;display:none;">Abs Mom</th>
