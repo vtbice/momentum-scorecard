@@ -1426,14 +1426,15 @@ function latestAsOf(keys) {
 
 function renderHeader() {
     // Use last S&P 500 trading date as the closing date
+    var todayFormatted = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     var closingDateStr = SP500_DATES.length > 0 ? SP500_DATES[SP500_DATES.length - 1] : '';
-    var closingDateFormatted = closingDateStr ? new Date(closingDateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : MARKET.date;
+    var closingDateFormatted = closingDateStr ? new Date(closingDateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
 
     const health_pct = Math.round((MARKET.healthScore / MARKET.healthTotal) * 100);
     const health_color = health_pct >= 80 ? C.emerald : health_pct >= 60 ? '#f59e0b' : health_pct >= 40 ? '#f97316' : C.red;
     const totalIndicators = MARKET.healthWins.length + MARKET.healthMisses.length;
 
-    document.getElementById('headerDate').innerHTML = 'Closing prices as of ' + closingDateFormatted;
+    document.getElementById('headerDate').innerHTML = todayFormatted + (closingDateFormatted ? ' <span style="color:#94a3b8;">(price data as of ' + closingDateFormatted + ' close)</span>' : '');
 
     // Health banner
     document.getElementById('healthScore').textContent = 'Market Health Indicators';
