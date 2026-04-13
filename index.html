@@ -944,7 +944,7 @@
             <!-- Trend & Breadth — right after the chart -->
             <div style="margin-bottom: 24px;">
                 <div class="card">
-                    <div class="card-title">Market Trend Analysis</div>
+                    <div class="card-title">Market Trend</div>
                     <div id="trendCardContent"></div>
                 </div>
 
@@ -1777,35 +1777,10 @@ function renderHistoricalContext() {
     var beyondDur = Math.max(beyondTier.median_duration_days || 130, meaningfulDur);
     var bearDur = Math.max(bearTier.median_duration_days || 295, beyondDur);
 
-    var html = '<div class="card"><div class="card-title">Historical Context</div>';
+    var html = '<div class="card"><div class="card-title">Market Trend Analysis</div>';
 
-    // ═══ SECTION 1: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
+    // ═══ SECTION 1: WHERE ARE WE NOW ═══
     html += '<div style="margin-bottom: 28px;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">The Climb Is Always Longer Than the Slide</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
-
-    // Bull vs Bear cards
-    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
-    html += '<div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 12px; border-left: 4px solid #10b981;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #10b981; margin-bottom: 12px;">11 Bull Markets</div>';
-    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #10b981;">+107%</div></div>';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">50 mo</div></div>';
-    html += '</div></div>';
-
-    html += '<div style="padding: 20px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; border-left: 4px solid #ef4444;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 12px;">' + (bearTier.count || 11) + ' Bear Markets</div>';
-    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Decline</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #ef4444;">-33%</div></div>';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">' + formatDuration(bearDur) + '</div></div>';
-    html += '</div></div>';
-    html += '</div>';
-
-    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested. See the Sources &amp; Definitions tab for the full list of all 11 bull and bear markets.</p>';
-    html += '</div>';
-
-    // ═══ SECTION 2: WHERE ARE WE NOW ═══
-    html += '<div style="padding: 24px 0; border-top: 3px solid #10b981;">';
     html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now</div>';
 
     // Current bull market highlight
@@ -1871,6 +1846,30 @@ function renderHistoricalContext() {
     html += breadthContext + ' ';
     html += 'VIX at ' + t.vix.toFixed(1) + ' — ' + (t.vix >= 30 ? 'extreme fear, historically a contrarian buy zone.' : t.vix > 20 ? 'elevated but not at panic levels.' : 'calm conditions.') + ' ';
     html += '</div>';
+    html += '</div>';
+
+    // ═══ SECTION 2: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
+    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">The Climb Is Always Longer Than the Slide</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
+
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
+    html += '<div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 12px; border-left: 4px solid #10b981;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #10b981; margin-bottom: 12px;">11 Bull Markets</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #10b981;">+107%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">50 mo</div></div>';
+    html += '</div></div>';
+
+    html += '<div style="padding: 20px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; border-left: 4px solid #ef4444;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 12px;">' + (bearTier.count || 11) + ' Bear Markets</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Decline</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #ef4444;">-33%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">' + formatDuration(bearDur) + '</div></div>';
+    html += '</div></div>';
+    html += '</div>';
+
+    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested. See Sources &amp; Definitions for the full list.</p>';
     html += '</div>';
 
     // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
