@@ -1235,7 +1235,7 @@ html_content = '''<!DOCTYPE html>
                         <th onclick="sortStocks('ma150')" style="text-align:right;">150d MA</th>
                         <th onclick="sortStocks('trend')" style="text-align:center;">Trend</th>
                         <th onclick="sortStocks('tr1wk')" style="text-align:center;">1 Wk Ago</th>
-                        <th onclick="sortStocks('trChg')" style="text-align:center;">Chg</th>
+                        <th onclick="sortStocks('trChg')" style="text-align:center;">Trend Chg</th>
                         <th onclick="sortStocks('momentum')" style="text-align:center;">Rel. Mom</th>
                         <th onclick="sortStocks('vsMa')" style="text-align:right;">vs MA</th>
                         <th onclick="sortStocks('ret1m')" style="text-align:right;">1M Ret</th>
