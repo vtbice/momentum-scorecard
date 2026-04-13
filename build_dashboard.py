@@ -1071,29 +1071,21 @@ html_content = '''<!DOCTYPE html>
                 <div class="chart-container" id="sp500Chart" style="height: 320px;"></div>
             </div>
 
-            <!-- Historical Context (NEW placement) -->
-            <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
-
-            <!-- Trend & Breadth side-by-side -->
+            <!-- Trend & Breadth — right after the chart -->
             <div style="margin-bottom: 24px;">
-                <!-- Market Trend Card -->
                 <div class="card">
                     <div class="card-title">Market Trend Analysis</div>
                     <div id="trendCardContent"></div>
                 </div>
 
-                <!-- Market Breadth Card -->
                 <div class="card">
                     <div class="card-title">Market Breadth</div>
                     <div id="breadthCardContent"></div>
                 </div>
             </div>
 
-            <!-- Strategic Synthesis -->
-            <div class="card">
-                <div class="card-title">Strategic Synthesis</div>
-                <div class="synthesis-grid" id="synthesisContent"></div>
-            </div>
+            <!-- Historical Context -->
+            <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
         </div>
 
         <!-- Macro Sub-tab -->
@@ -1577,9 +1569,7 @@ function renderMarketPulse() {
     });
     document.getElementById('breadthHistoryTable').innerHTML = breadth_rows;
 
-    // Synthesis
-    const synth_html = renderSynthesis();
-    document.getElementById('synthesisContent').innerHTML = synth_html;
+
 
     // Macro
     const macro_html = renderMacroCards();
