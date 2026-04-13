@@ -21,7 +21,9 @@
     <!-- What to run -->
     <key>ProgramArguments</key>
     <array>
-        <string>/bin/bash</string>
+        <string>/usr/bin/open</string>
+        <string>-a</string>
+        <string>Terminal</string>
         <string>/Users/vernonbice/Documents/momentum-scorecard/daily_refresh.sh</string>
     </array>
 
