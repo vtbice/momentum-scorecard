@@ -3147,7 +3147,10 @@ function renderSourcesTab() {
     });
     html += '</tbody></table>';
 
-    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 daily price data, 1957-present. Pullback = 5%+ decline from a running peak. One pullback per peak-to-trough cycle. These tables auto-update with each nightly pipeline refresh.</p>';
+    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 daily price data, 1957-present. These tables auto-update with each nightly pipeline refresh.</p>';
+    html += '<div style="margin-top: 12px; padding: 14px 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;"><strong style="color: #475569;">How we count pullbacks:</strong> This scorecard counts one pullback per peak-to-trough cycle — a new pullback is not counted until the market fully recovers above its prior high. This gives ' + (PULLBACK_STATS.total || 62) + ' distinct 5%+ pullbacks since ' + (PULLBACK_STATS.start_year || 1957) + '. Some studies use a broader method that counts every distinct 5%+ slide, including intermediate dips within larger declines where the market bounces and slides repeatedly. That approach produces 130+ episodes because a single bear market can contain multiple 5%+ drops (for example, the 2022 bear market alone had 7 separate 5%+ slides). Both methods are valid — we use the traditional method here because it produces cleaner per-tier statistics and avoids double-counting declines that are part of the same larger move.</div>';
+    html += '</div>';
     html += '</div>';
 
     // Card 9: Disclaimer
