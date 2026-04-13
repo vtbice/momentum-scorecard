@@ -1891,31 +1891,84 @@ function renderTechnicalsCards() {
 }
 
 function renderHistoricalContext() {
-    // Data from Mountain Project: S&P 500 daily prices, March 1957 – present (69 years)
     var t = MARKET.technical;
     var pctFrom4yr = t.sp500MA4yr > 0 ? ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(1) : 0;
     var pctFrom150 = t.sp500MA150 > 0 ? ((t.sp500 / t.sp500MA150 - 1) * 100).toFixed(1) : 0;
+    var totalPullbacks = PULLBACK_STATS.total || 62;
+    var startPrice = PULLBACK_STATS.start_price || 44;
+    var endPrice = PULLBACK_STATS.end_price || t.sp500;
+
+    // Helper to format duration
+    function formatDuration(days) {
+        if (!days) return '—';
+        var months = Math.round(days / 21);
+        if (months < 1) return Math.round(days / 5) + ' weeks';
+        return months + ' months';
+    }
+
+    // Tier data
+    var tiers = PULLBACK_STATS.tiers || {};
+    var routineTier = tiers.routine || { count: 39, pct: 62.9, median_duration_days: 19 };
+    var meaningfulTier = tiers.meaningful || { count: 8, pct: 12.9, median_duration_days: 111 };
+    var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.5, median_duration_days: 130 };
+    var bearTier = tiers.bear || { count: 11, pct: 17.7, median_duration_days: 295 };
+    var routineDur = routineTier.median_duration_days || 19;
+    var meaningfulDur = Math.max(meaningfulTier.median_duration_days || 111, routineDur);
+    var beyondDur = Math.max(beyondTier.median_duration_days || 130, meaningfulDur);
+    var bearDur = Math.max(bearTier.median_duration_days || 295, beyondDur);
 
     var html = '<div class="card"><div class="card-title">Historical Context</div>';
-    var introTotal = PULLBACK_STATS.total || 61;
-    var startPrice = PULLBACK_STATS.start_price || 44;
-    var endPrice = PULLBACK_STATS.end_price || MARKET.technical.sp500;
-    var growthMultiple = startPrice > 0 ? Math.round(endPrice / startPrice) : 150;
-    var investGrowth = (growthMultiple * 1000).toLocaleString();
-    html += '<p style="font-size: 15px; color: #64748b; line-height: 1.6; margin-bottom: 20px;">Since ' + (PULLBACK_STATS.start_year || 1957) + ', the S&P 500 has grown from ' + Math.round(startPrice) + ' to over ' + Math.round(endPrice).toLocaleString() + ' — turning $1,000 into more than $' + investGrowth + '. Along the way, it stumbled ' + introTotal + ' times. Here is how today compares to that history.</p>';
 
-    // ── WHERE ARE WE NOW? (moved to top — the hook) ──
-    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now?</div>';
+    // ═══ SECTION 1: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
+    html += '<div style="margin-bottom: 28px;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">The Climb Is Always Longer Than the Slide</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
 
-    // Use pullback engine as single source of truth for current drawdown
+    // Bull vs Bear cards
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
+    html += '<div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 12px; border-left: 4px solid #10b981;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #10b981; margin-bottom: 12px;">11 Bull Markets</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #10b981;">+107%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">50 mo</div></div>';
+    html += '</div></div>';
+
+    html += '<div style="padding: 20px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; border-left: 4px solid #ef4444;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 12px;">' + (bearTier.count || 11) + ' Bear Markets</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Decline</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #ef4444;">-33%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">' + formatDuration(bearDur) + '</div></div>';
+    html += '</div></div>';
+    html += '</div>';
+
+    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested. See the Sources &amp; Definitions tab for the full list of all 11 bull and bear markets.</p>';
+    html += '</div>';
+
+    // ═══ SECTION 2: WHERE ARE WE NOW ═══
+    html += '<div style="padding: 24px 0; border-top: 3px solid #10b981;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now</div>';
+
+    // Current bull market highlight
+    var bullGain = Math.round((t.sp500 / 3577 - 1) * 100);
+    var bullStartDate = 'October 2022';
+    var bullMonths = Math.round((new Date() - new Date('2022-10-12')) / (1000 * 60 * 60 * 24 * 30));
+
+    html += '<div style="padding: 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 12px; margin-bottom: 20px; color: white;">';
+    html += '<div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #10b981; font-weight: 600; margin-bottom: 8px;">Current Bull Market</div>';
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px;">';
+    html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Since</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">' + bullStartDate + '</div></div>';
+    html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</div></div>';
+    html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">+' + bullGain + '%</div></div>';
+    html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">' + bullMonths + ' months</div></div>';
+    html += '</div></div>';
+
+    // Current position narrative
     var cp = PULLBACK_STATS.current_pullback || null;
-    var breadthContext = MARKET.breadth.pctAbove >= 60 ? 'Breadth is healthy with broad participation.' : MARKET.breadth.pctAbove >= 40 ? 'Breadth is narrowing — fewer stocks are participating in the move.' : 'Breadth is weak — the market is being carried by a narrow group of leaders.';
+    var breadthContext = MARKET.breadth.pctAbove >= 60 ? 'Breadth is healthy with broad participation.' : MARKET.breadth.pctAbove >= 40 ? 'Breadth is narrowing — fewer stocks are participating.' : 'Breadth is weak — the market is being carried by a narrow group of leaders.';
 
     html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
 
     if (cp) {
-        // Active pullback — lead with the drawdown story (no contradiction)
         var cpMag = cp.magnitude || 0;
         var cpDays = cp.duration || 0;
         var cpWeeks = Math.round(cpDays / 5);
@@ -1924,151 +1977,78 @@ function renderHistoricalContext() {
         var peakDate = cp.peak_date || cp.start_date || '';
         var peakDateFormatted = peakDate ? new Date(peakDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
 
-        // Opening line — anchored to the pullback engine's peak
-        html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, which is <strong style="color: ' + (cpMag < -10 ? '#ef4444' : '#f59e0b') + ';">' + cpMag + '%</strong> from its recent peak';
-        if (peakPrice > 0) {
-            html += ' of ' + peakPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-        }
-        if (peakDateFormatted) {
-            html += ' reached on ' + peakDateFormatted;
-        }
+        html += 'The S&P 500 is currently <strong style="color: ' + (cpMag < -10 ? '#ef4444' : '#f59e0b') + ';">' + cpMag + '%</strong> from its recent peak';
+        if (peakPrice > 0) html += ' of ' + peakPrice.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0});
+        if (peakDateFormatted) html += ' reached on ' + peakDateFormatted;
         html += '. ';
 
-        // Long-term trend context — adds nuance, not contradiction
         if (t.sp500 > t.sp500MA4yr) {
-            var pctAbove4yr = ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0);
-            html += 'Despite the pullback, the long-term trend remains intact — price is still ' + pctAbove4yr + '% above the 4-year moving average, keeping the broader bull market structure in place. ';
+            html += 'Despite the pullback, the long-term trend remains intact — price is still ' + ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0) + '% above the 4-year moving average. ';
         } else {
-            html += 'The long-term trend is being tested — price has dropped below the 4-year moving average, a level that separates bull markets from bear markets. ';
+            html += 'The long-term trend is being tested — price has dropped below the 4-year moving average. ';
         }
 
-        // Current Pullback callout — bold, visual, standalone
         var tierColor = cpMag < -20 ? '#ef4444' : cpMag < -15 ? '#f97316' : cpMag < -10 ? '#f59e0b' : '#10b981';
         html += '</div>';
-        html += '<div style="margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; border-left: 4px solid ' + tierColor + ';">';
-        html += '<strong style="color: ' + tierColor + '; font-size: 16px;">Current Pullback:</strong> ';
-        html += '<span style="color: #334155; font-size: 15px;">Down <strong>' + cpMag + '%</strong> over <strong>' + cpDays + ' trading days</strong> (' + cpWeeks + ' weeks) — placing it in the <strong style="color: ' + tierColor + ';">' + cpTier + '</strong> category so far.</span>';
+        html += '<div style="margin: 16px 0; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; border-left: 4px solid ' + tierColor + ';">';
+        html += '<strong style="color: ' + tierColor + '; font-size: 16px;">Active Pullback:</strong> ';
+        html += '<span style="color: #334155; font-size: 15px;">Down <strong>' + cpMag + '%</strong> over <strong>' + cpDays + ' trading days</strong> (' + cpWeeks + ' weeks) — <strong style="color: ' + tierColor + ';">' + cpTier + '</strong></span>';
         html += '</div>';
         html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
     } else {
-        // No active pullback — find ATH from chart data
         var athPrice = 0, athIdx = 0;
-        for (var i = 0; i < SP500_PRICES.length; i++) {
-            if (SP500_PRICES[i] > athPrice) { athPrice = SP500_PRICES[i]; athIdx = i; }
-        }
+        for (var i = 0; i < SP500_PRICES.length; i++) { if (SP500_PRICES[i] > athPrice) { athPrice = SP500_PRICES[i]; athIdx = i; } }
         var athDate = SP500_DATES[athIdx] || '';
-        var athDateFormatted = athDate ? new Date(athDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
         var drawdownPct = athPrice > 0 ? ((t.sp500 / athPrice - 1) * 100).toFixed(1) : 0;
-        var atOrNearHigh = Math.abs(drawdownPct) < 1;
-
-        if (atOrNearHigh) {
-            html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, near its all-time high of ' + athPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' reached on ' + athDateFormatted + '. ';
+        if (Math.abs(drawdownPct) < 1) {
+            html += 'The S&P 500 is near its all-time high. ';
         } else {
-            html += 'The S&P 500 is currently trading at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong>, which is <strong style="color: ' + (drawdownPct < -10 ? '#ef4444' : '#f59e0b') + ';">' + drawdownPct + '%</strong> from its high of ' + athPrice.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' reached on ' + athDateFormatted + '. ';
+            html += 'The S&P 500 is ' + drawdownPct + '% from its high. ';
         }
-        var trendStatus = t.sp500 > t.sp500MA4yr ? 'in a bull market' : 'testing bull market support';
-        var currentCyclePct = t.sp500MA4yr > 0 ? '+' + ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0) + '% above the 4-year moving average' : '';
-        html += 'Based on the long-term trend, the market is currently <strong style="color: #0f172a; font-size: 16px;">' + trendStatus + '</strong>, trading ' + currentCyclePct + '. ';
+        html += t.sp500 > t.sp500MA4yr ? 'The long-term trend is up — price is ' + pctFrom4yr + '% above the 4-year moving average. ' : 'The long-term trend is being tested. ';
     }
 
-    // Intermediate trend + breadth + VIX (always shown)
-    html += 'The intermediate trend shows price ' + (t.sp500 > t.sp500MA150 ? 'above' : '<strong style="color: #ef4444;">' + pctFrom150 + '% below</strong>') + ' the 150-day moving average. ';
     html += breadthContext + ' ';
-    html += 'With a VIX of ' + t.vix.toFixed(1) + ', fear is ' + (t.vix >= 30 ? 'at extreme levels — historically a contrarian buy zone.' : t.vix > 20 ? 'elevated but not yet at panic levels.' : 'low — markets are calm.') + ' ';
+    html += 'VIX at ' + t.vix.toFixed(1) + ' — ' + (t.vix >= 30 ? 'extreme fear, historically a contrarian buy zone.' : t.vix > 20 ? 'elevated but not at panic levels.' : 'calm conditions.') + ' ';
     html += '</div>';
     html += '</div>';
 
-    // ── PULLBACKS ARE NORMAL ──
+    // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
     html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
-    html += '<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 16px;">';
-    var totalPullbacks = PULLBACK_STATS.total || 61;
-    var frequency = PULLBACK_STATS.frequency || 0.88;
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
+    var frequency = PULLBACK_STATS.frequency || 0.9;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
-    var routinePctStat = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.pct : 62);
-    var bearPctStat = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.bear ? PULLBACK_STATS.tiers.bear.pct : 18);
+    var routinePctStat = routineTier.pct || 63;
+    var bearPctStat = bearTier.pct || 18;
     var neverReach20 = Math.round(100 - bearPctStat);
-    // Tile 1: Total pullbacks
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
-    // Tile 2: Frequency
     var freqLabel = frequency >= 1.5 ? Math.round(frequency) + 'x per year' : frequency >= 0.75 ? '~1 per year' : 'Every ' + Math.round(1 / frequency) + ' years';
-    html += '<div style="text-align: center; padding: 16px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
-    // Tile 3: Median Decline
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
-    // Tile 4: Never Reach -10%
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
-    // Tile 5: Never Reach -20%
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + neverReach20 + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -20%</div></div>';
+
+    html += '<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px;">';
+    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
+    html += '<div style="text-align: center; padding: 18px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
+    html += '<div style="text-align: center; padding: 18px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
+    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
+    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + neverReach20 + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -20%</div></div>';
+    html += '</div>';
     html += '</div>';
 
-    // ── NOT EVERY SLIP IS THE SAME ──
+    // ═══ SECTION 4: NOT EVERY SLIP IS THE SAME ═══
     html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Not Every Slip Is the Same</div>';
-    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 16px;">Of the ' + totalPullbacks + ' pullbacks since 1957, not all were created equal. Here is how they break down by severity:</p>';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Not Every Slip Is the Same</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Of the ' + totalPullbacks + ' pullbacks since 1957, here is how they break down by severity:</p>';
     html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
-
-    // Helper to format duration (trading days → calendar time)
-    // 5 trading days ≈ 1 week, 21 trading days ≈ 1 month
-    function formatDuration(days) {
-        if (!days) return '2-6 weeks';
-        var months = Math.round(days / 21);
-        if (months < 1) return Math.round(days / 5) + ' weeks';
-        return months + ' months';
-    }
-
-    // Build table rows dynamically from PULLBACK_STATS
-    var tiers = PULLBACK_STATS.tiers || {};
-    var routineTier = tiers.routine || { count: 38, pct: 62.3, median_duration_days: 19, avg_duration_days: 24 };
-    var meaningfulTier = tiers.meaningful || { count: 8, pct: 13.1, median_duration_days: 111, avg_duration_days: 120 };
-    var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.6, median_duration_days: 62, avg_duration_days: 140 };
-    var bearTier = tiers.bear || { count: 11, pct: 18.0, median_duration_days: 195, avg_duration_days: 294 };
-
-    // Use median duration consistently across all tiers.
-    // Ensure deeper tiers never show shorter durations than shallower ones
-    // (small sample sizes can produce misleading medians).
-    var routineDur = routineTier.median_duration_days || 19;
-    var meaningfulDur = Math.max(meaningfulTier.median_duration_days || 111, routineDur);
-    var beyondDur = Math.max(beyondTier.median_duration_days || 130, meaningfulDur);
-    var bearDur = Math.max(bearTier.median_duration_days || 295, beyondDur);
-
-    html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>~' + routineTier.count + ' (~' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineDur) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
-    html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>~' + meaningfulTier.count + ' (~' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulDur) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
-    html += '<tr><td style="color: #f97316; font-weight: 600;">Beyond Normal</td><td>15-20%</td><td>~' + beyondTier.count + ' (~' + beyondTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(beyondDur) + '</td><td>Real fear sets in — but technically not a bear market</td></tr>';
-    html += '<tr><td style="color: #ef4444; font-weight: 600;">Bear Market</td><td>20%+</td><td>~' + bearTier.count + ' (~' + bearTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(bearDur) + '</td><td>Deep valley — painful but historically temporary</td></tr>';
+    html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>' + routineTier.count + ' (' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineDur) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
+    html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>' + meaningfulTier.count + ' (' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulDur) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
+    html += '<tr><td style="color: #f97316; font-weight: 600;">Beyond Normal</td><td>15-20%</td><td>' + beyondTier.count + ' (' + beyondTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(beyondDur) + '</td><td>Real fear — but technically not a bear market</td></tr>';
+    html += '<tr><td style="color: #ef4444; font-weight: 600;">Bear Market</td><td>20%+</td><td>' + bearTier.count + ' (' + bearTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(bearDur) + '</td><td>Deep valley — painful but historically temporary</td></tr>';
     html += '</tbody></table>';
-    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; margin-top: 16px;">Corrections of 15% or more (Beyond Normal + Bear) have occurred roughly once every 4-5 years since 1957. Painful, but rare enough that the climb between them does the heavy lifting.</div>';
-
-    // Methodology footnote
-    html += '<div style="margin-top: 16px; padding: 16px 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.6;"><strong style="color: #475569;">How we count pullbacks:</strong> This dashboard uses the traditional method — one pullback per peak-to-trough cycle, not counting a new episode until the market fully recovers above its prior high — which gives ' + totalPullbacks + ' distinct pullbacks since ' + (PULLBACK_STATS.start_year || 1957) + '. A broader "lived experience" method that counts every distinct 5%+ slide — including intermediate dips within larger declines where the market bounces and slides repeatedly — produces 130+ episodes. For example, the 2022 bear market alone contained 7 separate 5%+ drops, each one felt like a new crisis. Both approaches are valid; the traditional method is used here for cleaner per-tier statistics.</div>';
-    html += '</div>';
     html += '</div>';
 
-    // ── THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ──
-    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">The Climb Is Always Longer Than the Slide</div>';
-    html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">';
-    // Bull column — median stats (less skewed by outliers)
-    html += '<div style="padding: 20px; background: #f0fdf4; border-radius: 12px; border-left: 4px solid #10b981;">';
-    html += '<div style="font-size: 16px; font-weight: 700; color: #10b981; margin-bottom: 10px;">11 Bull Markets</div>';
-    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Median gain: <strong style="color: #0f172a; font-size: 16px;">+107%</strong><br/>Median duration: <strong style="color: #0f172a;">50 months</strong> (~4.2 years)<br/>Average gain: <strong style="color: #0f172a;">+172%</strong></div>';
-    html += '</div>';
-    // Bear column — median stats
-    var bearCount = bearTier.count || 10;
-    html += '<div style="padding: 20px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #ef4444;">';
-    html += '<div style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px;">' + bearCount + ' Bear Markets</div>';
-    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Median decline: <strong style="color: #0f172a; font-size: 16px;">-33%</strong><br/>Median duration: <strong style="color: #0f172a;">' + formatDuration(bearDur) + '</strong><br/>Average decline: <strong style="color: #0f172a;">-36%</strong></div>';
-    html += '</div>';
-    html += '</div>';
-    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested — time in the market beats timing the market. All durations use median values (less skewed by outliers). See the Sources &amp; Definitions tab for the full list of all 11 bull and bear markets.</div>';
+    // Closing quote
+    html += '<div style="margin-top: 8px; padding: 16px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 10px;">';
+    html += '<div style="font-size: 15px; color: #e2e8f0; line-height: 1.6; font-style: italic; text-align: center;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
     html += '</div>';
 
-    // ── Closing quote ──
-    html += '<div style="margin-top: 24px; padding: 16px 20px; background: linear-gradient(135deg, #f0f9ff, #f0fdf4); border-radius: 10px; border: 1px solid #e2e8f0;">';
-    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; font-style: italic;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
-    html += '</div>';
-
-    html += '<div style="font-size: 13px; color: #64748b; text-align: right; margin-top: 16px;">Source: S&amp;P 500 daily price data, 1957 to present.</div>';
     html += '</div>';
 
     return html;
