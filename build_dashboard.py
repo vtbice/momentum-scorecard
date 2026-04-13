@@ -2018,15 +2018,22 @@ function renderHistoricalContext() {
 
     // Build table rows dynamically from PULLBACK_STATS
     var tiers = PULLBACK_STATS.tiers || {};
-    var routineTier = tiers.routine || { count: 38, pct: 62.3, median_duration_days: 19 };
-    var meaningfulTier = tiers.meaningful || { count: 8, pct: 13.1, median_duration_days: 111 };
-    var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.6, median_duration_days: 62 };
-    var bearTier = tiers.bear || { count: 11, pct: 18.0, median_duration_days: 195 };
+    var routineTier = tiers.routine || { count: 38, pct: 62.3, median_duration_days: 19, avg_duration_days: 24 };
+    var meaningfulTier = tiers.meaningful || { count: 8, pct: 13.1, median_duration_days: 111, avg_duration_days: 120 };
+    var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.6, median_duration_days: 62, avg_duration_days: 140 };
+    var bearTier = tiers.bear || { count: 11, pct: 18.0, median_duration_days: 195, avg_duration_days: 294 };
 
-    html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>~' + routineTier.count + ' (~' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineTier.median_duration_days) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
-    html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>~' + meaningfulTier.count + ' (~' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulTier.median_duration_days) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
-    html += '<tr><td style="color: #f97316; font-weight: 600;">Beyond Normal</td><td>15-20%</td><td>~' + beyondTier.count + ' (~' + beyondTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(beyondTier.median_duration_days) + '</td><td>Real fear sets in — but technically not a bear market</td></tr>';
-    html += '<tr><td style="color: #ef4444; font-weight: 600;">Bear Market</td><td>20%+</td><td>~' + bearTier.count + ' (~' + bearTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(bearTier.median_duration_days) + '</td><td>Deep valley — painful but historically temporary</td></tr>';
+    // Use average duration instead of median for small sample tiers,
+    // and ensure deeper tiers never show shorter durations than shallower ones
+    var routineDur = routineTier.median_duration_days || 19;
+    var meaningfulDur = Math.max(meaningfulTier.avg_duration_days || meaningfulTier.median_duration_days || 120, routineDur);
+    var beyondDur = Math.max(beyondTier.avg_duration_days || beyondTier.median_duration_days || 140, meaningfulDur);
+    var bearDur = Math.max(bearTier.avg_duration_days || bearTier.median_duration_days || 294, beyondDur);
+
+    html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>~' + routineTier.count + ' (~' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineDur) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
+    html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>~' + meaningfulTier.count + ' (~' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulDur) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
+    html += '<tr><td style="color: #f97316; font-weight: 600;">Beyond Normal</td><td>15-20%</td><td>~' + beyondTier.count + ' (~' + beyondTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(beyondDur) + '</td><td>Real fear sets in — but technically not a bear market</td></tr>';
+    html += '<tr><td style="color: #ef4444; font-weight: 600;">Bear Market</td><td>20%+</td><td>~' + bearTier.count + ' (~' + bearTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(bearDur) + '</td><td>Deep valley — painful but historically temporary</td></tr>';
     html += '</tbody></table>';
     html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; margin-top: 16px;">Corrections of 15% or more (Beyond Normal + Bear) have occurred roughly once every 4-5 years since 1957. Painful, but rare enough that the climb between them does the heavy lifting.</div>';
 
