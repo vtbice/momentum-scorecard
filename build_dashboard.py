@@ -3108,19 +3108,19 @@ function renderSourcesTab() {
     html += '</tbody></table>';
 
     html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bull Markets</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Start</th><th style="text-align:right;">End</th><th style="text-align:right;">Gain</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
-    html += '<tr><td>1957-61</td><td style="text-align:right;">39</td><td style="text-align:right;">72</td><td style="text-align:right;color:#10b981;">+86%</td><td style="text-align:right;">50 mo</td></tr>';
-    html += '<tr><td>1962-66</td><td style="text-align:right;">52</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;">+80%</td><td style="text-align:right;">44 mo</td></tr>';
-    html += '<tr><td>1966-68</td><td style="text-align:right;">73</td><td style="text-align:right;">108</td><td style="text-align:right;color:#10b981;">+48%</td><td style="text-align:right;">26 mo</td></tr>';
-    html += '<tr><td>1970-73</td><td style="text-align:right;">69</td><td style="text-align:right;">120</td><td style="text-align:right;color:#10b981;">+74%</td><td style="text-align:right;">32 mo</td></tr>';
-    html += '<tr><td>1974-80</td><td style="text-align:right;">62</td><td style="text-align:right;">141</td><td style="text-align:right;color:#10b981;">+126%</td><td style="text-align:right;">74 mo</td></tr>';
-    html += '<tr><td>1982-87</td><td style="text-align:right;">102</td><td style="text-align:right;">337</td><td style="text-align:right;color:#10b981;">+229%</td><td style="text-align:right;">60 mo</td></tr>';
-    html += '<tr><td>1987-00</td><td style="text-align:right;">224</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;">+582%</td><td style="text-align:right;">148 mo</td></tr>';
-    html += '<tr><td>2002-07</td><td style="text-align:right;">777</td><td style="text-align:right;">1,565</td><td style="text-align:right;color:#10b981;">+101%</td><td style="text-align:right;">60 mo</td></tr>';
-    html += '<tr><td>2009-20</td><td style="text-align:right;">677</td><td style="text-align:right;">3,386</td><td style="text-align:right;color:#10b981;">+401%</td><td style="text-align:right;">131 mo</td></tr>';
-    html += '<tr><td>2020-22</td><td style="text-align:right;">2,237</td><td style="text-align:right;">4,797</td><td style="text-align:right;color:#10b981;">+114%</td><td style="text-align:right;">21 mo</td></tr>';
-    html += '<tr><td>2022-Present</td><td style="text-align:right;">3,577</td><td style="text-align:right;">' + Math.round(MARKET.technical.sp500).toLocaleString() + '</td><td style="text-align:right;color:#10b981;">+' + Math.round((MARKET.technical.sp500 / 3577 - 1) * 100) + '%</td><td style="text-align:right;">Ongoing</td></tr>';
-    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#10b981;">+107%</td><td style="text-align:right;">50 mo</td></tr>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Start</th><th style="text-align:right;">End</th><th style="text-align:right;">Gain</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Driver</th></tr></thead><tbody>';
+    html += '<tr><td>1957-61</td><td style="text-align:right;">39</td><td style="text-align:right;">72</td><td style="text-align:right;color:#10b981;">+86%</td><td style="text-align:right;">50 mo</td><td>Post-recession recovery, space race spending</td></tr>';
+    html += '<tr><td>1962-66</td><td style="text-align:right;">52</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;">+80%</td><td style="text-align:right;">44 mo</td><td>Kennedy tax cuts, economic expansion</td></tr>';
+    html += '<tr><td>1966-68</td><td style="text-align:right;">73</td><td style="text-align:right;">108</td><td style="text-align:right;color:#10b981;">+48%</td><td style="text-align:right;">26 mo</td><td>Great Society spending, consumer boom</td></tr>';
+    html += '<tr><td>1970-73</td><td style="text-align:right;">69</td><td style="text-align:right;">120</td><td style="text-align:right;color:#10b981;">+74%</td><td style="text-align:right;">32 mo</td><td>Nifty Fifty rally, Nixon price controls</td></tr>';
+    html += '<tr><td>1974-80</td><td style="text-align:right;">62</td><td style="text-align:right;">141</td><td style="text-align:right;color:#10b981;">+126%</td><td style="text-align:right;">74 mo</td><td>Post-Watergate recovery, energy boom</td></tr>';
+    html += '<tr><td>1982-87</td><td style="text-align:right;">102</td><td style="text-align:right;">337</td><td style="text-align:right;color:#10b981;">+229%</td><td style="text-align:right;">60 mo</td><td>Volcker inflation victory, Reagan tax reform</td></tr>';
+    html += '<tr><td>1987-00</td><td style="text-align:right;">224</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;">+582%</td><td style="text-align:right;">148 mo</td><td>Tech revolution, globalization, dot-com boom</td></tr>';
+    html += '<tr><td>2002-07</td><td style="text-align:right;">777</td><td style="text-align:right;">1,565</td><td style="text-align:right;color:#10b981;">+101%</td><td style="text-align:right;">60 mo</td><td>Housing boom, easy credit, global growth</td></tr>';
+    html += '<tr><td>2009-20</td><td style="text-align:right;">677</td><td style="text-align:right;">3,386</td><td style="text-align:right;color:#10b981;">+401%</td><td style="text-align:right;">131 mo</td><td>QE, zero rates, FAANG-led tech boom</td></tr>';
+    html += '<tr><td>2020-22</td><td style="text-align:right;">2,237</td><td style="text-align:right;">4,797</td><td style="text-align:right;color:#10b981;">+114%</td><td style="text-align:right;">21 mo</td><td>Stimulus, reopening, meme stocks</td></tr>';
+    html += '<tr><td>2022-Present</td><td style="text-align:right;">3,577</td><td style="text-align:right;">' + Math.round(MARKET.technical.sp500).toLocaleString() + '</td><td style="text-align:right;color:#10b981;">+' + Math.round((MARKET.technical.sp500 / 3577 - 1) * 100) + '%</td><td style="text-align:right;">Ongoing</td><td>AI revolution, Mag 7, rate cut hopes</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#10b981;">+107%</td><td style="text-align:right;">50 mo</td><td></td></tr>';
     html += '</tbody></table>';
 
     html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
@@ -3138,21 +3138,43 @@ function renderSourcesTab() {
         return months + ' mo';
     }
 
+    // Trigger lookup for meaningful and beyond normal corrections
+    var correctionTriggers = {
+        '1959': 'Steel strike, Eisenhower recession fears',
+        '1967': 'Vietnam War escalation, rising rates',
+        '1983': 'Latin American debt crisis, Fed tightening',
+        '1989': 'United Airlines buyout collapse, mini-crash',
+        '1997': 'Asian financial crisis contagion',
+        '1999': 'Rate hike fears, Y2K uncertainty',
+        '2015': 'China slowdown, oil crash, Fed liftoff',
+        '2018-01': 'Inflation scare, volatility spike (Volmageddon)',
+        '1990-07': 'Iraq invades Kuwait, oil shock, S&L crisis',
+        '1998': 'Russian default, LTCM collapse',
+        '2018-09': 'Fed rate hikes, trade war escalation',
+        '2025': 'Tariff escalation, AI valuation reset',
+    };
+    function getTrigger(dateStr) {
+        for (var key in correctionTriggers) {
+            if (dateStr.indexOf(key) >= 0) return correctionTriggers[key];
+        }
+        return '';
+    }
+
     // Meaningful (10-15%)
     var meaningfulDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.meaningful && PULLBACK_STATS.tiers.meaningful.details) || [];
     html += '<div style="font-weight: 700; color: #f59e0b; margin-bottom: 8px; margin-top: 16px;">Meaningful Corrections (10-15%) — ' + meaningfulDetails.length + ' since 1957</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
     meaningfulDetails.forEach(function(pb) {
-        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f59e0b;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td></tr>';
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f59e0b;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
     });
     html += '</tbody></table>';
 
     // Beyond Normal (15-20%)
     var beyondDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.beyond_normal && PULLBACK_STATS.tiers.beyond_normal.details) || [];
     html += '<div style="font-weight: 700; color: #f97316; margin-bottom: 8px;">Beyond Normal Corrections (15-20%) — ' + beyondDetails.length + ' since 1957</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
     beyondDetails.forEach(function(pb) {
-        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f97316;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td></tr>';
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f97316;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
     });
     html += '</tbody></table>';
 
