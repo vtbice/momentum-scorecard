@@ -1877,12 +1877,13 @@ function renderHistoricalContext() {
     html += '<p style="font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 16px;">Of the ' + totalPullbacks + ' pullbacks since 1957, not all were created equal. Here is how they break down by severity:</p>';
     html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
 
-    // Helper to format duration
+    // Helper to format duration (trading days → calendar time)
+    // 5 trading days ≈ 1 week, 21 trading days ≈ 1 month
     function formatDuration(days) {
         if (!days) return '2-6 weeks';
-        if (days < 30) return Math.round(days / 5) + ' weeks';
-        if (days < 180) return Math.round(days / 21) + ' months';
-        return Math.round(days / 30) + ' months';
+        var months = Math.round(days / 21);
+        if (months < 1) return Math.round(days / 5) + ' weeks';
+        return months + ' months';
     }
 
     // Build table rows dynamically from PULLBACK_STATS
@@ -1915,9 +1916,11 @@ function renderHistoricalContext() {
     html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average gain: <strong style="color: #0f172a; font-size: 16px;">+172%</strong><br/>Average duration: <strong style="color: #0f172a;">56 months</strong> (~4.7 years)<br/>7 of 11 exceeded +79%</div>';
     html += '</div>';
     // Bear column
+    var bearCount = bearTier.count || 10;
+    var bearAvgDur = bearTier.avg_duration_days ? formatDuration(bearTier.avg_duration_days) : '14 months';
     html += '<div style="padding: 20px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #ef4444;">';
-    html += '<div style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px;">10 Bear Markets</div>';
-    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average decline: <strong style="color: #0f172a; font-size: 16px;">-36%</strong><br/>Average duration: <strong style="color: #0f172a;">14 months</strong> (~1.2 years)<br/>6 of 10 lasted 18 months or less</div>';
+    html += '<div style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px;">' + bearCount + ' Bear Markets</div>';
+    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average decline: <strong style="color: #0f172a; font-size: 16px;">-36%</strong><br/>Average duration: <strong style="color: #0f172a;">' + bearAvgDur + '</strong><br/>Typical duration: <strong style="color: #0f172a;">' + formatDuration(bearTier.median_duration_days || 294) + '</strong> (median)</div>';
     html += '</div>';
     html += '</div>';
     html += '<div style="font-size: 15px; color: #475569; line-height: 1.6;">Bulls are roughly 4x longer and deliver 5x the magnitude of bears. The math overwhelmingly favors staying invested — time in the market beats timing the market.</div>';
