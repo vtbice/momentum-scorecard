@@ -3126,7 +3126,40 @@ function renderSourcesTab() {
     html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
     html += '</div>';
 
-    // Card 8: Disclaimer
+    // Card 8: Pullback Detail Tables (auto-generated from pullback engine)
+    html += '<div class="card"><div class="card-title">Correction History — Meaningful &amp; Beyond Normal (S&amp;P 500, 1957–Present)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">These tables are auto-generated from the pullback engine and update with each nightly refresh. Bear markets (20%+) are listed in the table above.</p>';
+
+    // Helper to format pullback duration
+    function fmtPbDur(days) {
+        if (!days) return '—';
+        var months = Math.round(days / 21);
+        if (months < 1) return Math.round(days / 5) + ' wks';
+        return months + ' mo';
+    }
+
+    // Meaningful (10-15%)
+    var meaningfulDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.meaningful && PULLBACK_STATS.tiers.meaningful.details) || [];
+    html += '<div style="font-weight: 700; color: #f59e0b; margin-bottom: 8px; margin-top: 16px;">Meaningful Corrections (10-15%) — ' + meaningfulDetails.length + ' since 1957</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    meaningfulDetails.forEach(function(pb) {
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f59e0b;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+
+    // Beyond Normal (15-20%)
+    var beyondDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.beyond_normal && PULLBACK_STATS.tiers.beyond_normal.details) || [];
+    html += '<div style="font-weight: 700; color: #f97316; margin-bottom: 8px;">Beyond Normal Corrections (15-20%) — ' + beyondDetails.length + ' since 1957</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    beyondDetails.forEach(function(pb) {
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f97316;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+
+    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 daily price data, 1957-present. Pullback = 5%+ decline from a running peak. One pullback per peak-to-trough cycle. These tables auto-update with each nightly pipeline refresh.</p>';
+    html += '</div>';
+
+    // Card 9: Disclaimer
     html += '<div class="card"><div class="card-title">Disclaimer</div>';
     html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; padding: 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">This dashboard is for educational and informational purposes only. It is not investment advice. Past performance does not guarantee future results. The indicators presented are historical patterns and should never be the sole basis for investment decisions. Always consult with a qualified financial advisor before making investment decisions.</p>';
     html += '</div>';

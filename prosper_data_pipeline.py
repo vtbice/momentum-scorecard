@@ -1437,6 +1437,14 @@ def analyze_pullbacks():
                     'pct': round(len(pbs) / len(pullbacks) * 100, 1) if pullbacks else 0,
                     'median_duration_days': int(median_dur),
                     'avg_duration_days': int(avg_dur),
+                    'details': [{
+                        'start': pd.Timestamp(pb['start_date']).strftime('%Y-%m-%d'),
+                        'trough': pd.Timestamp(pb['trough_date']).strftime('%Y-%m-%d'),
+                        'peak': round(pb['peak_price'], 2),
+                        'low': round(pb['trough_price'], 2),
+                        'mag': round(pb['magnitude'], 1),
+                        'dur': pb['duration'],
+                    } for pb in sorted(pbs, key=lambda x: x['start_date'])],
                 }
             else:
                 tier_stats[tier_name] = {
