@@ -1893,12 +1893,13 @@ function renderHistoricalContext() {
     var beyondTier = tiers.beyond_normal || { count: 4, pct: 6.6, median_duration_days: 62, avg_duration_days: 140 };
     var bearTier = tiers.bear || { count: 11, pct: 18.0, median_duration_days: 195, avg_duration_days: 294 };
 
-    // Use average duration instead of median for small sample tiers,
-    // and ensure deeper tiers never show shorter durations than shallower ones
+    // Use median duration consistently across all tiers.
+    // Ensure deeper tiers never show shorter durations than shallower ones
+    // (small sample sizes can produce misleading medians).
     var routineDur = routineTier.median_duration_days || 19;
-    var meaningfulDur = Math.max(meaningfulTier.avg_duration_days || meaningfulTier.median_duration_days || 120, routineDur);
-    var beyondDur = Math.max(beyondTier.avg_duration_days || beyondTier.median_duration_days || 140, meaningfulDur);
-    var bearDur = Math.max(bearTier.avg_duration_days || bearTier.median_duration_days || 294, beyondDur);
+    var meaningfulDur = Math.max(meaningfulTier.median_duration_days || 111, routineDur);
+    var beyondDur = Math.max(beyondTier.median_duration_days || 130, meaningfulDur);
+    var bearDur = Math.max(bearTier.median_duration_days || 295, beyondDur);
 
     html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>~' + routineTier.count + ' (~' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineDur) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
     html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>~' + meaningfulTier.count + ' (~' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulDur) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
@@ -1917,20 +1918,19 @@ function renderHistoricalContext() {
     html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
     html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">The Climb Is Always Longer Than the Slide</div>';
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">';
-    // Bull column
+    // Bull column — median stats (less skewed by outliers)
     html += '<div style="padding: 20px; background: #f0fdf4; border-radius: 12px; border-left: 4px solid #10b981;">';
     html += '<div style="font-size: 16px; font-weight: 700; color: #10b981; margin-bottom: 10px;">11 Bull Markets</div>';
-    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average gain: <strong style="color: #0f172a; font-size: 16px;">+172%</strong><br/>Average duration: <strong style="color: #0f172a;">56 months</strong> (~4.7 years)<br/>7 of 11 exceeded +79%</div>';
+    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Median gain: <strong style="color: #0f172a; font-size: 16px;">+107%</strong><br/>Median duration: <strong style="color: #0f172a;">50 months</strong> (~4.2 years)<br/>Average gain: <strong style="color: #0f172a;">+172%</strong></div>';
     html += '</div>';
-    // Bear column
+    // Bear column — median stats
     var bearCount = bearTier.count || 10;
-    var bearAvgDur = bearTier.avg_duration_days ? formatDuration(bearTier.avg_duration_days) : '14 months';
     html += '<div style="padding: 20px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #ef4444;">';
     html += '<div style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 10px;">' + bearCount + ' Bear Markets</div>';
-    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Average decline: <strong style="color: #0f172a; font-size: 16px;">-36%</strong><br/>Average duration: <strong style="color: #0f172a;">' + bearAvgDur + '</strong><br/>Typical duration: <strong style="color: #0f172a;">' + formatDuration(bearTier.median_duration_days || 294) + '</strong> (median)</div>';
+    html += '<div style="font-size: 14px; color: #64748b; line-height: 1.7;">Median decline: <strong style="color: #0f172a; font-size: 16px;">-33%</strong><br/>Median duration: <strong style="color: #0f172a;">' + formatDuration(bearDur) + '</strong><br/>Average decline: <strong style="color: #0f172a;">-36%</strong></div>';
     html += '</div>';
     html += '</div>';
-    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6;">Bulls are roughly 4x longer and deliver 5x the magnitude of bears. The math overwhelmingly favors staying invested — time in the market beats timing the market.</div>';
+    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested — time in the market beats timing the market. All durations use median values (less skewed by outliers). See the Sources &amp; Definitions tab for the full list of all 11 bull and bear markets.</div>';
     html += '</div>';
 
     // ── Closing quote ──
@@ -2957,7 +2957,46 @@ function renderSourcesTab() {
 
     html += '</div>';
 
-    // Card 7: Disclaimer
+    // Card 7: Bull & Bear Market History
+    html += '<div class="card"><div class="card-title">Bull &amp; Bear Market History (S&amp;P 500, 1957–Present)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">All statistics use median values (less skewed by outliers). A bear market is a 20%+ decline from peak. A bull market is the recovery from a bear market trough to the next peak.</p>';
+
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bear Markets</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
+    html += '<tr><td>1957</td><td style="text-align:right;">49</td><td style="text-align:right;">39</td><td style="text-align:right;color:#ef4444;">-21%</td><td style="text-align:right;">3 mo</td><td>Eisenhower recession</td></tr>';
+    html += '<tr><td>1961-62</td><td style="text-align:right;">72</td><td style="text-align:right;">52</td><td style="text-align:right;color:#ef4444;">-28%</td><td style="text-align:right;">6 mo</td><td>Flash crash, steel crisis</td></tr>';
+    html += '<tr><td>1966</td><td style="text-align:right;">94</td><td style="text-align:right;">73</td><td style="text-align:right;color:#ef4444;">-22%</td><td style="text-align:right;">8 mo</td><td>Credit crunch, Vietnam</td></tr>';
+    html += '<tr><td>1968-70</td><td style="text-align:right;">108</td><td style="text-align:right;">69</td><td style="text-align:right;color:#ef4444;">-36%</td><td style="text-align:right;">18 mo</td><td>Inflation, social unrest</td></tr>';
+    html += '<tr><td>1973-74</td><td style="text-align:right;">120</td><td style="text-align:right;">62</td><td style="text-align:right;color:#ef4444;">-48%</td><td style="text-align:right;">21 mo</td><td>Oil embargo, Watergate</td></tr>';
+    html += '<tr><td>1980-82</td><td style="text-align:right;">141</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;">-27%</td><td style="text-align:right;">21 mo</td><td>Volcker rate hikes</td></tr>';
+    html += '<tr><td>1987</td><td style="text-align:right;">337</td><td style="text-align:right;">224</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">3 mo</td><td>Black Monday crash</td></tr>';
+    html += '<tr><td>2000-02</td><td style="text-align:right;">1,527</td><td style="text-align:right;">777</td><td style="text-align:right;color:#ef4444;">-49%</td><td style="text-align:right;">31 mo</td><td>Dot-com bust</td></tr>';
+    html += '<tr><td>2007-09</td><td style="text-align:right;">1,565</td><td style="text-align:right;">677</td><td style="text-align:right;color:#ef4444;">-57%</td><td style="text-align:right;">17 mo</td><td>Financial crisis</td></tr>';
+    html += '<tr><td>2020</td><td style="text-align:right;">3,386</td><td style="text-align:right;">2,237</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">1 mo</td><td>COVID-19</td></tr>';
+    html += '<tr><td>2022</td><td style="text-align:right;">4,797</td><td style="text-align:right;">3,577</td><td style="text-align:right;color:#ef4444;">-25%</td><td style="text-align:right;">10 mo</td><td>Inflation, rate hikes</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#ef4444;">-33%</td><td style="text-align:right;">14 mo</td><td></td></tr>';
+    html += '</tbody></table>';
+
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bull Markets</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Start</th><th style="text-align:right;">End</th><th style="text-align:right;">Gain</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    html += '<tr><td>1957-61</td><td style="text-align:right;">39</td><td style="text-align:right;">72</td><td style="text-align:right;color:#10b981;">+86%</td><td style="text-align:right;">50 mo</td></tr>';
+    html += '<tr><td>1962-66</td><td style="text-align:right;">52</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;">+80%</td><td style="text-align:right;">44 mo</td></tr>';
+    html += '<tr><td>1966-68</td><td style="text-align:right;">73</td><td style="text-align:right;">108</td><td style="text-align:right;color:#10b981;">+48%</td><td style="text-align:right;">26 mo</td></tr>';
+    html += '<tr><td>1970-73</td><td style="text-align:right;">69</td><td style="text-align:right;">120</td><td style="text-align:right;color:#10b981;">+74%</td><td style="text-align:right;">32 mo</td></tr>';
+    html += '<tr><td>1974-80</td><td style="text-align:right;">62</td><td style="text-align:right;">141</td><td style="text-align:right;color:#10b981;">+126%</td><td style="text-align:right;">74 mo</td></tr>';
+    html += '<tr><td>1982-87</td><td style="text-align:right;">102</td><td style="text-align:right;">337</td><td style="text-align:right;color:#10b981;">+229%</td><td style="text-align:right;">60 mo</td></tr>';
+    html += '<tr><td>1987-00</td><td style="text-align:right;">224</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;">+582%</td><td style="text-align:right;">148 mo</td></tr>';
+    html += '<tr><td>2002-07</td><td style="text-align:right;">777</td><td style="text-align:right;">1,565</td><td style="text-align:right;color:#10b981;">+101%</td><td style="text-align:right;">60 mo</td></tr>';
+    html += '<tr><td>2009-20</td><td style="text-align:right;">677</td><td style="text-align:right;">3,386</td><td style="text-align:right;color:#10b981;">+401%</td><td style="text-align:right;">131 mo</td></tr>';
+    html += '<tr><td>2020-22</td><td style="text-align:right;">2,237</td><td style="text-align:right;">4,797</td><td style="text-align:right;color:#10b981;">+114%</td><td style="text-align:right;">21 mo</td></tr>';
+    html += '<tr><td>2022-Present</td><td style="text-align:right;">3,577</td><td style="text-align:right;">' + Math.round(MARKET.technical.sp500).toLocaleString() + '</td><td style="text-align:right;color:#10b981;">+' + Math.round((MARKET.technical.sp500 / 3577 - 1) * 100) + '%</td><td style="text-align:right;">Ongoing</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#10b981;">+107%</td><td style="text-align:right;">50 mo</td></tr>';
+    html += '</tbody></table>';
+
+    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
+    html += '</div>';
+
+    // Card 8: Disclaimer
     html += '<div class="card"><div class="card-title">Disclaimer</div>';
     html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; padding: 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">This dashboard is for educational and informational purposes only. It is not investment advice. Past performance does not guarantee future results. The indicators presented are historical patterns and should never be the sole basis for investment decisions. Always consult with a qualified financial advisor before making investment decisions.</p>';
     html += '</div>';
