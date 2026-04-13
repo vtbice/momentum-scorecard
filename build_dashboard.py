@@ -3140,18 +3140,18 @@ function renderSourcesTab() {
 
     // Trigger lookup for meaningful and beyond normal corrections
     var correctionTriggers = {
-        '1959': 'Steel strike, Eisenhower recession fears',
-        '1967': 'Vietnam War escalation, rising rates',
-        '1983': 'Latin American debt crisis, Fed tightening',
-        '1989': 'United Airlines buyout collapse, mini-crash',
-        '1997': 'Asian financial crisis contagion',
-        '1999': 'Rate hike fears, Y2K uncertainty',
-        '2015': 'China slowdown, oil crash, Fed liftoff',
-        '2018-01': 'Inflation scare, volatility spike (Volmageddon)',
-        '1990-07': 'Iraq invades Kuwait, oil shock, S&L crisis',
-        '1998': 'Russian default, LTCM collapse',
-        '2018-09': 'Fed rate hikes, trade war escalation',
-        '2025': 'Tariff escalation, AI valuation reset',
+        '1959': 'Steel strike, recession fears',
+        '1967': 'Vietnam War costs, rising interest rates',
+        '1983': 'Debt crisis in Latin America, Fed raising rates',
+        '1989': 'Failed airline buyout triggered a sell-off',
+        '1997': 'Currency crisis in Asia spread to U.S. markets',
+        '1999': 'Fed raising rates, worries about Y2K computer bug',
+        '2015': 'China economy slowing, oil prices crashing, Fed starting to raise rates',
+        '2018-01': 'Inflation scare, bets against volatility blew up causing a chain reaction',
+        '1990-07': 'Iraq invaded Kuwait, oil prices spiked, savings & loan bank failures',
+        '1998': 'Russia defaulted on its debt, a giant hedge fund nearly collapsed',
+        '2018-09': 'Fed kept raising rates, U.S.-China trade war escalating',
+        '2025': 'Tariff escalation, concerns about AI stock valuations',
     };
     function getTrigger(dateStr) {
         for (var key in correctionTriggers) {
