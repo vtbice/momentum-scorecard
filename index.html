@@ -624,11 +624,12 @@
             cursor: pointer;
             user-select: none;
             font-size: 13px;
+            transition: background 0.15s;
         }
 
         .stock-table th:hover {
-            background: #f1f5f9;
-            cursor: pointer;
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
         .stock-table td {
@@ -1092,7 +1093,8 @@
             </div>
 
             <!-- Summary Strip -->
-            <div id="summaryStrip" style="background: #f8fafc; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; display: flex; gap: 20px; flex-wrap: wrap;"></div>
+            <div id="summaryStrip" style="background: #f8fafc; border-radius: 8px; padding: 10px 16px; margin-bottom: 12px; font-size: 13px; display: flex; gap: 20px; flex-wrap: wrap;"></div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-style: italic;">Click any column header to sort. Click a row to see stock details.</div>
 
             <!-- Stock Table -->
             <table class="stock-table" id="stockTable">
@@ -2382,6 +2384,17 @@ function sortStocks(col, asc) {
 
     currentPage = 1;
     renderStockTable();
+
+    // Update sort arrows on headers
+    var headers = document.querySelectorAll('#stockTable thead th');
+    headers.forEach(function(th) {
+        th.textContent = th.textContent.replace(/ [▲▼]/g, '');
+    });
+    var colMap = { 'ticker': 1, 'sector': 2, 'price': 3, 'ma150': 4, 'trend': 5, 'tr1wk': 6, 'trChg': 7, 'momentum': 8, 'vsMa': 9, 'ret1m': 10, 'ret12m': 11, 'rasr': 12 };
+    var idx = colMap[col];
+    if (idx !== undefined && headers[idx]) {
+        headers[idx].textContent = headers[idx].textContent + (sortAsc ? ' ▲' : ' ▼');
+    }
 }
 
 function toggleRASR() {
