@@ -1851,26 +1851,24 @@ function renderHistoricalContext() {
     // ── PULLBACKS ARE NORMAL ──
     html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
     html += '<div style="font-family: Fraunces, serif; font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
-    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
+    html += '<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 16px;">';
     var totalPullbacks = PULLBACK_STATS.total || 61;
     var frequency = PULLBACK_STATS.frequency || 0.88;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
     var routinePctStat = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.pct : 62);
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
+    var bearPctStat = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.bear ? PULLBACK_STATS.tiers.bear.pct : 18);
+    var neverReach20 = Math.round(100 - bearPctStat);
+    // Tile 1: Total pullbacks
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
+    // Tile 2: Frequency
     var freqLabel = frequency >= 1.5 ? Math.round(frequency) + 'x per year' : frequency >= 0.75 ? '~1 per year' : 'Every ' + Math.round(1 / frequency) + ' years';
-    html += '<div style="text-align: center; padding: 16px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
-    html += '<div style="text-align: center; padding: 16px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 14px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
-    html += '</div>';
-    // Key insight — highlighted callout to fight bias
-    html += '<div style="padding: 16px 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 10px; border-left: 4px solid #10b981;">';
-    var routineCount = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.count : 38);
-    var routinePct = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.pct : 62);
-    var bearPct = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.bear ? PULLBACK_STATS.tiers.bear.pct : 18);
-    var routineDays = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.routine ? PULLBACK_STATS.tiers.routine.median_duration_days : 19);
-    var routineWeeks = Math.round(routineDays / 5);
-    html += '<div style="font-size: 15px; font-weight: 600; color: #0f172a; line-height: 1.6;">More than half of all 5%+ pullbacks never reach -10% and typically resolve in about ' + routineWeeks + ' weeks. Only about 1 in 10 becomes a bear market of -20% or more. The median decline across all pullbacks is ' + medianMag + '% — most are over before the headlines catch up.</div>';
-    html += '</div>';
+    html += '<div style="text-align: center; padding: 16px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
+    // Tile 3: Median Decline
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
+    // Tile 4: Never Reach -10%
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
+    // Tile 5: Never Reach -20%
+    html += '<div style="text-align: center; padding: 16px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + neverReach20 + '%</div><div style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -20%</div></div>';
     html += '</div>';
 
     // ── NOT EVERY SLIP IS THE SAME ──
