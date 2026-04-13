@@ -626,6 +626,13 @@ html_content = '''<!DOCTYPE html>
             color: #475569;
             font-size: 13px;
             cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+
+        .sector-table th:hover {
+            background: #e2e8f0;
+            color: #0f172a;
         }
 
         .sector-table th:nth-child(2) {
@@ -1117,7 +1124,7 @@ html_content = '''<!DOCTYPE html>
                 <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #ef4444; display: inline-block;"></span> Downtrend</span>
                 <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 12px; border-radius: 2px; background: #3b82f6; display: inline-block;"></span> Snapback</span>
             </div>
-            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any sector row to expand and see individual stocks</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any column header to sort. Click a sector row to expand and see individual stocks.</div>
             <table class="sector-table" id="sectorsTable">
                 <thead>
                     <tr>
@@ -1166,7 +1173,7 @@ html_content = '''<!DOCTYPE html>
                     <option value="">All Sectors</option>
                 </select>
             </div>
-            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any industry row to expand and see individual stocks</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-style: italic;">Click any column header to sort. Click an industry row to expand and see individual stocks.</div>
             <table class="sector-table" id="industriesTable">
                 <thead>
                     <tr>
@@ -2253,6 +2260,11 @@ function sortExpandedStocks(col) {
     if (expandedSortCol === col) { expandedSortAsc = !expandedSortAsc; }
     else { expandedSortCol = col; expandedSortAsc = col === 'ticker' || col === 'company'; }
     renderExpandedSector();
+    var headers = document.querySelectorAll('#expandedStocksTable th');
+    headers.forEach(function(th) { th.textContent = th.textContent.replace(/ [▲▼]/g, ''); });
+    var colMap = { 'ticker': 0, 'company': 1, 'trend': 2, 'tr1wk': 3, 'trChg': 4, 'ret1m': 5, 'ret12m': 6 };
+    var idx = colMap[col];
+    if (idx !== undefined && headers[idx]) headers[idx].textContent += (expandedSortAsc ? ' ▲' : ' ▼');
 }
 
 function renderExpandedSector() {
@@ -2369,6 +2381,13 @@ function sortIndustries(column) {
     if (industrySortCol === column) { industrySortAsc = !industrySortAsc; }
     else { industrySortCol = column; industrySortAsc = column === 'name' || column === 'sector'; }
     renderIndustries();
+
+    // Update sort arrows
+    var headers = document.querySelectorAll('#industriesTable th');
+    headers.forEach(function(th) { th.textContent = th.textContent.replace(/ [▲▼]/g, ''); });
+    var colMap = { 'name': 0, 'sector': 1, 'trend': 2, 'uptrend': 3, 'momentum': 4, 'count': 5 };
+    var idx = colMap[column];
+    if (idx !== undefined && headers[idx]) headers[idx].textContent += (industrySortAsc ? ' ▲' : ' ▼');
 }
 
 var currentExpandedIndustry = '';
@@ -2388,6 +2407,11 @@ function sortExpandedIndustryStocks(col) {
     if (expandedIndSortCol === col) { expandedIndSortAsc = !expandedIndSortAsc; }
     else { expandedIndSortCol = col; expandedIndSortAsc = col === 'ticker' || col === 'company'; }
     renderExpandedIndustry();
+    var headers = document.querySelectorAll('#expandedIndustryStocksTable th');
+    headers.forEach(function(th) { th.textContent = th.textContent.replace(/ [▲▼]/g, ''); });
+    var colMap = { 'ticker': 0, 'company': 1, 'trend': 2, 'tr1wk': 3, 'trChg': 4, 'ret1m': 5, 'ret12m': 6 };
+    var idx = colMap[col];
+    if (idx !== undefined && headers[idx]) headers[idx].textContent += (expandedIndSortAsc ? ' ▲' : ' ▼');
 }
 
 function renderExpandedIndustry() {
