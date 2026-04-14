@@ -1310,29 +1310,29 @@ def analyze_pullbacks():
 
         print(f"  Loading historical data: {len(hist_df):,} rows ({hist_df['Date'].dt.year.min()}-{hist_df['Date'].dt.year.max()})")
 
-        # Get recent data from yfinance (last 30 days)
+        # Get recent data from yfinance (last 60 days — overwrite to pick up any revisions)
         end_date = datetime.now()
-        start_date = end_date - timedelta(days=30)
-        recent = yf.download("^GSPC", start=start_date, end=end_date, progress=False)
+        start_date = end_date - timedelta(days=60)
+        recent = yf.download("^GSPC", start=start_date, end=end_date, progress=False, auto_adjust=True)
         recent_df = recent[['Close']].reset_index()
         recent_df.columns = ['Date', 'Close']
         recent_df['Date'] = pd.to_datetime(recent_df['Date'])
 
-        # Merge: use CSV as base, append only dates after CSV's last date
-        csv_last_date = hist_df['Date'].max()
-        recent_new = recent_df[recent_df['Date'] > csv_last_date].copy()
+        # Merge: drop the overlap from CSV and replace with fresh data
+        if len(recent_df) > 0:
+            cutoff = recent_df['Date'].min()
+            hist_old = hist_df[hist_df['Date'] < cutoff]
+            merged_df = pd.concat([hist_old, recent_df], ignore_index=True)
+            merged_df = merged_df.sort_values('Date').drop_duplicates(subset=['Date'], keep='last')
 
-        merged_df = pd.concat([hist_df, recent_new], ignore_index=True)
-        merged_df = merged_df.sort_values('Date').drop_duplicates(subset=['Date'])
-
-        # Auto-update the CSV so it stays current for next run
-        if len(recent_new) > 0:
+            # Auto-update the CSV so it stays current for next run
             save_df = merged_df.copy()
             save_df['Date'] = save_df['Date'].dt.strftime('%Y-%m-%d')
             save_df.to_csv(HISTORICAL_CSV, index=False)
-            print(f"  Extended with {len(recent_new)} fresh trading days from yfinance (CSV updated)")
+            print(f"  Refreshed last {len(recent_df)} trading days from yfinance (CSV updated)")
         else:
-            print(f"  CSV is up to date — no new trading days to add")
+            merged_df = hist_df
+            print(f"  ⚠️  No recent data from yfinance — using CSV as-is")
 
         prices = merged_df['Close'].values
         dates = merged_df['Date'].values

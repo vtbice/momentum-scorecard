@@ -1955,13 +1955,17 @@ function renderHistoricalContext() {
         var peakDate = cp.peak_date || cp.start_date || '';
         var peakDateFormatted = peakDate ? new Date(peakDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
 
-        html += 'The S&P 500 is currently <strong style="color: ' + (cpMag < -10 ? '#ef4444' : '#f59e0b') + ';">' + cpMag + '%</strong> from its recent peak';
+        // Current gap from peak (different from max drawdown)
+        var currentGapPct = peakPrice > 0 ? ((t.sp500 / peakPrice - 1) * 100) : 0;
+        var gapColor = currentGapPct < -10 ? '#ef4444' : currentGapPct < -5 ? '#f59e0b' : '#10b981';
+
+        html += 'The S&P 500 is currently at <strong style="color: #0f172a;">' + t.sp500.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0}) + '</strong>, <strong style="color: ' + gapColor + ';">' + currentGapPct.toFixed(1) + '%</strong> from its recent peak';
         if (peakPrice > 0) html += ' of ' + peakPrice.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0});
         if (peakDateFormatted) html += ' reached on ' + peakDateFormatted;
         html += '. ';
 
         if (t.sp500 > t.sp500MA4yr) {
-            html += 'Despite the pullback, the long-term trend remains intact — price is still ' + ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0) + '% above the 4-year moving average. ';
+            html += 'The long-term trend remains intact — price is still ' + ((t.sp500 / t.sp500MA4yr - 1) * 100).toFixed(0) + '% above the 4-year moving average. ';
         } else {
             html += 'The long-term trend is being tested — price has dropped below the 4-year moving average. ';
         }
@@ -1969,8 +1973,8 @@ function renderHistoricalContext() {
         var tierColor = cpMag < -20 ? '#ef4444' : cpMag < -15 ? '#f97316' : cpMag < -10 ? '#f59e0b' : '#10b981';
         html += '</div>';
         html += '<div style="margin: 16px 0; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 10px; border-left: 4px solid ' + tierColor + ';">';
-        html += '<strong style="color: ' + tierColor + '; font-size: 16px;">Active Pullback:</strong> ';
-        html += '<span style="color: #334155; font-size: 15px;">Down <strong>' + cpMag + '%</strong> over <strong>' + cpDays + ' trading days</strong> (' + cpWeeks + ' weeks) — <strong style="color: ' + tierColor + ';">' + cpTier + '</strong></span>';
+        html += '<strong style="color: ' + tierColor + '; font-size: 16px;">Active Pullback Episode:</strong> ';
+        html += '<span style="color: #334155; font-size: 15px;">Max drawdown of <strong>' + cpMag + '%</strong> over <strong>' + cpDays + ' trading days</strong> (' + cpWeeks + ' weeks) — categorized as <strong style="color: ' + tierColor + ';">' + cpTier + '</strong>. Still open because the S&P has not made a new high above ' + peakPrice.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0}) + ' yet.</span>';
         html += '</div>';
         html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
     } else {
