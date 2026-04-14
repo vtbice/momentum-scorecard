@@ -122,8 +122,8 @@
     ],
     "trend": {
       "score": "Positive",
-      "r3kVs150MA": "Below",
-      "maSlope": "Unknown"
+      "r3kVs150MA": "Above",
+      "maSlope": "Positive"
     },
     "breadth": {
       "pctAbove": 47.9,

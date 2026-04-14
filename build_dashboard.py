@@ -1534,12 +1534,16 @@ function renderMarketPulse() {
     var slopeUp = MARKET.trend.maSlope === 'Rising' || MARKET.trend.maSlope === 'Positive';
     var above4yr = sp.sp500 > sp.sp500MA4yr;
     var above150d = sp.sp500 > sp.sp500MA150;
+    var pct4yr = sp.sp500MA4yr > 0 ? ((sp.sp500 / sp.sp500MA4yr - 1) * 100) : 0;
+    var pct150 = sp.sp500MA150 > 0 ? ((sp.sp500 / sp.sp500MA150 - 1) * 100) : 0;
+    var pct4yrStr = (pct4yr >= 0 ? '+' : '') + pct4yr.toFixed(1) + '%';
+    var pct150Str = (pct150 >= 0 ? '+' : '') + pct150.toFixed(1) + '%';
 
     const trend_html = '<div class="metric-row"><span class="metric-label">S&P 500 vs 150-Day MA</span>' + cv(MARKET.trend.r3kVs150MA, aboveMA150) + '</div>' +
         '<div class="metric-row"><span class="metric-label">MA Slope</span>' + cv(MARKET.trend.maSlope, slopeUp) + '</div>' +
         '<div class="metric-row"><span class="metric-label">S&P 500</span><span class="metric-value">' + sp.sp500.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</span></div>' +
-        '<div class="metric-row"><span class="metric-label">4-Year MA</span>' + cv(sp.sp500MA4yr.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}), above4yr) + '</div>' +
-        '<div class="metric-row"><span class="metric-label">150-Day MA</span>' + cv(sp.sp500MA150.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}), above150d) + '</div>';
+        '<div class="metric-row"><span class="metric-label">4-Year MA</span>' + cv(sp.sp500MA4yr.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:12px;opacity:0.75;">(' + pct4yrStr + ')</span>', above4yr) + '</div>' +
+        '<div class="metric-row"><span class="metric-label">150-Day MA</span>' + cv(sp.sp500MA150.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + ' <span style="font-size:12px;opacity:0.75;">(' + pct150Str + ')</span>', above150d) + '</div>';
 
     document.getElementById('trendCardContent').innerHTML = trend_html;
     setTimeout(function() { drawSP500Chart(); }, 100);
