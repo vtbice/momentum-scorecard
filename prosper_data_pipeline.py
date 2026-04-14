@@ -1693,12 +1693,12 @@ def main():
     
     # 1. Load tickers
     tickers = load_tickers()
-    
-    # 2. Pull stock data
-    stocks, skipped = pull_stock_data(tickers)
-    
-    # 3. Pull market data
+
+    # 2. Pull market data FIRST (before rate limits kick in from stock universe)
     market = pull_market_data()
+
+    # 3. Pull stock data (1,200+ individual calls — uses up the API budget)
+    stocks, skipped = pull_stock_data(tickers)
     
     # 4. Pull FRED data
     macro = pull_fred_data()
