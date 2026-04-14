@@ -57,6 +57,8 @@ if _ENV_FILE.exists():
 # Where to save output
 OUTPUT_DIR = Path(__file__).parent
 OUTPUT_FILE = OUTPUT_DIR / "scorecard_data.json"
+SKIPPED_HISTORY_FILE = OUTPUT_DIR / "skipped_history.json"
+REMOVAL_THRESHOLD_DAYS = 5  # Flag for removal after N consecutive skipped days
 HISTORICAL_CSV = Path(__file__).parent.parent / "Market Study" / "SP500_Daily_March4_1957_Present.csv"
 
 # How many days of history to pull (need 252+ for 12-month returns)
@@ -1039,6 +1041,62 @@ def pull_fred_data():
 # STEP 5: CALCULATE BREADTH AND SECTOR SUMMARIES
 # ═══════════════════════════════════════════════════════════
 
+def update_skipped_history(stocks, skipped, all_tickers):
+    """
+    Track consecutive days each ticker has been skipped (no price data).
+    Returns a list of tickers pending removal (5+ consecutive days missing).
+    """
+    # Load existing history
+    history = {}
+    if SKIPPED_HISTORY_FILE.exists():
+        try:
+            with open(SKIPPED_HISTORY_FILE) as f:
+                history = json.load(f)
+        except Exception:
+            history = {}
+
+    today = datetime.today().strftime("%Y-%m-%d")
+    got_data = {s["ticker"] for s in stocks}
+    skipped_today = {s["ticker"] for s in skipped}
+
+    # For each ticker in the universe, update its counter
+    for ticker in all_tickers:
+        ticker = ticker.upper().strip()
+        if ticker in got_data:
+            # Got data — reset counter
+            if ticker in history:
+                del history[ticker]
+        elif ticker in skipped_today:
+            # No data — increment counter
+            if ticker not in history:
+                history[ticker] = {"consecutiveDays": 1, "firstSkipped": today, "lastSkipped": today}
+            else:
+                history[ticker]["consecutiveDays"] += 1
+                history[ticker]["lastSkipped"] = today
+
+    # Save updated history
+    with open(SKIPPED_HISTORY_FILE, "w") as f:
+        json.dump(history, f, indent=2)
+
+    # Build pending removal list (tickers missing for threshold+ days)
+    pending = []
+    for ticker, data in history.items():
+        if data["consecutiveDays"] >= REMOVAL_THRESHOLD_DAYS:
+            pending.append({
+                "ticker": ticker,
+                "daysMissing": data["consecutiveDays"],
+                "firstSkipped": data["firstSkipped"],
+            })
+    pending.sort(key=lambda x: -x["daysMissing"])
+
+    print(f"\n🗑️  Delisting tracker: {len(history)} tickers missing today, "
+          f"{len(pending)} flagged for removal ({REMOVAL_THRESHOLD_DAYS}+ days)")
+    if pending:
+        print(f"  Pending removal: {', '.join(p['ticker'] for p in pending[:10])}{'...' if len(pending) > 10 else ''}")
+
+    return pending
+
+
 def calculate_summaries(stocks):
     """Calculate breadth, sector breakdowns, and market signals."""
     print(f"\n📊 Calculating summaries...")
@@ -1699,6 +1757,9 @@ def main():
 
     # 3. Pull stock data (1,200+ individual calls — uses up the API budget)
     stocks, skipped = pull_stock_data(tickers)
+
+    # 3b. Track delisted/acquired tickers (skipped for N+ consecutive days)
+    pending_removal = update_skipped_history(stocks, skipped, tickers)
     
     # 4. Pull FRED data
     macro = pull_fred_data()
@@ -1734,6 +1795,7 @@ def main():
     output = assemble_output(stocks, market, macro, breadth, sectors, signals,
                              skipped_count=len(skipped), pullback_stats=pullback_stats,
                              auto_data=auto_data, industries=industries)
+    output["pendingRemoval"] = pending_removal
     
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(output, f, indent=2, default=str)

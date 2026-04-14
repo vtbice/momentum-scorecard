@@ -106,6 +106,7 @@ js_data = {
     'market': data['market'],
     'sectors': data['sectors'],
     'industries': data.get('industries', []),
+    'pendingRemoval': data.get('pendingRemoval', []),
     'stocks': data['stocks'],
     'sp500_daily_dates': data['sp500_daily_dates'],
     'sp500_daily_prices': data['sp500_daily_prices'],
@@ -1304,6 +1305,7 @@ const DATA = ''' + json.dumps(js_data) + ''';
 const MARKET = DATA.market;
 const SECTORS = DATA.sectors;
 const INDUSTRIES = DATA.industries || [];
+const PENDING_REMOVAL = DATA.pendingRemoval || [];
 const STOCKS = DATA.stocks;
 const SP500_PRICES = DATA.sp500_daily_prices;
 const SP500_DATES = DATA.sp500_daily_dates;
@@ -3198,7 +3200,32 @@ function renderSourcesTab() {
     html += '</div>';
     html += '</div>';
 
-    // Card 9: Disclaimer
+    // Card 9: Delisting Tracker
+    html += '<div class="card"><div class="card-title">Delisting Tracker</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">Tickers in your universe that have not returned price data for 5+ consecutive days. These may have been acquired, merged, delisted, or renamed. Review weekly and remove any confirmed delistings from <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">tickers.csv</code>.</p>';
+
+    if (PENDING_REMOVAL.length === 0) {
+        html += '<div style="padding: 16px 20px; background: #f0fdf4; border-radius: 8px; border: 1px solid #a7f3d0;"><div style="font-size: 14px; color: #166534;"><strong>✓ Nothing to review.</strong> All tickers in your universe are returning price data.</div></div>';
+    } else {
+        html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Ticker</th><th style="text-align:right;">Days Missing</th><th style="text-align:left;">First Skipped</th><th style="text-align:left;">Likely Reason</th></tr></thead><tbody>';
+        PENDING_REMOVAL.forEach(function(p) {
+            var reason = p.daysMissing >= 14 ? 'Likely delisted/acquired' : p.daysMissing >= 10 ? 'Probably delisted' : 'Possibly delisted — verify';
+            var reasonColor = p.daysMissing >= 14 ? '#ef4444' : p.daysMissing >= 10 ? '#f97316' : '#f59e0b';
+            html += '<tr>';
+            html += '<td style="font-family: JetBrains Mono, monospace; font-weight: 700; color: #0f172a;">' + p.ticker + '</td>';
+            html += '<td style="text-align:right; font-family: JetBrains Mono, monospace; font-weight: 600;">' + p.daysMissing + '</td>';
+            html += '<td>' + fmtAsOf(p.firstSkipped) + '</td>';
+            html += '<td style="color:' + reasonColor + '; font-weight:600;">' + reason + '</td>';
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        html += '<div style="margin-top: 14px; padding: 14px 18px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">';
+        html += '<div style="font-size: 13px; color: #92400e; line-height: 1.6;"><strong>How to remove a ticker:</strong> Open <code>tickers.csv</code> in your project folder, delete the row, and save. The next nightly refresh will skip it automatically. You can verify a ticker is dead by searching it on finance.yahoo.com — if the page shows "Symbol Lookup" or redirects, it has been delisted.</div>';
+        html += '</div>';
+    }
+    html += '</div>';
+
+    // Card 10: Disclaimer
     html += '<div class="card"><div class="card-title">Disclaimer</div>';
     html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; padding: 12px; background: #fffbeb; border-radius: 8px; border: 1px solid #fde68a;">This dashboard is for educational and informational purposes only. It is not investment advice. Past performance does not guarantee future results. The indicators presented are historical patterns and should never be the sole basis for investment decisions. Always consult with a qualified financial advisor before making investment decisions.</p>';
     html += '</div>';
