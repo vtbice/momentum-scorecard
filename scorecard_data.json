@@ -5,9 +5,9 @@
   "market": {
     "date": "4/14/26",
     "overallScore": "Neutral",
-    "healthScore": 45,
+    "healthScore": 55,
     "healthTotal": 90,
-    "healthLabel": "Cautious",
+    "healthLabel": "Cautiously Optimistic",
     "healthWins": [
       {
         "label": "Labor Market \u00b7 Now: 4.3% \u00b7 Healthy: below 5%",
@@ -62,6 +62,18 @@
         "weight": 5,
         "cat": "Technical",
         "sinceDate": "2026-04-10"
+      },
+      {
+        "label": "Long-Term Trend \u00b7 S&P 6,886 vs 4-Year MA 5,170",
+        "weight": 5,
+        "cat": "Technical",
+        "sinceDate": "2026-04-14"
+      },
+      {
+        "label": "Medium-Term Trend \u00b7 S&P 6,886 vs 150-Day MA 6,772",
+        "weight": 5,
+        "cat": "Technical",
+        "sinceDate": "2026-04-14"
       }
     ],
     "healthMisses": [
@@ -100,18 +112,6 @@
         "weight": 5,
         "cat": "Fundamental",
         "sinceDate": "2026-04-10"
-      },
-      {
-        "label": "Long-Term Trend \u00b7 S&P 0 vs 4-Year MA 0",
-        "weight": 5,
-        "cat": "Technical",
-        "sinceDate": "2026-04-14"
-      },
-      {
-        "label": "Medium-Term Trend \u00b7 S&P 0 vs 150-Day MA 0",
-        "weight": 5,
-        "cat": "Technical",
-        "sinceDate": "2026-04-14"
       },
       {
         "label": "Market Breadth \u00b7 Now: 48% \u00b7 Healthy: above 60%",
