@@ -517,6 +517,161 @@
   }
   .card.flash { animation: flashHighlight 1.6s ease-out; }
 
+  /* WATCHLIST PAGE */
+  .watchlist-controls {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .watchlist-filter-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .watchlist-filter-input:focus { border-color: #10b981; }
+  .watchlist-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .wl-chip {
+    padding: 6px 14px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .wl-chip:hover { border-color: #10b981; color: #10b981; }
+  .wl-chip.active {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+  }
+  .wl-chip-count {
+    margin-left: 6px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  .watchlist-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .watchlist-table th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .watchlist-table td {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  .watchlist-table tr:last-child td { border-bottom: none; }
+  .watchlist-table tr:hover td { background: #f8fafc; }
+  .watchlist-table tr.hidden { display: none; }
+  .wl-ticker {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 15px;
+  }
+  .wl-ticker a {
+    color: #0f172a;
+    text-decoration: none;
+  }
+  .wl-ticker a:hover { color: #10b981; }
+  .wl-name {
+    color: #475569;
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wl-name-muted { color: #94a3b8; font-style: italic; font-size: 12px; }
+  .wl-funds-cell {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+  }
+  .wl-fund-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .wl-fund-chip.watchlist-only {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  .wl-district {
+    font-size: 11px;
+    color: #64748b;
+    font-style: italic;
+  }
+  .wl-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .wl-btn {
+    padding: 4px 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .wl-btn:hover {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+  }
+  .wl-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 14px;
+  }
+  #wl-match-count {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 10px;
+  }
+
   /* PRINT / PDF */
   @media print {
     body { background: white; font-size: 11pt; }
@@ -545,13 +700,13 @@
   <div class="header-inner">
     <div class="kicker">Innovation Growth Funds</div>
     <h1 class="header-title">The City of <span class="accent">the Future</span></h1>
-    <div class="header-sub">Focused Large Cap Fund · as of 2026-04-14</div>
+    <div class="header-sub">Focused Large Cap Fund · as of 2026-04-15</div>
     <div class="site-search-wrapper">
       <span class="site-search-icon">⌕</span>
       <input id="site-search" class="site-search-input" type="text" placeholder="Search any ticker or company name..." autocomplete="off" />
       <div id="search-results"></div>
     </div>
-    <nav class="site-nav"><a href="index.html" class="">Overview</a><a href="focused-large-cap.html" class="active">Focused Large Cap</a><a href="large-cap.html" class="">Large Cap</a><a href="mid-cap.html" class="">Mid Cap</a><a href="small-cap.html" class="">Small Cap</a><a href="micro-cap.html" class="">Micro Cap</a></nav>
+    <nav class="site-nav"><a href="index.html" class="">Overview</a><a href="focused-large-cap.html" class="active">Focused Large Cap</a><a href="large-cap.html" class="">Large Cap</a><a href="mid-cap.html" class="">Mid Cap</a><a href="small-cap.html" class="">Small Cap</a><a href="micro-cap.html" class="">Micro Cap</a><a href="watchlist.html" class="">Watchlist</a></nav>
   </div>
 </header>
 
@@ -566,7 +721,7 @@
     <div class="stat"><span class="stat-label">Holdings</span><span class="stat-value">33</span></div>
     <div class="stat"><span class="stat-label">Written Up</span><span class="stat-value accent">33</span></div>
     <div class="stat"><span class="stat-label">Districts</span><span class="stat-value">10</span></div>
-    <div class="stat"><span class="stat-label">As Of</span><span class="stat-value small">2026-04-14</span></div>
+    <div class="stat"><span class="stat-label">As Of</span><span class="stat-value small">2026-04-15</span></div>
   </section>
   
   <nav class="toc">
@@ -1145,7 +1300,7 @@
         
 </main>
 <footer>
-  Innovation Growth · Focused Large Cap · 2026-04-14 ·
+  Innovation Growth · Focused Large Cap · 2026-04-15 ·
   Cmd+P to save as PDF · Press / to search
 </footer>
 

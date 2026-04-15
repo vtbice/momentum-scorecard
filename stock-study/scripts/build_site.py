@@ -24,6 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 SITE = ROOT / "site"
+TICKERS_CSV = ROOT.parent / "tickers.csv"  # shared with the Momentum Scorecard repo
 
 FUNDS = [
     ("focused-large-cap", "Focused Large Cap"),
@@ -32,6 +33,14 @@ FUNDS = [
     ("small-cap", "Small Cap"),
     ("micro-cap", "Micro Cap"),
 ]
+
+FUND_CHIP_LABEL = {
+    "focused-large-cap": "FLC",
+    "large-cap": "LC",
+    "mid-cap": "MID",
+    "small-cap": "SC",
+    "micro-cap": "MIC",
+}
 
 SITE_NAME = "The City of the Future"
 SITE_KICKER = "Innovation Growth Funds"
@@ -49,6 +58,16 @@ def load_holdings(fund: str):
 def load_study():
     with (DATA / "study.json").open() as f:
         return json.load(f)
+
+
+def load_watchlist():
+    """Load the ~1,234 ticker watchlist from the Momentum Scorecard's tickers.csv."""
+    if not TICKERS_CSV.exists():
+        return []
+    with TICKERS_CSV.open() as f:
+        reader = csv.DictReader(f)
+        # Column header is "Symbol" in the scorecard's format
+        return [r["Symbol"].strip() for r in reader if r["Symbol"].strip()]
 
 
 # ============ SHARED CSS ============
@@ -564,6 +583,161 @@ def css() -> str:
   }
   .card.flash { animation: flashHighlight 1.6s ease-out; }
 
+  /* WATCHLIST PAGE */
+  .watchlist-controls {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .watchlist-filter-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .watchlist-filter-input:focus { border-color: #10b981; }
+  .watchlist-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .wl-chip {
+    padding: 6px 14px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .wl-chip:hover { border-color: #10b981; color: #10b981; }
+  .wl-chip.active {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+  }
+  .wl-chip-count {
+    margin-left: 6px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  .watchlist-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .watchlist-table th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .watchlist-table td {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  .watchlist-table tr:last-child td { border-bottom: none; }
+  .watchlist-table tr:hover td { background: #f8fafc; }
+  .watchlist-table tr.hidden { display: none; }
+  .wl-ticker {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 15px;
+  }
+  .wl-ticker a {
+    color: #0f172a;
+    text-decoration: none;
+  }
+  .wl-ticker a:hover { color: #10b981; }
+  .wl-name {
+    color: #475569;
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wl-name-muted { color: #94a3b8; font-style: italic; font-size: 12px; }
+  .wl-funds-cell {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+  }
+  .wl-fund-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .wl-fund-chip.watchlist-only {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  .wl-district {
+    font-size: 11px;
+    color: #64748b;
+    font-style: italic;
+  }
+  .wl-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .wl-btn {
+    padding: 4px 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .wl-btn:hover {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+  }
+  .wl-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 14px;
+  }
+  #wl-match-count {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 10px;
+  }
+
   /* PRINT / PDF */
   @media print {
     body { background: white; font-size: 11pt; }
@@ -588,10 +762,11 @@ def css() -> str:
 
 
 def render_nav(active: str) -> str:
-    """active is the page name without .html (e.g. 'small-cap', 'index')."""
+    """active is the page name without .html (e.g. 'small-cap', 'index', 'watchlist')."""
     items = [("index", "Overview")]
     for slug, name in FUNDS:
         items.append((slug, name))
+    items.append(("watchlist", "Watchlist"))
     parts = []
     for slug, label in items:
         href = f"{slug}.html"
@@ -1101,6 +1276,202 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
 """
 
 
+def build_watchlist_page(study: dict, holdings_by_fund: dict, watchlist: list, as_of: str, search_index: list) -> str:
+    companies = study["companies"]
+    districts = study["districts"]
+
+    # Build ticker → list of fund slugs (for held names)
+    ticker_to_funds = {}
+    for fund_slug, _ in FUNDS:
+        for t in holdings_by_fund[fund_slug]:
+            ticker_to_funds.setdefault(t, []).append(fund_slug)
+
+    # Every ticker we care about: union of watchlist + holdings
+    held_tickers = set(ticker_to_funds.keys())
+    watchlist_set = set(watchlist)
+    all_tickers = sorted(watchlist_set | held_tickers)
+
+    total = len(all_tickers)
+    held_count = len(held_tickers)
+    watchlist_only = len(all_tickers) - held_count
+    with_narrative = sum(1 for t in all_tickers if t in companies)
+
+    # Render table rows
+    rows = []
+    for ticker in all_tickers:
+        entry = companies.get(ticker, {})
+        name = entry.get("name", "")
+        district = entry.get("district", "")
+        district_title = districts.get(district, {}).get("title", "") if district else ""
+
+        funds = ticker_to_funds.get(ticker, [])
+        is_held = bool(funds)
+        is_on_watchlist = ticker in watchlist_set
+
+        # Fund chips
+        if is_held:
+            fund_chips_html = "".join(
+                f'<span class="wl-fund-chip">{FUND_CHIP_LABEL[f]}</span>' for f in funds
+            )
+        else:
+            fund_chips_html = '<span class="wl-fund-chip watchlist-only">Watch</span>'
+
+        # Status string for data attribute (filters)
+        if is_held and is_on_watchlist:
+            status = "held watchlist"
+        elif is_held:
+            status = "held"
+        else:
+            status = "watchlist"
+        if entry:
+            status += " narrative"
+
+        # Name cell — link to overview anchor if we have a narrative, else muted
+        if name:
+            name_cell = f'<a href="index.html#{esc(ticker)}" class="wl-ticker-link">{esc(name)}</a>'
+        else:
+            name_cell = '<span class="wl-name-muted">No narrative yet</span>'
+
+        ticker_cell = (
+            f'<a href="index.html#{esc(ticker)}">{esc(ticker)}</a>'
+            if entry else esc(ticker)
+        )
+
+        # Actions
+        sc_url = f"https://stockcharts.com/h-sc/ui?s={esc(ticker)}"
+        actions = [f'<a href="{sc_url}" target="_blank" rel="noopener" class="wl-btn">📊 SC</a>']
+        if entry:
+            actions.append(f'<a href="index.html#{esc(ticker)}" class="wl-btn">View</a>')
+
+        # Search tokens for filter (ticker + name, lowercased)
+        search_tokens = (ticker + " " + name).lower()
+
+        rows.append(f"""
+        <tr class="wl-row" data-status="{status}" data-search="{esc(search_tokens)}">
+          <td class="wl-ticker">{ticker_cell}</td>
+          <td class="wl-name">{name_cell}</td>
+          <td><div class="wl-funds-cell">{fund_chips_html}</div></td>
+          <td class="wl-district">{esc(district_title)}</td>
+          <td><div class="wl-actions">{''.join(actions)}</div></td>
+        </tr>
+        """)
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watchlist — The City of the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://s3.tradingview.com/tv.js"></script>
+<style>{css()}</style>
+</head>
+<body>
+{render_header("watchlist", f"Watchlist · {total} names · {held_count} held · {watchlist_only} monitored · as of {as_of}")}
+<main>
+  <section class="fund-intro">
+    <div class="fund-intro-tagline">The Watchlist</div>
+    <div class="fund-intro-body">
+      <p>This is the full universe the team is monitoring — {total} names — combining every current holding across the five funds with every other ticker flagged as worth watching. Names we already own show their fund-membership chips. Names we are only watching show a neutral "Watch" chip. Click any ticker with a narrative to jump to its card on the Overview page. Click the 📊 SC button to open that name in StockCharts.</p>
+      <p>As holdings rotate, names will move between categories automatically. The data comes from <code>tickers.csv</code> in the Momentum Scorecard — so the two tools stay in sync without any manual bookkeeping.</p>
+    </div>
+  </section>
+
+  <section class="summary">
+    <div class="stat"><span class="stat-label">Universe</span><span class="stat-value">{total}</span></div>
+    <div class="stat"><span class="stat-label">Currently Held</span><span class="stat-value accent">{held_count}</span></div>
+    <div class="stat"><span class="stat-label">Monitored</span><span class="stat-value">{watchlist_only}</span></div>
+    <div class="stat"><span class="stat-label">With Narratives</span><span class="stat-value">{with_narrative}</span></div>
+  </section>
+
+  <section class="watchlist-controls">
+    <input id="wl-filter" class="watchlist-filter-input" type="text" placeholder="Filter by ticker or company name..." autocomplete="off" />
+    <div class="watchlist-filter-chips">
+      <div class="wl-chip active" data-filter="all">All <span class="wl-chip-count">{total}</span></div>
+      <div class="wl-chip" data-filter="held">Currently Held <span class="wl-chip-count">{held_count}</span></div>
+      <div class="wl-chip" data-filter="watchlist">Watchlist Only <span class="wl-chip-count">{watchlist_only}</span></div>
+      <div class="wl-chip" data-filter="narrative">With Narratives <span class="wl-chip-count">{with_narrative}</span></div>
+    </div>
+    <div id="wl-match-count">Showing {total} of {total}</div>
+  </section>
+
+  <table class="watchlist-table">
+    <thead>
+      <tr>
+        <th>Ticker</th>
+        <th>Company</th>
+        <th>Status</th>
+        <th>District</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="wl-tbody">
+      {''.join(rows)}
+    </tbody>
+  </table>
+  <div id="wl-empty" class="wl-empty" style="display:none;">No tickers match the current filters.</div>
+</main>
+<footer>
+  Innovation Growth · Watchlist · {esc(as_of)} · Shared with the Momentum Scorecard via tickers.csv
+</footer>
+{build_js(search_index)}
+<script>
+// Watchlist page-local filtering (in addition to the header search bar)
+(function() {{
+  const input = document.getElementById('wl-filter');
+  const chips = document.querySelectorAll('.wl-chip');
+  const rows = document.querySelectorAll('.wl-row');
+  const matchCount = document.getElementById('wl-match-count');
+  const emptyMsg = document.getElementById('wl-empty');
+  const total = rows.length;
+
+  let activeFilter = 'all';
+  let searchQuery = '';
+
+  function apply() {{
+    let visible = 0;
+    rows.forEach(function(row) {{
+      const status = row.dataset.status || '';
+      const search = row.dataset.search || '';
+
+      let statusMatch = true;
+      if (activeFilter === 'held') statusMatch = status.indexOf('held') !== -1;
+      else if (activeFilter === 'watchlist') statusMatch = status.indexOf('held') === -1;
+      else if (activeFilter === 'narrative') statusMatch = status.indexOf('narrative') !== -1;
+
+      const searchMatch = !searchQuery || search.indexOf(searchQuery) !== -1;
+
+      if (statusMatch && searchMatch) {{
+        row.classList.remove('hidden');
+        visible++;
+      }} else {{
+        row.classList.add('hidden');
+      }}
+    }});
+    matchCount.textContent = 'Showing ' + visible + ' of ' + total;
+    emptyMsg.style.display = visible === 0 ? 'block' : 'none';
+  }}
+
+  input.addEventListener('input', function(e) {{
+    searchQuery = e.target.value.toLowerCase().trim();
+    apply();
+  }});
+
+  chips.forEach(function(chip) {{
+    chip.addEventListener('click', function() {{
+      chips.forEach(function(c) {{ c.classList.remove('active'); }});
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      apply();
+    }});
+  }});
+}})();
+</script>
+</body>
+</html>
+"""
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=str(date.today()))
@@ -1109,6 +1480,7 @@ def main():
     study = load_study()
     holdings_by_fund = {slug: load_holdings(slug) for slug, _ in FUNDS}
     search_index = build_search_index(study, holdings_by_fund)
+    watchlist = load_watchlist()
 
     SITE.mkdir(parents=True, exist_ok=True)
 
@@ -1122,6 +1494,14 @@ def main():
     overview = build_overview_page(study, holdings_by_fund, args.date, search_index)
     (SITE / "index.html").write_text(overview)
     print(f"Wrote site/index.html")
+
+    # Build watchlist
+    if watchlist:
+        wl = build_watchlist_page(study, holdings_by_fund, watchlist, args.date, search_index)
+        (SITE / "watchlist.html").write_text(wl)
+        print(f"Wrote site/watchlist.html ({len(watchlist)} tickers)")
+    else:
+        print(f"Skipped watchlist: tickers.csv not found at {TICKERS_CSV}")
 
 
 if __name__ == "__main__":
