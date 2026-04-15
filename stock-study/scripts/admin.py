@@ -59,10 +59,10 @@ def read_fund(fund: str) -> list:
 
 
 def write_fund(fund: str, tickers: list):
-    """Write tickers to a fund CSV, preserving the header row."""
+    """Write tickers to a fund CSV, preserving the header row. Uses LF line endings."""
     path = DATA / "holdings" / f"{fund}.csv"
     with path.open("w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["ticker"])
         for t in tickers:
             w.writerow([t])
@@ -77,7 +77,7 @@ def read_watchlist() -> list:
 
 def write_watchlist(tickers: list):
     with TICKERS_CSV.open("w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["Symbol"])
         for t in tickers:
             w.writerow([t])
