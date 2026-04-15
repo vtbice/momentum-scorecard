@@ -1328,8 +1328,16 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(pc < 1.0, "Technical",
         f"Sentiment · P/C Now: {pc} · Healthy: below 1.0")
     
-    score = sum(c["weight"] for c in checks if c["pass"])
-    total = sum(c["weight"] for c in checks)
+    # Auto-balance: every indicator gets equal weight so total always = 100
+    # Each indicator is worth 100/N points where N = number of indicators
+    num_indicators = len(checks)
+    weight_per = 100.0 / num_indicators if num_indicators > 0 else 0
+    for c in checks:
+        c["weight"] = weight_per
+
+    passed_count = sum(1 for c in checks if c["pass"])
+    score = round(passed_count * weight_per)
+    total = 100
     wins = [c for c in checks if c["pass"]]
     misses = [c for c in checks if not c["pass"]]
     

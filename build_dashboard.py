@@ -1477,7 +1477,7 @@ function renderHeader() {
         var why = getIndicatorWhy(win.label);
         var sinceStr = win.sinceDate ? fmtAsOf(win.sinceDate) : '';
         tailwinds += '<div class="health-item"><div class="health-item-icon">✓</div><div class="health-item-text"><span class="health-item-label">' + win.label + '</span>';
-        tailwinds += '<span class="health-item-weight">' + win.weight + 'pts';
+        tailwinds += '<span class="health-item-weight">' + (typeof win.weight === 'number' ? win.weight.toFixed(1) : win.weight) + 'pts';
         if (sinceStr) tailwinds += ' · <span style="color:#10b981;">since ' + sinceStr + '</span>';
         tailwinds += '</span>';
         if (why) tailwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
@@ -1490,7 +1490,7 @@ function renderHeader() {
         var why = getIndicatorWhy(miss.label);
         var sinceStr = miss.sinceDate ? fmtAsOf(miss.sinceDate) : '';
         headwinds += '<div class="health-item"><div class="health-item-icon">✗</div><div class="health-item-text"><span class="health-item-label">' + miss.label + ' — NOT MET</span>';
-        headwinds += '<span class="health-item-weight">' + miss.weight + 'pts';
+        headwinds += '<span class="health-item-weight">' + (typeof miss.weight === 'number' ? miss.weight.toFixed(1) : miss.weight) + 'pts';
         if (sinceStr) headwinds += ' · <span style="color:#ef4444;">since ' + sinceStr + '</span>';
         headwinds += '</span>';
         if (why) headwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
