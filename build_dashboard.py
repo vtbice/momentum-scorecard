@@ -1369,6 +1369,8 @@ var INDICATOR_WHY = {
     'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
     'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
     'ISM Manufacturing': 'The single best leading indicator of economic turns. Above 50 means factories are expanding; below 50 signals contraction.',
+    'Oil Price': 'WTI crude oil price per barrel. High oil prices raise production costs across the economy and push inflation higher, squeezing corporate margins and consumer wallets. Above $90 starts to bite.',
+    'Gas Price': 'Average price for a gallon of regular gas. High gas prices hit consumer sentiment hard — people feel it every week at the pump, leaving less money for everything else. Above $4 becomes a real drag on spending.',
     'Earnings Growth': 'Companies making more money than last year — the fundamental driver of stock prices.',
     'Profit Margins': 'How much companies keep from each dollar of revenue — a sign of pricing power and efficiency.',
     'Earnings Revisions': 'Whether analysts are raising or cutting estimates — tracks where the trend is heading.',

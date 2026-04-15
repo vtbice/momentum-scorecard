@@ -296,7 +296,14 @@ def fetch_dividend_yield():
         info = spy.info
         div_yield = info.get("dividendYield", info.get("trailingAnnualDividendYield", None))
         if div_yield and div_yield > 0:
-            div_pct = round(div_yield * 100, 2)
+            # yfinance is inconsistent: sometimes returns decimal (0.0114 = 1.14%),
+            # sometimes returns percentage already (1.14 = 1.14%). Normalize it.
+            div_pct = div_yield * 100 if div_yield < 0.5 else div_yield
+            # Sanity check: S&P 500 dividend yield should be 0.5% - 6% historically
+            if div_pct < 0.1 or div_pct > 10:
+                print(f"  ⚠️  Dividend yield out of range ({div_pct}%), using fallback")
+                return None
+            div_pct = round(div_pct, 2)
             print(f"  ✅ Dividend Yield: {div_pct}%")
             return {"value": div_pct, "asOf": datetime.today().strftime('%Y-%m-%d'), "source": "yfinance"}
     except Exception as e:
@@ -1276,6 +1283,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     ten_yr = macro.get("tenYear", {}).get("value", 4.34)
     two_yr = macro.get("twoYear", {}).get("value", 3.83)
     ism = macro.get("ismPmi", {}).get("value", 50.0)
+    oil = market.get("oil", {}).get("price", 75.0)
+    gas = macro.get("gasPrice", {}).get("value", 3.50)
 
     add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
     add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
@@ -1286,6 +1295,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     yc_val = round(ten_yr - two_yr, 2) if isinstance(ten_yr, (int, float)) and isinstance(two_yr, (int, float)) else 0
     add(yc_val >= 0, "Macro", f"Yield Curve · Now: {yc_val:+.2f}% · Healthy: positive (not inverted)")
     add(ism >= 50, "Macro", f"ISM Manufacturing · Now: {ism} · Healthy: above 50")
+    add(oil < 90, "Macro", f"Oil Price (WTI) · Now: ${oil:.2f} · Healthy: below $90")
+    add(gas < 4.0, "Macro", f"Gas Price · Now: ${gas:.2f} · Healthy: below $4.00")
 
     # ── Fundamental checks (5 indicators, all equal weight) ──
     f = MANUAL_INPUTS["fundamental"]
