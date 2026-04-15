@@ -289,25 +289,34 @@ ADMIN_JS = r"""
     body.admin-active { padding-top: 44px; }
 
     .admin-toggle {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 10px 18px;
-      background: #0f172a;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #10b981;
       color: white;
-      border: none;
-      border-radius: 999px;
+      border: 2px solid #10b981;
+      border-radius: 6px;
       font-family: 'DM Sans', sans-serif;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
-      z-index: 998;
+      transition: all 0.15s;
+      margin-top: 10px;
     }
-    .admin-toggle:hover { background: #10b981; }
-    .admin-toggle.active { background: #10b981; }
+    .admin-toggle:hover { background: #059669; border-color: #059669; }
+    .admin-toggle.active {
+      background: #0f172a;
+      border-color: #10b981;
+      color: #10b981;
+    }
+    .admin-toggle-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 2px;
+    }
 
     .card .card-delete,
     .wl-row .wl-delete,
@@ -420,10 +429,19 @@ ADMIN_JS = r"""
   }
 
   // ========== EDIT MODE TOGGLE ==========
+  const toggleWrap = document.createElement('div');
+  toggleWrap.className = 'admin-toggle-wrapper';
   const toggle = document.createElement('button');
   toggle.className = 'admin-toggle';
-  toggle.textContent = '✎ Edit';
-  document.body.appendChild(toggle);
+  toggle.textContent = '✎ Edit Holdings';
+  toggleWrap.appendChild(toggle);
+  // Insert the Edit button inside the site header, right after the search bar
+  const searchWrapper = document.querySelector('.site-search-wrapper');
+  if (searchWrapper && searchWrapper.parentNode) {
+    searchWrapper.parentNode.insertBefore(toggleWrap, searchWrapper.nextSibling);
+  } else {
+    document.body.appendChild(toggleWrap);
+  }
 
   let editMode = localStorage.getItem('cityEditMode') === '1';
   applyEditMode();

@@ -1551,7 +1551,7 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
   </div>
 
   <h2 class="overview-section-title">The Universe</h2>
-  <div class="overview-section-sub">{total_unique} unique companies across all 5 funds &middot; chips show which funds hold each name</div>
+  <div class="overview-section-sub">Every name we own across all 5 funds — {total_unique} companies total. The small badges next to each ticker (FLC / LC / MID / SC / MIC) show which funds hold it.</div>
 
   <nav class="toc">
     <h3>Quick Index</h3>
