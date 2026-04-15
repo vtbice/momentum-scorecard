@@ -464,14 +464,21 @@ ADMIN_JS = r"""
 
   document.body.prepend(strip);
 
+  // IMPORTANT: declare `adminBar` BEFORE any call to applyEditMode() —
+  // otherwise hideAdminBar()/showAdminBar() hit a temporal-dead-zone
+  // ReferenceError for the `let`-scoped `adminBar`, the IIFE throws,
+  // and the toggle click listener never attaches.
+  let adminBar = null;
   let editMode = localStorage.getItem('cityEditMode') === '1';
-  applyEditMode();
 
   toggle.addEventListener('click', function() {
     editMode = !editMode;
     localStorage.setItem('cityEditMode', editMode ? '1' : '0');
     applyEditMode();
   });
+
+  // Apply initial state AFTER the listener is attached and adminBar is initialized
+  applyEditMode();
 
   function applyEditMode() {
     if (editMode) {
@@ -488,7 +495,6 @@ ADMIN_JS = r"""
   }
 
   // ========== ADMIN BAR ==========
-  let adminBar = null;
   function showAdminBar() {
     if (adminBar) { adminBar.classList.remove('hidden'); return; }
     adminBar = document.createElement('div');
