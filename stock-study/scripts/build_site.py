@@ -191,6 +191,34 @@ def css() -> str:
   .stat-value.accent { color: #10b981; }
   .stat-value.small { font-size: 20px; padding-top: 8px; }
 
+  /* ACT HEADINGS — visible super-category groupings */
+  .act-heading {
+    margin: 56px 0 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .act-heading:first-of-type { margin-top: 16px; }
+  .act-label {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .act-title {
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .act-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-style: italic;
+  }
+
   .warning-banner {
     background: #fef3c7;
     border: 1px solid #fbbf24;
@@ -583,6 +611,144 @@ def css() -> str:
   }
   .card.flash { animation: flashHighlight 1.6s ease-out; }
 
+  /* SEARCH MODAL */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    z-index: 1000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+    animation: modalFadeIn 0.18s ease-out;
+  }
+  .modal-backdrop.show { display: flex; }
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal-card {
+    background: white;
+    width: 100%;
+    max-width: 820px;
+    border-radius: 14px;
+    border-left: 4px solid #10b981;
+    padding: 28px 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+    animation: modalSlideIn 0.22s ease-out;
+  }
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #f1f5f9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .modal-close:hover { background: #10b981; color: white; }
+  .modal-ticker {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+  }
+  .modal-name {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .modal-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .modal-district-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .modal-fund-chip {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .modal-body { margin-top: 20px; }
+  .modal-big-picture {
+    font-size: 16px;
+    font-weight: 500;
+    color: #0f172a;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .modal-story {
+    font-size: 14.5px;
+    color: #334155;
+    line-height: 1.75;
+  }
+  .modal-sound-bite {
+    margin-top: 16px;
+    padding: 12px 18px;
+    background: #ecfdf5;
+    border-left: 3px solid #10b981;
+    border-radius: 4px;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: #065f46;
+  }
+  .modal-chart-container {
+    margin-top: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 380px;
+    width: 100%;
+  }
+  .modal-chart-container iframe {
+    width: 100% !important;
+    height: 380px !important;
+    border: none;
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  @media (max-width: 640px) {
+    .modal-card { padding: 22px 20px; }
+    .modal-ticker { font-size: 26px; }
+    .modal-chart-container, .modal-chart-container iframe { height: 300px !important; }
+  }
+
   /* WATCHLIST PAGE */
   .watchlist-controls {
     background: white;
@@ -832,39 +998,148 @@ def render_card(ticker: str, entry: dict, fund_chips: list = None) -> str:
 
 
 def build_search_index(study: dict, holdings_by_fund: dict) -> list:
-    """Build a JSON-serializable search index of every company across all funds."""
-    fund_chip_label = {
-        "focused-large-cap": "FLC",
-        "large-cap": "LC",
-        "mid-cap": "MID",
-        "small-cap": "SC",
-        "micro-cap": "MIC",
-    }
+    """Build a JSON-serializable search index of every company across all funds.
+    Full narrative content is included so the modal can render without lookups."""
     ticker_to_funds = {}
     for slug, _ in FUNDS:
         for t in holdings_by_fund[slug]:
-            ticker_to_funds.setdefault(t, []).append(fund_chip_label[slug])
+            ticker_to_funds.setdefault(t, []).append(FUND_CHIP_LABEL[slug])
 
+    districts = study["districts"]
     index = []
     for ticker in sorted(ticker_to_funds.keys()):
         entry = study["companies"].get(ticker)
         if not entry:
             continue
+        d_key = entry.get("district", "")
+        d_title = districts.get(d_key, {}).get("title", "")
         index.append({
             "ticker": ticker,
             "name": entry.get("name", ""),
-            "district": entry.get("district", ""),
+            "district": d_key,
+            "district_title": d_title,
+            "big_picture": entry.get("big_picture", ""),
+            "story": entry.get("story", ""),
+            "sound_bite": entry.get("sound_bite", ""),
             "funds": ticker_to_funds[ticker],
         })
     return index
 
 
 def build_js(search_index: list) -> str:
-    """Returns the page-level JavaScript: search + lazy chart loader."""
+    """Returns page-level JS: modal + search + lazy chart loader."""
     index_json = json.dumps(search_index)
     return r"""
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal-card" id="modal-card" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
 <script>
 const SEARCH_INDEX = """ + index_json + r""";
+const SEARCH_INDEX_BY_TICKER = (function() {
+  const map = {};
+  SEARCH_INDEX.forEach(function(item) { map[item.ticker] = item; });
+  return map;
+})();
+
+function cityEsc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+// ========== MODAL ==========
+(function() {
+  const backdrop = document.getElementById('modal-backdrop');
+  const content = document.getElementById('modal-content');
+  const closeBtn = document.getElementById('modal-close');
+  if (!backdrop || !content) return;
+
+  function openModal(ticker) {
+    const item = SEARCH_INDEX_BY_TICKER[ticker];
+    if (!item) return;
+
+    const fundChips = (item.funds || []).map(function(f) {
+      return '<span class="modal-fund-chip">' + cityEsc(f) + '</span>';
+    }).join('');
+    const districtChip = item.district_title
+      ? '<span class="modal-district-chip">' + cityEsc(item.district_title) + '</span>'
+      : '';
+    const soundBite = item.sound_bite
+      ? '<p class="modal-sound-bite">&ldquo;' + cityEsc(item.sound_bite) + '&rdquo;</p>'
+      : '';
+
+    const chartId = 'modal_chart_' + ticker + '_' + Date.now();
+    const scUrl = 'https://stockcharts.com/h-sc/ui?s=' + encodeURIComponent(ticker);
+
+    content.innerHTML =
+      '<div class="modal-ticker">' + cityEsc(ticker) + '</div>' +
+      '<div class="modal-name">' + cityEsc(item.name) + '</div>' +
+      '<div class="modal-meta">' + districtChip + fundChips + '</div>' +
+      '<div class="modal-body">' +
+        '<p class="modal-big-picture">' + cityEsc(item.big_picture) + '</p>' +
+        '<div class="modal-story">' + cityEsc(item.story) + '</div>' +
+        soundBite +
+        '<div id="' + chartId + '" class="modal-chart-container"></div>' +
+        '<div class="modal-actions">' +
+          '<a href="' + scUrl + '" target="_blank" rel="noopener" class="sc-link">&#128202; Open in StockCharts &rarr;</a>' +
+        '</div>' +
+      '</div>';
+
+    backdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    if (typeof TradingView !== 'undefined') {
+      new TradingView.widget({
+        autosize: true,
+        symbol: ticker,
+        interval: 'W',
+        range: '60M',
+        timezone: 'Etc/UTC',
+        theme: 'light',
+        style: '3',
+        locale: 'en',
+        enable_publishing: false,
+        hide_top_toolbar: true,
+        hide_side_toolbar: true,
+        hide_legend: false,
+        save_image: false,
+        studies: ['MASimple@tv-basicstudies'],
+        studies_overrides: {
+          'Moving Average.length': 30,
+          'Moving Average.linewidth': 2,
+          'Moving Average.plot.color': 'rgba(16, 185, 129, 1)'
+        },
+        show_popup_button: false,
+        withdateranges: false,
+        allow_symbol_change: false,
+        calendar: false,
+        details: false,
+        hotlist: false,
+        container_id: chartId
+      });
+    }
+  }
+
+  function closeModal() {
+    backdrop.classList.remove('show');
+    content.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', function(e) {
+    if (e.target === backdrop) closeModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && backdrop.classList.contains('show')) closeModal();
+  });
+
+  window.__cityModalOpen = openModal;
+  window.__cityModalClose = closeModal;
+})();
 
 // ========== SEARCH ==========
 (function() {
@@ -874,15 +1149,15 @@ const SEARCH_INDEX = """ + index_json + r""";
 
   function render(matches, query) {
     if (!matches.length) {
-      results.innerHTML = '<div class="search-empty">No matches for &ldquo;' + query + '&rdquo;</div>';
+      results.innerHTML = '<div class="search-empty">No matches for &ldquo;' + cityEsc(query) + '&rdquo;</div>';
       results.style.display = 'block';
       return;
     }
     results.innerHTML = matches.map(function(m) {
-      const chips = m.funds.map(function(f) { return '<span class="search-fund-chip">' + f + '</span>'; }).join('');
-      return '<a href="index.html#' + m.ticker + '" class="search-result">' +
-        '<span class="search-ticker">' + m.ticker + '</span>' +
-        '<span class="search-name">' + m.name + '</span>' +
+      const chips = m.funds.map(function(f) { return '<span class="search-fund-chip">' + cityEsc(f) + '</span>'; }).join('');
+      return '<a href="#' + cityEsc(m.ticker) + '" class="search-result" data-ticker="' + cityEsc(m.ticker) + '">' +
+        '<span class="search-ticker">' + cityEsc(m.ticker) + '</span>' +
+        '<span class="search-name">' + cityEsc(m.name) + '</span>' +
         '<span class="search-funds">' + chips + '</span>' +
         '</a>';
     }).join('');
@@ -894,44 +1169,10 @@ const SEARCH_INDEX = """ + index_json + r""";
     if (!q) { results.style.display = 'none'; return; }
     const matches = SEARCH_INDEX.filter(function(item) {
       return item.ticker.toLowerCase().indexOf(q) !== -1 ||
-             item.name.toLowerCase().indexOf(q) !== -1;
+             (item.name || '').toLowerCase().indexOf(q) !== -1;
     }).slice(0, 12);
     render(matches, q);
   });
-
-  // Explicit click handler — handles same-page anchors smoothly with highlight,
-  // and falls through to cross-page navigation for tickers not on this page.
-  results.addEventListener('click', function(e) {
-    const link = e.target.closest('.search-result');
-    if (!link) return;
-    const hashIdx = link.href.indexOf('#');
-    if (hashIdx === -1) return;
-    const ticker = link.href.substring(hashIdx + 1);
-    const card = document.getElementById(ticker);
-    if (card) {
-      e.preventDefault();
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.replaceState(null, '', '#' + ticker);
-      card.classList.remove('flash');
-      void card.offsetWidth; // force reflow so animation restarts
-      card.classList.add('flash');
-      results.style.display = 'none';
-      input.value = '';
-    }
-    // else: let the browser navigate cross-page normally
-  });
-
-  // Flash a card when arriving via #anchor on initial load (e.g. cross-page nav)
-  if (window.location.hash) {
-    setTimeout(function() {
-      const t = window.location.hash.substring(1);
-      const card = document.getElementById(t);
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        card.classList.add('flash');
-      }
-    }, 100);
-  }
 
   input.addEventListener('focus', function() {
     if (input.value.trim()) results.style.display = 'block';
@@ -948,10 +1189,24 @@ const SEARCH_INDEX = """ + index_json + r""";
       results.style.display = 'none';
       input.blur();
     }
-    // Press '/' to focus search
-    if (e.key === '/' && document.activeElement !== input) {
+    if (e.key === '/' && document.activeElement !== input
+        && !document.getElementById('modal-backdrop').classList.contains('show')) {
       e.preventDefault();
       input.focus();
+    }
+  });
+
+  // Click any result → open modal for that ticker
+  results.addEventListener('click', function(e) {
+    const link = e.target.closest('.search-result');
+    if (!link) return;
+    e.preventDefault();
+    const ticker = link.dataset.ticker;
+    if (ticker && window.__cityModalOpen) {
+      window.__cityModalOpen(ticker);
+      results.style.display = 'none';
+      input.value = '';
+      input.blur();
     }
   });
 })();
@@ -1034,11 +1289,23 @@ const SEARCH_INDEX = """ + index_json + r""";
 """
 
 
+def render_act_heading(act: dict, index: int) -> str:
+    roman = ["I", "II", "III", "IV", "V", "VI", "VII"][index] if index < 7 else str(index + 1)
+    return f"""
+    <div class="act-heading">
+      <div class="act-label">Act {roman}</div>
+      <h2 class="act-title">{esc(act.get('title', ''))}</h2>
+      <div class="act-subtitle">{esc(act.get('subtitle', ''))}</div>
+    </div>
+    """
+
+
 def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fund: dict, as_of: str, search_index: list) -> str:
     holdings = holdings_by_fund[fund_slug]
     companies = study["companies"]
     districts = study["districts"]
     district_order = study["district_order"]
+    acts = study.get("acts", [])
     fund_intro = study.get("fund_intros", {}).get(fund_slug, {})
 
     # Group by district
@@ -1059,12 +1326,25 @@ def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fu
     covered = sum(1 for t in holdings if companies.get(t))
     districts_shown = sum(1 for d in district_order if by_district[d])
 
-    # Build district sections
+    # Map district → act index (for rendering act headings)
+    district_to_act = {}
+    for act_idx, act in enumerate(acts):
+        for d in act.get("districts", []):
+            district_to_act[d] = act_idx
+
+    # Build sections, emitting an act heading whenever we enter a new act with visible content
     sections = []
+    emitted_acts = set()
     for d in district_order:
         bucket = by_district[d]
         if not bucket:
             continue
+
+        act_idx = district_to_act.get(d)
+        if act_idx is not None and act_idx not in emitted_acts:
+            sections.append(render_act_heading(acts[act_idx], act_idx))
+            emitted_acts.add(act_idx)
+
         bucket.sort(key=lambda x: x[0])
         dmeta = districts[d]
         intro_paras = "".join(f"<p>{esc(p)}</p>" for p in dmeta.get("intro", []))
@@ -1192,12 +1472,25 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
         if d in by_district:
             by_district[d].append((ticker, entry))
 
-    # Universe sections
+    # Universe sections — with act headings
+    acts = study.get("acts", [])
+    district_to_act = {}
+    for act_idx, act in enumerate(acts):
+        for dk in act.get("districts", []):
+            district_to_act[dk] = act_idx
+
     universe_sections = []
+    emitted_acts = set()
     for d in district_order:
         bucket = by_district[d]
         if not bucket:
             continue
+
+        act_idx = district_to_act.get(d)
+        if act_idx is not None and act_idx not in emitted_acts:
+            universe_sections.append(render_act_heading(acts[act_idx], act_idx))
+            emitted_acts.add(act_idx)
+
         dmeta = districts[d]
         cards = []
         for ticker, entry in bucket:

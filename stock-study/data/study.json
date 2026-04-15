@@ -1,15 +1,15 @@
 {
   "_meta": {
     "description": "Single source of truth for the Prosper Innovation Growth study system. Contains fund-level narratives, district metadata + storytelling intros, and per-ticker data. Edit this file to update the guide; re-run scripts/build_guide.py to regenerate the HTML.",
-    "version": "3.0",
-    "updated": "2026-04-14"
+    "version": "4.0",
+    "updated": "2026-04-15"
   },
   "fund_intros": {
     "small-cap": {
       "tagline": "The City of the Future",
       "story": [
         "The companies in this portfolio are building the things underneath the AI and innovation narrative — the chips and cables and cooling systems, the power plants and transmission lines, the specialty metals and circuit boards, the drones and satellites, the diagnostic tests and rare-disease therapies, the trade schools training the welders, the contractors wiring the buildings. Most people have never heard of them. That is part of the point: in the gap between what the market has already priced and what these companies will become lies the opportunity we are looking for.",
-        "Taken together, these are not isolated bets. They are a connected vision of where innovation is taking us — a city we are building piece by piece. It starts with raw materials and silicon in The Chip Works, The Wires that carry signals between them, and The Machine Shop where precision parts and assemblies are made. From those components we build the city itself: The Power Plant generates the electricity that makes AI real, and The Construction Yards turn empty land into the buildings where it all runs. On top of that foundation come the services. The Arsenal defends the city and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. Main Street feeds, moves, trains, and entertains the people who live in the city, while The Stadium hosts the concerts, fights, and games. The Software Layer runs the code beneath all of it. And The Financial District moves the capital that funds everything else.",
+        "Taken together, these are not isolated bets. They are a connected vision of where innovation is taking us — a city we are building piece by piece. It starts with Components: The Chip Works, The Wires, and The Machine Shop, where raw materials and parts become the building blocks of everything else. Then we Build & Power it: The Construction Yards turn empty land into real facilities, and The Power Plant generates the electricity (and owns the sites) that bring it all to life. Money & Code run the city: The Financial District moves the capital that funds everything, and The Software Layer runs the code beneath it all. Then come The Services — what the city actually does for people. The Arsenal defends it and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. And Main Street is where people live their lives — shopping, eating, traveling, training, and being entertained.",
         "Every company in this fund is playing a role. This guide is how to remember all of them."
       ]
     },
@@ -50,15 +50,14 @@
     "chip_works",
     "wires",
     "machine_shop",
-    "power_plant",
     "construction_yards",
+    "power_plant",
+    "financial_district",
+    "software_layer",
     "arsenal",
     "clinic",
     "research_labs",
-    "main_street",
-    "stadium",
-    "software_layer",
-    "financial_district"
+    "main_street"
   ],
   "districts": {
     "chip_works": {
@@ -139,15 +138,16 @@
     },
     "main_street": {
       "title": "Main Street",
-      "subtitle": "The shops, schools, restaurants, and services where people live their lives",
+      "subtitle": "Where people live, shop, eat, learn, and have fun — the biggest district in the city",
       "intro": [
-        "A city is ultimately about people. Main Street is the district where they actually spend their days — buying things, eating things, traveling, training for jobs, working out, and living their lives. It is by far the largest district in the city by company count, because the consumer economy is enormous.",
-        "It starts with the megaliths. Apple (AAPL) puts a supercomputer in a billion pockets and sells the services that run on it. Amazon (AMZN) is the everything-store that ships, the cloud that hosts most of the internet, and the advertising platform that monetizes the rest. Costco (COST) is the bulk-buying institution that earned a cult following by treating its customers and its employees better than retail conventionally allows. Tesla (TSLA) is the EV company that became an energy company that became an AI company. McMega names dominate the district by market cap, but the smaller names tell more interesting stories.",
-        "The retail and lifestyle block continues. Boot Barn (BOOT) outfits the workforce that physically builds America. Deckers (DECK) owns Hoka and Ugg, two cult footwear brands. Ross Stores (ROST) runs the off-price treasure-hunt model. Warby Parker (WRBY) brought the eyewear category online with $95 prescription glasses. SharkNinja (SN) builds household appliances that punch above their price. Amer Sports (AS) owns Wilson, Salomon, Arc'teryx, and a portfolio of premium outdoor brands.",
-        "Food and drink: Celsius (CELH) turned energy drinks healthier and became a cultural phenomenon. CAVA (CAVA) is the Mediterranean Chipotle, scaling toward 1,000 restaurants. Vita Coco (COCO) owns 42% of the U.S. coconut water market. The Chefs' Warehouse (CHEF) distributes specialty ingredients to the country's best restaurants. Mama's Creations (MAMA) makes the deli-prepared meals that show up next to the rotisserie chicken. Neogen (NEOG) keeps food and animal products safe across the supply chain.",
-        "Travel, hospitality, and experiences: Hilton (HLT) operates one of the world's largest hotel networks. Royal Caribbean (RCL) and Viking (VIK) run the cruise industry's two most-loved brands — Royal at scale, Viking at the premium river-and-ocean end. Lindblad Expeditions (LIND) runs the polar adventure travel category in partnership with National Geographic. DoorDash (DASH) delivers the food that gets ordered when no one wants to leave. MercadoLibre (MELI) is the Amazon of Latin America, plus a fintech business as big as the marketplace.",
-        "The skilled-trades and wellness block: UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC techs, diesel mechanics, welders, and electricians the country cannot build data centers without. American Public Education (APEI) runs the largest online university serving the U.S. military and federal workforce. Life Time Holdings (LTH) operates resort-style wellness campuses where an entire day can happen. Hinge Health (HNGE) treats chronic back and joint pain through a smartphone app and wearable sensors — physical therapy without the office visit.",
-        "Finally, the freight and identity infrastructure of the consumer economy. Saia (SAIA) and XPO (XPO) move the freight that keeps shelves full. Carvana (CVNA) reinvented used car retail. Clear Secure (YOU) runs biometric identity verification at airports and stadiums with 30+ million members. Together, these are the companies the city interacts with every single day."
+        "A city is ultimately about people. Main Street is where they actually spend their days — buying things, eating things, traveling, training for jobs, working out, being entertained, and living their lives. It is by far the largest district in the city by company count, because the consumer economy is enormous.",
+        "It starts with the megaliths. Apple (AAPL) puts a supercomputer in a billion pockets and sells the services that run on it. Amazon (AMZN) is the everything-store that ships, the cloud that hosts most of the internet, and the advertising platform that monetizes the rest. Costco (COST) is the bulk-buying institution that earned a cult following by treating its customers and its employees better than retail conventionally allows. Tesla (TSLA) is the EV company that became an energy company that became an AI company. Mega names dominate by market cap, but the smaller names tell more interesting stories.",
+        "The retail and lifestyle block. Boot Barn (BOOT) outfits the workforce that physically builds America. Deckers (DECK) owns Hoka and Ugg, two cult footwear brands. Ross Stores (ROST) runs the off-price treasure-hunt model. Warby Parker (WRBY) brought eyewear online with $95 prescription glasses. SharkNinja (SN) builds household appliances that punch above their price. Amer Sports (AS) owns Wilson, Salomon, Arc'teryx, and a portfolio of premium outdoor brands.",
+        "Food and drink. Celsius (CELH) turned energy drinks healthier and became a cultural phenomenon. CAVA (CAVA) is the Mediterranean Chipotle, scaling toward 1,000 restaurants. Vita Coco (COCO) owns 42% of the U.S. coconut water market. The Chefs' Warehouse (CHEF) distributes specialty ingredients to the country's best restaurants. Mama's Creations (MAMA) makes the deli-prepared meals at your grocery store. Neogen (NEOG) keeps food and animal products safe across the supply chain.",
+        "Travel, hospitality, and experiences. Hilton (HLT) operates one of the world's largest hotel networks. Royal Caribbean (RCL) and Viking (VIK) run the cruise industry's two most-loved brands — Royal at scale, Viking at the premium end. Lindblad Expeditions (LIND) runs the polar adventure travel category in partnership with National Geographic. DoorDash (DASH) delivers the food that gets ordered when no one wants to leave. MercadoLibre (MELI) is the Amazon of Latin America, plus a fintech business as big as the marketplace.",
+        "Entertainment — the part of Main Street where people go for fun. Netflix (NFLX) defined and now defends the streaming category with over 300 million subscribers worldwide. Take-Two Interactive (TTWO) owns Rockstar Games and 2K Sports, with Grand Theft Auto VI arriving in 2026 as likely the biggest entertainment launch in history. Live Nation (LYV) runs the global concert business through Ticketmaster and its venue network. TKO Group (TKO) houses both UFC and WWE under one roof. IMAX (IMAX) operates the premium large-format theater network. And Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen, now the top-grossing venue in the world.",
+        "The skilled-trades and wellness block. UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC technicians, diesel mechanics, welders, and electricians the country cannot build data centers without. American Public Education (APEI) runs the largest online university serving the U.S. military and federal workforce. Life Time Holdings (LTH) operates resort-style wellness campuses. Hinge Health (HNGE) treats chronic back and joint pain through a smartphone app and wearable sensors.",
+        "Finally, the freight and identity infrastructure of the consumer economy. Saia (SAIA) and XPO (XPO) move the freight that keeps shelves full. Carvana (CVNA) reinvented used car retail. Clear Secure (YOU) runs biometric identity verification at airports with 30+ million members."
       ]
     },
     "software_layer": {
@@ -166,15 +166,6 @@
         "None of this gets built without capital. The Financial District is where the money for the rest of the city flows — the investment banks, the exchanges, and a few specialists where finance meets the physical world in interesting ways.",
         "Evercore (EVR) is one of the most respected independent investment banks in the world — the financial architect behind some of the most consequential M&A deals and IPOs in the economy. Piper Sandler (PIPR) does similar work with particular depth in healthcare and technology, helping innovative smaller companies raise the capital they need to grow from promising startup to established player. MIAX runs electronic options exchanges — the marketplaces where a farmer locks in next year's crop price and a money manager buys insurance against a market drop.",
         "FTAI Aviation (FTAI) occupies a fascinating niche where finance meets aerospace — leasing commercial jet engines to airlines and, crucially, rebuilding them in-house through a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate. And Mirion Technologies (MIR) makes the instruments that detect and measure radiation — the monitors worn by nuclear-plant workers, the calibration devices inside hospital imaging equipment, the environmental sensors around radioactive materials. As interest in nuclear energy surges to power AI data centers, Mirion's safety technology only becomes more critical."
-      ]
-    },
-    "stadium": {
-      "title": "The Stadium",
-      "subtitle": "Where the city goes to be entertained",
-      "intro": [
-        "Every great city has a place where people gather to be entertained — to watch a fight, see a concert, lose themselves in a movie, or play a game with friends. The Stadium is that district. Six companies that compete for the city's attention, its evenings, and its discretionary dollars.",
-        "Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen and 580,000 sq ft of exterior LED displays, now the top-grossing venue in the world by Billboard's and Pollstar's 2025 rankings. Live Nation (LYV) runs the global concert business — venues, ticketing through Ticketmaster, festivals, and artist management — the connective tissue of live music. TKO Group (TKO) houses both UFC and WWE under one roof, two of the most valuable combat-sports franchises in the world with passionate audiences and pricing power that keeps growing. IMAX (IMAX) operates the premium large-format theater network that movie studios use to make blockbusters feel like events.",
-        "On the digital side, Netflix (NFLX) defined and now defends the streaming category — over 300 million subscribers worldwide, profitable, and increasingly leaning into live events, advertising, and gaming alongside its core content engine. Take-Two Interactive (TTWO) owns Rockstar Games and 2K Sports — and the entire video game industry is holding its breath for Grand Theft Auto VI, scheduled for 2026, likely to be the biggest entertainment launch in history."
       ]
     }
   },
@@ -727,7 +718,7 @@
     },
     "SPHR": {
       "name": "Sphere Entertainment",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "Operator of the Las Vegas Sphere — 17,600-seat immersive venue with a 16K wraparound screen, the top-grossing venue in the world.",
       "story": "Sphere Entertainment operates the Las Vegas Sphere, a 17,600-seat immersive entertainment venue with a 16K resolution wraparound interior LED screen, speaker arrays using beamforming and wave-field synthesis, and 4D physical effects. The exterior is 580,000 sq ft of LED displays — the largest in the world — and pulls in separate advertising revenue. The venue was ranked #1 on Billboard's and Pollstar's 2025 lists of top-grossing venues worldwide, and the 'Wizard of Oz' immersive experience plus concert residencies are expanding utilization. A second U.S. Sphere is planned for National Harbor outside Washington, D.C., and a venue in Abu Dhabi is also in development. The company also owns MSG Networks, a legacy regional sports network in structural decline — one of the main investor debates around the stock.",
       "sound_bite": "The most talked-about venue in the world. And there are more coming."
@@ -1434,35 +1425,35 @@
     },
     "NFLX": {
       "name": "Netflix",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "Defined and now defends the streaming category — over 300 million subscribers worldwide.",
       "story": "Netflix is the company that defined streaming entertainment and remains the global leader. With over 300 million subscribers worldwide, the platform generates more revenue and more profit than any other streamer. The recent additions of an ad-supported tier, password-sharing crackdowns, live programming, and gaming have all extended the growth runway. Netflix is profitable in a category where most competitors are still bleeding cash.",
       "sound_bite": "Won the streaming war. Now monetizing it."
     },
     "TTWO": {
       "name": "Take-Two Interactive",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "Owns Rockstar Games and 2K Sports — and the entire industry is holding its breath for Grand Theft Auto VI.",
       "story": "Take-Two Interactive owns Rockstar Games (Grand Theft Auto, Red Dead Redemption) and 2K Sports (NBA 2K, WWE 2K). The entire video game industry is holding its breath for Grand Theft Auto VI, scheduled for 2026, which is widely expected to be the biggest entertainment launch in history. Beyond GTA, Take-Two has a deep portfolio of recurring sports franchises and live-service games.",
       "sound_bite": "GTA VI in 2026. The most anticipated entertainment launch in history."
     },
     "LYV": {
       "name": "Live Nation Entertainment",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "The global concert business — venues, ticketing through Ticketmaster, festivals, and artist management.",
       "story": "Live Nation Entertainment runs the global concert business through three integrated segments: Concerts (promoting tours and operating venues), Ticketmaster (ticketing technology and distribution), and Sponsorship & Advertising. The company has effectively become the connective tissue of live music, with massive operating leverage on the secular rise in live entertainment spending.",
       "sound_bite": "If you went to a concert in 2025, Live Nation made the money."
     },
     "IMAX": {
       "name": "IMAX Corporation",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "The premium large-format theater network that movie studios use to make blockbusters feel like events.",
       "story": "IMAX runs a global network of premium large-format theaters that show the biggest movies on screens designed specifically for that format. The business model is asset-light — IMAX licenses its technology and shares revenue with theater operators rather than owning the theaters. As streaming has eaten most of the movie business, IMAX has become the format where Hollywood concentrates its biggest, most cinematic releases.",
       "sound_bite": "The screen for the movies that have to be experienced in a theater."
     },
     "TKO": {
       "name": "TKO Group Holdings",
-      "district": "stadium",
+      "district": "main_street",
       "big_picture": "UFC and WWE under one roof — two of the most valuable combat-sports franchises in the world.",
       "story": "TKO Group was formed in 2023 by combining the UFC (mixed martial arts) and WWE (professional wrestling) under one corporate umbrella. Both franchises have passionate audiences, recurring premium event windows, valuable TV and streaming rights, and pricing power that keeps growing. The combined company has unusual leverage in the broader sports media market.",
       "sound_bite": "UFC and WWE in one company. Two of the most loyal fanbases in entertainment."
@@ -1628,5 +1619,42 @@
       "story": "Neptune Insurance Holdings is a specialty flood insurance carrier that has used technology and analytics to underwrite flood risk more accurately than the federal NFIP program. As climate risk becomes harder to ignore and the federal flood program prices change, private flood insurers like Neptune have a structural growth opportunity in a market most large insurers have stayed away from.",
       "sound_bite": "Flood insurance, but underwritten with technology instead of bureaucracy."
     }
-  }
+  },
+  "acts": [
+    {
+      "title": "Components",
+      "subtitle": "What everything is made from",
+      "districts": [
+        "chip_works",
+        "wires",
+        "machine_shop"
+      ]
+    },
+    {
+      "title": "Built & Powered",
+      "subtitle": "Turning parts into real things",
+      "districts": [
+        "construction_yards",
+        "power_plant"
+      ]
+    },
+    {
+      "title": "Money & Code",
+      "subtitle": "Funding and running the city",
+      "districts": [
+        "financial_district",
+        "software_layer"
+      ]
+    },
+    {
+      "title": "The Services",
+      "subtitle": "What the city actually does for people",
+      "districts": [
+        "arsenal",
+        "clinic",
+        "research_labs",
+        "main_street"
+      ]
+    }
+  ]
 }
