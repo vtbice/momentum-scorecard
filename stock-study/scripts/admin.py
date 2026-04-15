@@ -339,46 +339,48 @@ ADMIN_JS = r"""
       border-color: white;
     }
 
-    .card .card-delete,
-    .wl-row .wl-delete,
-    .card .card-demote {
-      display: none;
-    }
-    body.admin-active .card .card-delete,
-    body.admin-active .wl-row .wl-delete,
-    body.admin-active .card .card-demote {
-      display: inline-flex;
-    }
+    /* These buttons are created by admin.js ONLY when edit mode is on
+       and removed from the DOM when edit mode is off. No display:none
+       tricks — if it exists, it's visible. */
     .card-delete, .card-demote {
+      display: inline-flex !important;
+      align-items: center;
       margin-left: auto;
-      padding: 3px 9px;
+      padding: 5px 12px;
       background: #fee2e2;
-      border: 1px solid #fecaca;
-      border-radius: 5px;
+      border: 2px solid #dc2626;
+      border-radius: 6px;
       color: #991b1b;
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       cursor: pointer;
+      box-shadow: 0 1px 3px rgba(220, 38, 38, 0.2);
+      white-space: nowrap;
     }
     .card-demote {
       background: #fef3c7;
-      border-color: #fde68a;
+      border-color: #d97706;
       color: #78350f;
-      margin-left: 6px;
+      margin-left: 8px;
+      box-shadow: 0 1px 3px rgba(217, 119, 6, 0.2);
     }
-    .card-delete:hover { background: #dc2626; color: white; border-color: #dc2626; }
-    .card-demote:hover { background: #d97706; color: white; border-color: #d97706; }
+    .card-delete:hover { background: #dc2626; color: white; }
+    .card-demote:hover { background: #d97706; color: white; }
     .wl-delete {
-      padding: 3px 9px;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
       background: #fee2e2;
-      border: 1px solid #fecaca;
+      border: 2px solid #dc2626;
       border-radius: 5px;
       color: #991b1b;
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
+      margin-left: 4px;
     }
     .wl-delete:hover { background: #dc2626; color: white; }
 
@@ -486,12 +488,20 @@ ADMIN_JS = r"""
       toggle.classList.add('active');
       toggle.textContent = '✕ Hide Edit Controls';
       showAdminBar();
+      injectCardButtons();
     } else {
       document.body.classList.remove('admin-active');
       toggle.classList.remove('active');
       toggle.textContent = '✎ Show Edit Controls';
       hideAdminBar();
+      removeCardButtons();
     }
+  }
+
+  function removeCardButtons() {
+    document.querySelectorAll('.card-delete, .card-demote, .wl-delete').forEach(function(b) {
+      b.remove();
+    });
   }
 
   // ========== ADMIN BAR ==========
@@ -561,9 +571,12 @@ ADMIN_JS = r"""
 
   // ========== PER-CARD CONTROLS ==========
   function injectCardButtons() {
+    const cards = document.querySelectorAll('.card');
+    const rows = document.querySelectorAll('.wl-row');
+    console.log('[admin.js] injectCardButtons: path=' + path + ', currentFund=' + currentFund + ', isOverview=' + isOverview + ', isWatchlist=' + isWatchlist + ', cards=' + cards.length + ', rows=' + rows.length);
     if (currentFund) {
       // Fund page: add "Remove from fund" button to each card
-      document.querySelectorAll('.card').forEach(function(card) {
+      cards.forEach(function(card) {
         const ticker = card.id;
         if (!ticker || card.querySelector('.card-delete')) return;
         const btn = document.createElement('button');
@@ -581,7 +594,7 @@ ADMIN_JS = r"""
       });
     } else if (isOverview) {
       // Overview: add "Demote" button to each card (removes from all funds, keeps watchlist)
-      document.querySelectorAll('.card').forEach(function(card) {
+      cards.forEach(function(card) {
         const ticker = card.id;
         if (!ticker || card.querySelector('.card-demote')) return;
         const btn = document.createElement('button');
@@ -599,7 +612,7 @@ ADMIN_JS = r"""
       });
     } else if (isWatchlist) {
       // Watchlist: add "Remove" button to each row in the actions cell
-      document.querySelectorAll('.wl-row').forEach(function(row) {
+      rows.forEach(function(row) {
         if (row.querySelector('.wl-delete')) return;
         const tickerLink = row.querySelector('.wl-ticker');
         if (!tickerLink) return;
