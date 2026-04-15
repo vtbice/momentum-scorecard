@@ -3,6 +3,17 @@
 A narrative-driven, multi-page guide to all holdings across the five Innovation
 Growth funds — plus a searchable directory of the ~1,200-name watchlist.
 
+## Live URLs
+
+| URL | What it is |
+|---|---|
+| **https://vtbice.github.io/momentum-scorecard/city/** | Short, shareable team link. Redirects to the overview page. |
+| https://vtbice.github.io/momentum-scorecard/stock-study/site/index.html | Full canonical URL of the overview page |
+
+Every push to `main` auto-rebuilds the site via GitHub Pages (typically 30-90 seconds).
+The admin server and edit controls never get published — they only exist when you run
+`Edit Holdings.command` locally, so the public URL is always safely read-only.
+
 ## What this is
 
 Every company you own across the five funds has a narrative in the voice of
