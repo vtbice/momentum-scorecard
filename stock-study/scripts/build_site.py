@@ -224,35 +224,34 @@ def css() -> str:
   .stat-value.accent { color: #10b981; }
   .stat-value.small { font-size: 20px; padding-top: 8px; }
 
-  /* READ-ONLY MODE BANNER — auto-shown unless served by the admin server */
+  /* READ-ONLY MODE BANNER — subtle note, auto-shown unless served by admin server */
   .readonly-banner {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-bottom: 2px solid #f59e0b;
-    color: #78350f;
-    padding: 14px 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 9px 24px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
     display: block;
     position: sticky;
     top: 0;
     z-index: 500;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   .readonly-banner strong {
-    font-weight: 700;
-    color: #92400e;
+    font-weight: 600;
+    color: #475569;
     letter-spacing: 0.02em;
   }
   .readonly-banner kbd {
     background: white;
-    border: 1px solid #92400e;
-    border-radius: 4px;
-    padding: 2px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 1px 6px;
     font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    color: #92400e;
-    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    font-size: 11px;
   }
   /* Banner is hidden whenever the admin.js client script runs */
   body.admin-mode .readonly-banner { display: none; }
