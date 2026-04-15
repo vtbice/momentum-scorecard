@@ -1273,7 +1273,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
             "sinceDate": since,
         })
     
-    # ── Macro checks (8 indicators, all equal weight) ──
+    # ── Macro checks ──
     emp = macro.get("employment", {}).get("value", 4.4)
     gdp = macro.get("gdp", {}).get("value", 2.9)
     inf = macro.get("inflation", {}).get("value", 2.7)
@@ -1285,6 +1285,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     ism = macro.get("ismPmi", {}).get("value", 50.0)
     oil = market.get("oil", {}).get("price", 75.0)
     gas = macro.get("gasPrice", {}).get("value", 3.50)
+    dxy = market.get("dxy", {}).get("price", 100.0)
+    jobless = macro.get("joblessClaims", {}).get("value", 220000)
 
     add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
     add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
@@ -1297,9 +1299,12 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(ism >= 50, "Macro", f"ISM Manufacturing · Now: {ism} · Healthy: above 50")
     add(oil < 90, "Macro", f"Oil Price (WTI) · Now: ${oil:.2f} · Healthy: below $90")
     add(gas < 4.0, "Macro", f"Gas Price · Now: ${gas:.2f} · Healthy: below $4.00")
+    add(dxy < 105, "Macro", f"US Dollar (DXY) · Now: {dxy:.1f} · Healthy: below 105")
+    add(jobless < 250000, "Macro", f"Initial Jobless Claims · Now: {int(jobless/1000)}K · Healthy: below 250K")
 
-    # ── Fundamental checks (5 indicators, all equal weight) ──
+    # ── Fundamental checks ──
     f = MANUAL_INPUTS["fundamental"]
+    add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
     add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
     add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
     add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
@@ -1307,13 +1312,14 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     fcf_ok = f["fcfYield"]
     add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
 
-    # ── Technical checks (5 indicators, all equal weight) ──
+    # ── Technical checks ──
     sp = market.get("sp500", {})
     sp_price = sp.get("price", 0)
     sp_ma4yr = sp.get("ma4yr", 0)
     sp_ma150 = sp.get("ma150", 0)
     b_pct = breadth.get("pctAbove", 58)
     vix_val = market.get("vix", {}).get("price", 15)
+    pct_uptrend = breadth.get("trends", {}).get("Uptrend", 0)
 
     add(sp_price > sp_ma4yr and sp_ma4yr > 0, "Technical",
         f"Long-Term Trend · S&P {sp_price:,.0f} vs 4-Year MA {sp_ma4yr:,.0f}")
@@ -1321,12 +1327,19 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         f"Medium-Term Trend · S&P {sp_price:,.0f} vs 150-Day MA {sp_ma150:,.0f}")
     add(b_pct > 60, "Technical",
         f"Market Breadth · Now: {round(b_pct)}% · Healthy: above 60%")
+    add(pct_uptrend > 50, "Technical",
+        f"Stocks in Uptrend · Now: {pct_uptrend:.0f}% · Healthy: above 50%")
     add(vix_val < 20, "Technical",
         f"Volatility · VIX Now: {vix_val:.1f} · Healthy: below 20")
     pc_auto = auto_data.get("putCall")
     pc = pc_auto["value"] if pc_auto else MANUAL_INPUTS["sentiment"]["putCall"]
     add(pc < 1.0, "Technical",
         f"Sentiment · P/C Now: {pc} · Healthy: below 1.0")
+    # AAII sentiment: contrarian when extreme
+    aaii_auto = auto_data.get("aaii")
+    aaii_val = aaii_auto["value"] if aaii_auto else MANUAL_INPUTS["sentiment"]["aaii"]
+    add(25 <= aaii_val <= 45, "Technical",
+        f"AAII Bull Sentiment · Now: {aaii_val:.0f}% · Healthy: 25-45% (extremes are contrarian)")
     
     # Auto-balance: every indicator gets equal weight so total always = 100
     # Each indicator is worth 100/N points where N = number of indicators
