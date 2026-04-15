@@ -1,0 +1,634 @@
+{
+  "_meta": {
+    "description": "Per-ticker study data. Each entry has: name, district, big_picture (one-line), story (City of the Future narrative), sound_bite (memorable tagline). When a write-up exists in /data/companies/TICKER.md, the builder will use the richer content from there.",
+    "districts": {
+      "intelligence": "Intelligence — AI chips, networking, cooling, raw materials",
+      "power": "Power — generation, grid, construction, electrification",
+      "builders": "The Builders — specialty metals, contract manufacturing, precision components",
+      "capital": "Capital & Connection — investment banks, exchanges, platforms, marketplaces",
+      "defense": "Defense & Space — drones, rockets, satellites, military components",
+      "healers": "The Healers — diagnostics, therapies, rare disease, transplant",
+      "everyday": "The Everyday Economy — freight, retail, food & beverage, training, wellness",
+      "backbone": "The Hidden Backbone — rural broadband, environmental systems, components",
+      "sun": "The Sun — solar and clean energy",
+      "digital_gold": "Digital Gold — Bitcoin mining and AI hosting",
+      "unassigned": "Not yet assigned to a district — write-up needed"
+    }
+  },
+  "ABVX": {
+    "name": "Abivax",
+    "district": "healers",
+    "big_picture": "Developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease.",
+    "story": "Abivax is developing what could become the first pill for moderate-to-severe inflammatory bowel disease — a chronic condition where the immune system mistakenly attacks the digestive tract, causing debilitating pain, bleeding, and long-term damage. Current treatments for serious cases require injections or hours-long infusions in a clinic. An effective oral pill would transform daily life for millions of patients.",
+    "sound_bite": "The first pill for a disease that today requires hours in an infusion chair."
+  },
+  "ADPT": {
+    "name": "Adaptive Biotechnologies",
+    "district": "healers",
+    "big_picture": "Reads the immune system like a book — every infection, cancer, and vaccine leaves a molecular fingerprint they can decode.",
+    "story": "Adaptive Biotechnologies reads the immune system like a book — every infection, every cancer, every vaccine a person has ever encountered leaves a unique molecular fingerprint on their immune cells, and Adaptive's technology can decode those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible.",
+    "sound_bite": "Your immune system is a history book of every disease you've ever fought. Adaptive reads it."
+  },
+  "ALGM": {
+    "name": "Allegro MicroSystems",
+    "district": "intelligence",
+    "big_picture": "Sensors that detect motion, position, and electrical current inside EVs, factory robots, and data center cooling.",
+    "story": "Allegro MicroSystems builds sensors that detect motion, position, and electrical current inside machines. When an electric car's motor spins, Allegro's sensors measure exactly how fast and in what direction, allowing the control system to adjust power delivery thousands of times per second. The same principle applies to factory robots, data-center cooling fans, and any application where something moves and needs to be precisely controlled.",
+    "sound_bite": "If it spins, Allegro is watching."
+  },
+  "AMKR": {
+    "name": "Amkor Technology",
+    "district": "intelligence",
+    "big_picture": "Packages finished chips into protective housings — the final step before silicon meets the real world.",
+    "story": "Amkor Technology handles the final step of chipmaking: taking a finished chip — a delicate flake of silicon thinner than a fingernail — and encasing it in a protective housing with hundreds of tiny electrical connections, so it can survive the intense heat and vibration inside a working computer.",
+    "sound_bite": "Every chip needs armor before it hits the real world — Amkor is the armorer."
+  },
+  "APLD": {
+    "name": "Applied Digital",
+    "district": "power",
+    "big_picture": "Building AI-native data center facilities from scratch, engineered for extreme electrical and cooling demands.",
+    "story": "Applied Digital is building entire data-center facilities designed from scratch for AI computing, with electrical and cooling systems engineered specifically for the extreme demands that traditional buildings were never meant to handle.",
+    "sound_bite": "Traditional data centers were built for websites. Applied Digital is building for AI."
+  },
+  "AGX": {
+    "name": "Argan",
+    "district": "builders",
+    "big_picture": "Designs, engineers, and constructs power plants from the ground up.",
+    "story": "Argan builds power plants from the ground up — designing, engineering, and constructing the generation facilities that create the electricity the rest of the city depends on.",
+    "sound_bite": "Someone has to actually build the power plants — Argan is that someone."
+  },
+  "ARWR": {
+    "name": "Arrowhead Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "Silences disease-causing genes before they can do damage — shredding bad recipes before the body can use them.",
+    "story": "Arrowhead Pharmaceuticals is pioneering an approach that silences disease-causing genes before they can do damage. Many serious illnesses are caused by the body producing too much of a harmful protein — Arrowhead's therapies intercept the genetic instructions for that protein and destroy them, like shredding a bad recipe before the kitchen can use it.",
+    "sound_bite": "Stop the disease before the body reads the recipe."
+  },
+  "ASND": {
+    "name": "Ascendis Pharma",
+    "district": "healers",
+    "big_picture": "Turns daily-injection drugs into weekly or monthly treatments by wrapping them in a slow-release molecular coating.",
+    "story": "Ascendis Pharma has solved a practical problem that makes an enormous difference in patients' lives: turning medications that require painful daily injections into formulations that work with just one shot per week, by wrapping the active drug in a molecular coating that slowly releases it over time. For a child facing years of daily growth hormone injections, the difference between seven shots a week and one is profound.",
+    "sound_bite": "Seven shots a week becomes one — for kids who need it most."
+  },
+  "ALAB": {
+    "name": "Astera Labs",
+    "district": "intelligence",
+    "big_picture": "Intelligent traffic controllers for data flowing between AI processors stacked in a single rack.",
+    "story": "Astera Labs solves data movement at the rack level. When hundreds of processors are stacked together in a single cabinet, they generate an enormous amount of data traffic — imagine thousands of cars all trying to merge onto the same highway at once. Astera builds the intelligent traffic controllers that manage those data flows, prioritizing the most urgent signals, preventing collisions, and making sure nothing gets stuck in a bottleneck. Their technology has become essential inside the world's largest AI installations.",
+    "sound_bite": "The traffic cops inside every AI rack."
+  },
+  "BELFB": {
+    "name": "Bel Fuse",
+    "district": "backbone",
+    "big_picture": "Power supplies and connectivity components hiding inside networking gear, radar, and industrial controls.",
+    "story": "Bel Fuse manufactures the electronic power supplies and connectivity components found inside an enormous range of essential equipment. Networking gear, military radar systems, industrial controls — they all need reliable power conversion and data connections, and Bel Fuse is one of those small companies whose parts quietly show up everywhere.",
+    "sound_bite": "The parts you'll never see but that everything depends on."
+  },
+  "BE": {
+    "name": "Bloom Energy",
+    "district": "power",
+    "big_picture": "On-site fuel cells that generate power in 90 days vs. 5-10 years for a new power plant — the answer to AI's electricity crisis.",
+    "story": "Bloom Energy's fuel cells generate electricity through an electrochemical reaction — similar in concept to a battery, but instead of storing energy and running down, they continuously convert natural gas or hydrogen into electricity as long as fuel is supplied. No combustion, no turbines, no connection to the traditional power grid required. A stack of Bloom's ceramic fuel cells can be installed on-site in as little as 90 days and start generating power immediately. Compare that to the five-to-ten-year timeline for building a new power plant, and you start to understand why some of the world's largest investors are pouring billions into deploying them at AI data centers. Bloom is doubling its manufacturing capacity to meet the surge in demand.",
+    "sound_bite": "90 days to power a data center, not 10 years."
+  },
+  "BOOT": {
+    "name": "Boot Barn",
+    "district": "everyday",
+    "big_picture": "Outfits the American workforce — ranchers, construction crews, oil-field workers — with boots, workwear, and gear.",
+    "story": "Boot Barn outfits the American workforce with western and work-related boots, clothing, and gear, serving ranchers, construction workers, and oil-field crews through over 400 stores with a fiercely loyal following.",
+    "sound_bite": "Every data center America builds gets built by people wearing boots from Boot Barn."
+  },
+  "BBIO": {
+    "name": "BridgeBio Pharma",
+    "district": "healers",
+    "big_picture": "Hunts rare genetic diseases — first drug for a heart condition where abnormal protein builds up like plaque in a pipe.",
+    "story": "BridgeBio Pharma hunts for rare genetic diseases — conditions that individually affect small numbers of people but collectively touch tens of millions worldwide. Their first major drug treats a heart condition where an abnormal protein gradually builds up in the heart muscle like plaque in a pipe, stiffening it until it can no longer pump effectively. They then announced successful trials for limb-girdle muscular dystrophy, a devastating disease where muscles in the hips and shoulders progressively waste away and for which no treatment existed, and for a rare disorder where the body can't properly regulate calcium levels. Both therapies are heading toward approval.",
+    "sound_bite": "For families with rare genetic diseases, BridgeBio is genuine hope."
+  },
+  "CDNL": {
+    "name": "Cardinal (placeholder — confirm ticker)",
+    "district": "unassigned",
+    "big_picture": "Write-up needed.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/CDNL.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "CRS": {
+    "name": "Carpenter Technology",
+    "district": "builders",
+    "big_picture": "Forges specialty metals that withstand 2,000° heat, corrosive chemicals, and extreme pressure.",
+    "story": "Carpenter Technology forges specialty metals and advanced alloys — materials engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe.",
+    "sound_bite": "Metals so specialized that failure isn't an inconvenience — it's a catastrophe."
+  },
+  "CAVA": {
+    "name": "CAVA Group",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — fast-casual Mediterranean chain.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/CAVA.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "CECO": {
+    "name": "CECO Environmental",
+    "district": "backbone",
+    "big_picture": "Scrubbers, filters, and wastewater treatment that keep industrial growth from trashing the air and water.",
+    "story": "CECO Environmental designs and builds the systems that keep industrial operations environmentally responsible — the scrubbers that remove pollutants from factory exhaust, the filters that clean industrial air, and the treatment equipment that purifies wastewater before it returns to rivers and aquifers. It's unglamorous work that ensures economic growth doesn't come at the expense of the air we breathe and the water we drink.",
+    "sound_bite": "Growth without pollution — CECO is how that happens."
+  },
+  "CELC": {
+    "name": "Celcuity",
+    "district": "healers",
+    "big_picture": "Tests a patient's living cancer cells in the lab to match them to the therapy most likely to work.",
+    "story": "Celcuity takes a different approach to cancer. Rather than treating every tumor the same way, they test a patient's living cancer cells in the lab to determine exactly which biological signals are driving the tumor's growth, then match the patient to the therapy most likely to shut those signals down.",
+    "sound_bite": "Stop guessing which cancer drug works — test it on the actual tumor first."
+  },
+  "CELH": {
+    "name": "Celsius Holdings",
+    "district": "everyday",
+    "big_picture": "Turned the energy-drink category upside down — no sugar, clinically studied ingredients, cultural phenomenon with younger consumers.",
+    "story": "Celsius Holdings has turned the energy-drink market upside down. While traditional brands competed on extreme caffeine and aggressive marketing, Celsius positioned itself as the healthier choice — no sugar, no artificial preservatives, clinically studied ingredients. The bet worked spectacularly: they've gone from a niche brand to one of the top energy drinks in America, becoming a genuine cultural phenomenon among younger, health-conscious consumers.",
+    "sound_bite": "Red Bull for people who read labels."
+  },
+  "CGON": {
+    "name": "CG Oncology",
+    "district": "healers",
+    "big_picture": "Engineered a virus that selectively infects bladder tumor cells, replicates until they burst, then spreads to neighboring cancer.",
+    "story": "CG Oncology has developed a creative approach to bladder cancer: they've engineered a virus that selectively infects tumor cells, replicates inside them until they burst, and then spreads to neighboring cancer cells — all while leaving healthy tissue untouched. For patients facing the prospect of having their bladder surgically removed, this could be a life-changing alternative.",
+    "sound_bite": "A virus that hunts cancer — and leaves healthy tissue alone."
+  },
+  "CIFR": {
+    "name": "Cipher Mining",
+    "district": "digital_gold",
+    "big_picture": "Bitcoin mining operation increasingly pivoting to AI hosting — same infrastructure, different customers.",
+    "story": "Write-up needed. Likely fits in the Digital Gold district alongside HUT and WULF — Bitcoin miners whose power and cooling infrastructure is being re-rented to AI workloads.",
+    "sound_bite": ""
+  },
+  "YOU": {
+    "name": "Clear Secure",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — identity verification / airport security bypass service.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/YOU.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "COGT": {
+    "name": "Cogent Biosciences",
+    "district": "healers",
+    "big_picture": "Designs a cancer drug that fits a specific genetic mutation like a key fits a lock.",
+    "story": "Cogent Biosciences targets a specific type of gastrointestinal tumor driven by a known genetic mutation, designing a drug that fits the mutation like a key fits a lock. This represents the broader revolution in cancer care: treating the disease based on its molecular fingerprint rather than simply where it appears in the body.",
+    "sound_bite": "A drug designed to fit one mutation, the way a key fits one lock."
+  },
+  "FIX": {
+    "name": "Comfort Systems USA",
+    "district": "power",
+    "big_picture": "Installs the HVAC, plumbing, and electrical guts of every new data center and hospital being built.",
+    "story": "Comfort Systems USA installs the heating, cooling, plumbing, electrical, and fire-protection systems inside large commercial buildings. When a new data center or hospital is constructed, Comfort Systems is the company making sure the air flows properly, the water runs, the temperature stays within precise limits, and the power reaches every room. They've become one of the most in-demand contractors in the country.",
+    "sound_bite": "Every data center America builds, Comfort Systems plumbs and wires."
+  },
+  "ROAD": {
+    "name": "Construction Partners",
+    "district": "power",
+    "big_picture": "Builds and maintains the highways connecting every data center, power plant, and factory to the outside world.",
+    "story": "Construction Partners builds and maintains the highways connecting all of these facilities to the outside world — easy to overlook, but every data center, every power plant, every factory needs roads to reach it.",
+    "sound_bite": "You can't run a data center no one can drive to."
+  },
+  "CR": {
+    "name": "Crane Company",
+    "district": "builders",
+    "big_picture": "Engineered valves, sensors, and fluid-handling systems for aircraft, naval vessels, and factories.",
+    "story": "Crane Company supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories — components that control the flow of fuel, hydraulic fluid, and air in environments where reliability is everything.",
+    "sound_bite": "The valves and sensors that absolutely cannot fail — because lives depend on them."
+  },
+  "CRDO": {
+    "name": "Credo Technology",
+    "district": "intelligence",
+    "big_picture": "High-speed cables and connection chips that carry signals between AI processors — the nervous system of AI.",
+    "story": "Credo Technology builds the high-speed cables and connection chips that carry signals between processors at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes. The speed of those notes determines how fast the group can think. Credo makes the 'notes' move at light speed. They are the nervous system of artificial intelligence, and without them, even the most powerful processors sit idle waiting for information.",
+    "sound_bite": "Even the fastest AI chip is useless without Credo's wiring."
+  },
+  "DNTH": {
+    "name": "Dianthus Therapeutics",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — autoimmune disease therapies targeting the complement system.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/DNTH.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "DOCN": {
+    "name": "DigitalOcean",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — cloud infrastructure for developers and small businesses.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/DOCN.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "EVR": {
+    "name": "Evercore",
+    "district": "capital",
+    "big_picture": "Independent investment bank — the financial architects behind the economy's biggest M&A deals and IPOs.",
+    "story": "Evercore is one of the most respected independent investment banks in the world. When two large companies are considering merging, or a fast-growing private company is ready to sell shares to the public for the first time, Evercore advises on how to structure the deal, what price is fair, and how to navigate the complex negotiations involved. They serve as the financial architects behind some of the most consequential corporate decisions in the economy.",
+    "sound_bite": "When billion-dollar deals happen, Evercore is usually in the room."
+  },
+  "FN": {
+    "name": "Fabrinet",
+    "district": "builders",
+    "big_picture": "Precision contract manufacturing for optics aligned to tolerances thinner than a wavelength of light.",
+    "story": "Fabrinet specializes in work that requires almost unimaginable precision — the tiny optical components inside fiber-optic networks that must be aligned to tolerances measured in millionths of a meter, thinner than a wavelength of light. They are one of the hidden hands that turn designs into reality.",
+    "sound_bite": "Precision so extreme you measure it in wavelengths of light."
+  },
+  "FSLY": {
+    "name": "Fastly",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — edge computing and content delivery network.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/FSLY.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "FTAI": {
+    "name": "FTAI Aviation",
+    "district": "capital",
+    "big_picture": "Leases and rebuilds commercial jet engines — a finance-meets-aerospace business with a deep repair moat.",
+    "story": "FTAI Aviation occupies a fascinating niche where finance meets aerospace. Commercial jet engines are among the most expensive and complex machines ever built — a single engine can cost tens of millions of dollars and contains thousands of precision parts spinning at incredible speeds in extreme heat. FTAI leases these engines to airlines and, crucially, has built a deep expertise in overhauling and repairing them. When an engine comes in for service, their technicians disassemble it, inspect every component, replace what's worn, and return it to like-new condition — a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate.",
+    "sound_bite": "A jet engine rebuilder with a moat built out of decades of know-how."
+  },
+  "GKOS": {
+    "name": "Glaukos",
+    "district": "healers",
+    "big_picture": "Tiny implants that relieve glaucoma pressure during routine eye surgery — replacing daily eye drops forever.",
+    "story": "Glaukos has developed tiny implants — so small they're barely visible — that can be inserted during routine eye surgery to relieve the pressure that causes glaucoma, the leading cause of irreversible blindness worldwide, replacing the burden of daily eye drops with a lasting solution.",
+    "sound_bite": "No more daily eye drops — just an implant too small to see."
+  },
+  "GH": {
+    "name": "Guardant Health",
+    "district": "healers",
+    "big_picture": "Detects and monitors cancer from a simple blood draw — no biopsy needle required.",
+    "story": "Guardant Health has pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream. Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry — revealing not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.",
+    "sound_bite": "Find cancer in a tube of blood, before you ever feel a symptom."
+  },
+  "GWRE": {
+    "name": "Guidewire Software",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — P&C insurance core software platform.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add one to /data/companies/GWRE.md to have it appear in future guides.",
+    "sound_bite": ""
+  },
+  "HUT": {
+    "name": "Hut 8",
+    "district": "digital_gold",
+    "big_picture": "Bitcoin miner increasingly renting its power-dense facilities to AI companies — flexible infrastructure bet.",
+    "story": "Hut 8 operates large-scale facilities equipped for Bitcoin mining and has increasingly begun renting that same computing capacity to AI companies. The infrastructure is similar — power connections, cooling systems, dense racks of processors — so when Bitcoin prices are strong, they mine, and when AI companies need capacity, they rent it out. It's a flexible model.",
+    "sound_bite": "When Bitcoin is hot, they mine. When AI is hot, they host. Same building."
+  },
+  "IESC": {
+    "name": "IES Holdings",
+    "district": "power",
+    "big_picture": "Specialized heavy-duty electrical contracting for facilities that draw as much power as a small town.",
+    "story": "IES Holdings handles the specialized electrical work — running the heavy-duty wiring that connects buildings to power sources and distributing electricity safely through facilities that may draw as much power as a small town.",
+    "sound_bite": "When a data center needs as much power as a small town, IES wires it."
+  },
+  "FROG": {
+    "name": "JFrog",
+    "district": "capital",
+    "big_picture": "Manages the supply chain of software — makes sure no malicious code slips in between dev and production.",
+    "story": "JFrog manages what you might call the supply chain of software. Just as a physical product moves from factory to warehouse to store shelf, software moves from a developer's computer through a series of testing and security stages before reaching the servers that run it in production. JFrog makes sure that pipeline runs smoothly and that no malicious code slips in along the way.",
+    "sound_bite": "The factory floor for software — inspection included."
+  },
+  "KRMN": {
+    "name": "Karman Holdings",
+    "district": "defense",
+    "big_picture": "Precision-engineered components for advanced military platforms — decades of specialized know-how and security clearances.",
+    "story": "Karman Holdings provides the precision-engineered components that go into advanced military platforms — the kind of work that requires decades of specialized knowledge and security clearances that create very high barriers to competition.",
+    "sound_bite": "The moat isn't technology — it's decades of clearances and know-how."
+  },
+  "KTOS": {
+    "name": "Kratos Defense",
+    "district": "defense",
+    "big_picture": "Affordable combat drones — changes the math of air combat by being cheap enough to lose.",
+    "story": "Kratos Defense builds larger drone systems designed around a radical idea: make them affordable enough that military forces can deploy them in large numbers and accept losing some. Traditional fighter jets cost tens of millions of dollars each, making every loss devastating. Kratos's drones cost a fraction of that, fundamentally changing the math of air combat.",
+    "sound_bite": "Cheap enough to lose — that's the whole point."
+  },
+  "LSCC": {
+    "name": "Lattice Semiconductor",
+    "district": "intelligence",
+    "big_picture": "Programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need.",
+    "story": "Lattice Semiconductor makes programmable chips — processors that can be reconfigured after installation, like a toolbox that can transform into whatever tool you need at the moment. Traditional chips are designed to do one job forever. Lattice's chips can be reprogrammed to handle new tasks as requirements change, making them invaluable in factories, cars, and communication equipment where flexibility matters.",
+    "sound_bite": "A chip that changes its mind."
+  },
+  "LGN": {
+    "name": "Longs Drug / Longeveron (placeholder — confirm ticker)",
+    "district": "unassigned",
+    "big_picture": "Write-up needed.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Confirm which company LGN refers to and add content to /data/companies/LGN.md.",
+    "sound_bite": ""
+  },
+  "LTH": {
+    "name": "Life Time Holdings",
+    "district": "capital",
+    "big_picture": "Resort-style wellness campuses — pools, tennis, coworking, childcare — for people building their life around fitness.",
+    "story": "Life Time Holdings operates large, resort-style wellness campuses with pools, tennis courts, coworking spaces, and children's programs under one roof, designed for people who want to build their entire daily routine around health and community.",
+    "sound_bite": "Not a gym — a campus where your whole day can happen."
+  },
+  "LINC": {
+    "name": "Lincoln Educational Services",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — skilled trades training (similar thesis to UTI).",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Likely fits alongside UTI in The Everyday Economy as a skilled-trades training company. Add content to /data/companies/LINC.md.",
+    "sound_bite": ""
+  },
+  "LFUS": {
+    "name": "Littelfuse",
+    "district": "builders",
+    "big_picture": "Circuit protection components that sacrifice themselves to save expensive equipment during surges.",
+    "story": "Littelfuse protects electrical circuits from destruction. Every time there's a power surge, a lightning strike, or an unexpected spike in current, Littelfuse's components sacrifice themselves — absorbing the excess energy and breaking the circuit before expensive equipment is damaged, like a fuse blowing to protect your house's wiring. As the world fills with more sensitive electronics, that protection becomes more important, not less.",
+    "sound_bite": "Dies so the rest of the circuit can live."
+  },
+  "MTSI": {
+    "name": "MACOM Technology",
+    "district": "intelligence",
+    "big_picture": "Chips that convert electrical signals into laser light and back — the magic behind fiber-optic networks.",
+    "story": "MACOM Technology designs the chips that make fiber-optic networks work. On one end, they take an electrical signal — the language that computers speak — and use a tiny laser to convert it into a beam of light that shoots through the glass fiber. On the other end, a sensor catches that light and converts it back into an electrical signal the receiving computer can understand. This electrical-to-light-to-electrical conversion happens billions of times per second, and MACOM's chips are what make it fast, reliable, and efficient enough to power the world's communications networks.",
+    "sound_bite": "Turning electricity into light and back, billions of times per second."
+  },
+  "MDGL": {
+    "name": "Madrigal Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "First and only approved medication for a serious liver condition affecting tens of millions — a once-daily pill.",
+    "story": "Madrigal Pharmaceuticals developed the first and only approved medication for a serious liver condition that affects tens of millions of Americans. The disease causes fat to accumulate in the liver, which triggers inflammation and progressive scarring. Over time, the scarring can become so severe that the liver fails entirely. Before Madrigal's drug, the only medical advice was to eat better and exercise more. Now there's a once-daily pill that directly addresses the underlying liver damage, with the vast majority of patients who could benefit still untreated. They recently received European approval and expanded their research with six new programs.",
+    "sound_bite": "The first real drug for a disease that used to have only one prescription: eat better."
+  },
+  "MTZ": {
+    "name": "MasTec",
+    "district": "power",
+    "big_picture": "One of the country's largest infrastructure contractors — power lines, pipelines, cell towers.",
+    "story": "MasTec is one of the largest infrastructure contractors in the country, building the power lines that carry electricity from generation sources to where it's needed, the pipelines that deliver fuel, and the cell towers that connect wireless networks.",
+    "sound_bite": "If electricity, fuel, or wireless signal has to travel, MasTec probably built the path."
+  },
+  "MRCY": {
+    "name": "Mercury Systems",
+    "district": "defense",
+    "big_picture": "Computing brains inside military radar — turns raw sensor torrents into actionable intelligence in fractions of a second.",
+    "story": "Mercury Systems builds the computing brains inside military radar and missile-defense systems. When a radar station scans the sky, it generates a torrent of data that must be processed in real time to distinguish a flock of birds from an incoming threat. Mercury builds the hardware that does that processing, turning raw radar signals into actionable intelligence in fractions of a second.",
+    "sound_bite": "The computer that decides, in milliseconds, whether it's a goose or a missile."
+  },
+  "MIAX": {
+    "name": "Miami International Holdings",
+    "district": "capital",
+    "big_picture": "Runs options exchanges — the marketplaces where investors buy insurance against losses or bets on price moves.",
+    "story": "MIAX runs options exchanges — the electronic marketplaces where investors buy and sell contracts that let them protect against losses or profit from price changes. Think of it like insurance for investments: a farmer might lock in a price for next year's harvest, and a money manager might protect against a market downturn, and both of those transactions happen on an exchange like MIAX.",
+    "sound_bite": "Every financial 'just in case' has to trade somewhere. MIAX is one of those somewheres."
+  },
+  "MIR": {
+    "name": "Mirion Technologies",
+    "district": "capital",
+    "big_picture": "Radiation detection instruments — critical as nuclear energy comes back to power AI data centers.",
+    "story": "Mirion Technologies provides the instruments that detect and measure radiation — the monitors worn by workers in nuclear power plants, the calibration devices for hospital imaging equipment, and the environmental sensors that ensure radioactive materials are handled safely. As interest in nuclear energy surges, particularly for powering AI data centers, this kind of safety technology becomes even more critical.",
+    "sound_bite": "If nuclear is coming back for AI, so is Mirion."
+  },
+  "MIRM": {
+    "name": "Mirum Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "Treats children whose livers can't process bile — a devastating cause of itching, malnutrition, and organ failure.",
+    "story": "Mirum Pharmaceuticals treats children whose livers can't properly process bile, a digestive fluid that backs up and causes agonizing itching, malnutrition, and potential organ failure.",
+    "sound_bite": "For kids living with a broken liver, Mirum is a lifeline."
+  },
+  "MKSI": {
+    "name": "MKS Instruments",
+    "district": "intelligence",
+    "big_picture": "Controls gases, temperatures, and energy inside chip fab chambers — perfect weather inside a sealed room.",
+    "story": "MKS Instruments provides the instruments that control the gases, temperatures, and energy inside chip fabrication chambers — think of it as maintaining perfect weather conditions inside a sealed room where even a single stray particle could ruin everything.",
+    "sound_bite": "Perfect weather inside a room where one stray particle ruins everything."
+  },
+  "MOD": {
+    "name": "Modine Manufacturing",
+    "district": "intelligence",
+    "big_picture": "Liquid cooling for AI data centers — transformed from a legacy auto-parts company into an AI infrastructure name.",
+    "story": "A single rack of AI processors generates as much warmth as a small house, and a data center full of them produces heat like a furnace. Traditional air conditioning simply cannot keep up. Modine Manufacturing designs advanced cooling systems that pump liquid directly past the hottest components, absorbing heat the way a car's radiator cools an engine, then carrying it away to be dissipated safely. They've transformed from a legacy auto-parts company into one of the most important names in AI infrastructure.",
+    "sound_bite": "The radiator company that woke up one morning as an AI infrastructure play."
+  },
+  "MP": {
+    "name": "MP Materials",
+    "district": "intelligence",
+    "big_picture": "Only large-scale rare-earth producer in the Western Hemisphere — magnets for EVs, wind, fighter jets.",
+    "story": "MP Materials mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and computer hard drives. These elements have unique magnetic properties that no other material can replicate, which is why they're called 'rare' — not because they're scarce in the earth's crust, but because extracting and refining them is extraordinarily difficult. MP is the only large-scale rare-earth producer in the Western Hemisphere.",
+    "sound_bite": "The only rare-earth supplier on this side of the Pacific."
+  },
+  "NTRA": {
+    "name": "Natera",
+    "district": "healers",
+    "big_picture": "Reads DNA fragments in the blood to detect fetal conditions in pregnancy and microscopic cancer residue after treatment.",
+    "story": "Natera uses the same basic concept as Guardant — reading DNA fragments floating in the blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of remaining disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold.",
+    "sound_bite": "Sees cancer coming back months before any scan would."
+  },
+  "NAVN": {
+    "name": "Navan (placeholder — confirm ticker)",
+    "district": "unassigned",
+    "big_picture": "Write-up needed.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add content to /data/companies/NAVN.md.",
+    "sound_bite": ""
+  },
+  "NKTR": {
+    "name": "Nektar Therapeutics",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — biotech, immunology therapies.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add content to /data/companies/NKTR.md.",
+    "sound_bite": ""
+  },
+  "NXT": {
+    "name": "Nextracker",
+    "district": "sun",
+    "big_picture": "Motorized trackers that let solar panels follow the sun — squeezing 25% more energy from the same equipment.",
+    "story": "Nextracker makes the motorized mounting systems that allow massive fields of solar panels to follow the sun across the sky throughout the day, like sunflowers turning toward light. A fixed solar panel captures whatever light hits it at the angle it happens to be facing. A tracking panel adjusts its angle every few minutes to face the sun directly, squeezing up to 25% more energy from the same equipment. It's a simple, elegant idea — mechanical arms tilting panels on a single axis — and it has become standard equipment at the largest solar installations in the world.",
+    "sound_bite": "Solar panels that follow the sun like sunflowers."
+  },
+  "NVMI": {
+    "name": "Nova",
+    "district": "intelligence",
+    "big_picture": "Inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to humans.",
+    "story": "Nova builds the inspection tools that chipmakers use to verify each microscopic layer during production, essentially photographing the chip's surface with beams of light and electrons to catch defects invisible to any human eye. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper.",
+    "sound_bite": "The microscope that saves a billion-dollar fab from one bad layer."
+  },
+  "NUVL": {
+    "name": "Nuvalent",
+    "district": "healers",
+    "big_picture": "Precision lung cancer drugs engineered to block the escape routes tumors use to develop resistance.",
+    "story": "Nuvalent designs precision lung cancer therapies engineered to solve a specific problem: drug resistance. Many targeted cancer drugs work brilliantly at first, but the tumor eventually evolves a workaround and starts growing again. Nuvalent's drugs are designed from the start to block those escape routes, keeping the treatment effective longer.",
+    "sound_bite": "Designed from day one to stay ahead of the tumor's next move."
+  },
+  "PIPR": {
+    "name": "Piper Sandler",
+    "district": "capital",
+    "big_picture": "Investment bank with deep healthcare and tech expertise — helps innovative smaller companies raise capital.",
+    "story": "Piper Sandler does deal-advisory work with particular expertise in healthcare and technology, often helping innovative smaller companies raise the capital they need to grow from promising startup to established player.",
+    "sound_bite": "The boutique investment bank for the next wave of healthcare and tech."
+  },
+  "PL": {
+    "name": "Planet Labs",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — satellite imagery of Earth (likely fits Defense & Space district).",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Likely fits alongside RKLB and YSS in Defense & Space — Planet Labs operates the world's largest fleet of earth-imaging satellites. Add content to /data/companies/PL.md.",
+    "sound_bite": ""
+  },
+  "PTGX": {
+    "name": "Protagonist Therapeutics",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — peptide therapies for inflammatory and blood disorders.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add content to /data/companies/PTGX.md.",
+    "sound_bite": ""
+  },
+  "PTCT": {
+    "name": "PTC Therapeutics",
+    "district": "healers",
+    "big_picture": "Helps the body read past genetic 'typos' in rare childhood muscle diseases and produce functional protein anyway.",
+    "story": "PTC Therapeutics works on rare childhood diseases where the genetic instructions for building muscle protein contain an error, like a typo in a recipe, causing muscles to gradually weaken over time. Their therapies aim to help the body read past that error and produce functional protein anyway.",
+    "sound_bite": "Teaching the body to read past a typo in its own recipe book."
+  },
+  "RMBS": {
+    "name": "Rambus",
+    "district": "intelligence",
+    "big_picture": "Designs the rules that govern how processors and memory chips talk — determines how fast the whole computer runs.",
+    "story": "Rambus designs the rules that govern how processors and memory chips communicate. Think of memory like a library and the processor like a reader — Rambus designs the system that determines how fast the reader can check out and return books. The faster that exchange happens, the faster the entire computer runs.",
+    "sound_bite": "The librarian that decides how fast the computer can think."
+  },
+  "RBC": {
+    "name": "RBC Bearings",
+    "district": "builders",
+    "big_picture": "Precision bearings for helicopter rotors, submarines, and industrial machinery — flawless under extreme force.",
+    "story": "RBC Bearings makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery. A bearing is a deceptively simple concept — it reduces friction between moving parts — but engineering one that operates flawlessly under thousands of pounds of force, at extreme temperatures, for years without maintenance, is anything but simple.",
+    "sound_bite": "A simple idea, engineered to survive where nothing else can."
+  },
+  "RVMD": {
+    "name": "Revolution Medicines",
+    "district": "healers",
+    "big_picture": "Going after a cancer mutation in 1 of every 3 cancers that was considered 'impossible to drug' for decades.",
+    "story": "Revolution Medicines is going after one of the most important targets in all of cancer research: a group of mutations found in roughly one out of every three cancers, including many of the deadliest forms. For decades, scientists considered these mutations impossible to treat because the protein's surface was perfectly smooth, with no crevice for a drug molecule to grab onto. Revolution found a way in, and the research community is watching with intense interest.",
+    "sound_bite": "The 'undruggable' target that finally has a door."
+  },
+  "RYTM": {
+    "name": "Rhythm Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "Restores the brain's hunger-signaling system in rare genetic forms of extreme obesity — not willpower, broken biology.",
+    "story": "Rhythm Pharmaceuticals addresses rare genetic forms of extreme obesity caused by a mutation that breaks the brain's hunger-signaling system. Imagine never feeling full, no matter how much you eat — not a willpower problem, but a broken biological thermostat. Rhythm's medication restores that signal.",
+    "sound_bite": "For patients whose 'full' signal is permanently broken, Rhythm fixes the thermostat."
+  },
+  "RKLB": {
+    "name": "Rocket Lab",
+    "district": "defense",
+    "big_picture": "Electron rocket is one of the most reliable launch vehicles in the world — Neutron rocket targets 40x payload in 2026.",
+    "story": "Rocket Lab is proving that getting to orbit doesn't have to be the exclusive domain of giant contractors. Their Electron rocket has become one of the most reliable launch vehicles in the world, carrying satellites to orbit with a track record that keeps improving. They recently won their largest contract ever to build a constellation of missile-warning satellites, and their next-generation Neutron rocket — designed to carry 40 times more weight to orbit — is targeting its first flight in mid-2026. If it works, it opens up an enormous new market.",
+    "sound_bite": "The only serious Western alternative to SpaceX for small and medium launch."
+  },
+  "SAIA": {
+    "name": "Saia Inc.",
+    "district": "everyday",
+    "big_picture": "One of the country's largest freight carriers — the quiet arteries of American commerce.",
+    "story": "Saia is one of the largest freight carriers in the country, moving shipments for thousands of businesses that need to get products from factories to stores to doorsteps. They've been steadily opening new terminals to improve speed and coverage — the quiet arteries of American commerce that most people never think about until a package doesn't arrive.",
+    "sound_bite": "The arteries of American commerce — invisible until something stops."
+  },
+  "SANM": {
+    "name": "Sanmina",
+    "district": "builders",
+    "big_picture": "Contract manufacturer of complex electronics — medical imaging, military vehicles, cloud servers.",
+    "story": "Sanmina is one of the world's most important contract manufacturers — the company brilliant inventors turn to when they've designed something remarkable but need someone who can actually build it. Sanmina handles complex electronic assemblies: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing. They are the hidden hands that turn designs into reality.",
+    "sound_bite": "The hidden hands that turn brilliant designs into actual products."
+  },
+  "SMTC": {
+    "name": "Semtech",
+    "district": "intelligence",
+    "big_picture": "Chips that clean up degraded electronic signals — quality control for data moving through cables and circuits.",
+    "story": "Semtech acts as the quality-control system for electronic signals. As data travels through cables and circuits, the signal gradually degrades — like a photocopy of a photocopy getting fuzzier each time. Semtech's chips clean up and restore those signals so they arrive crisp and intact, even after traveling long distances. Their technology sits inside data-center switches, smart-city sensors, and agricultural monitoring systems around the world.",
+    "sound_bite": "Stops the photocopy-of-a-photocopy problem inside every cable."
+  },
+  "TTAN": {
+    "name": "Titan Machinery / ServiceTitan (placeholder — confirm ticker)",
+    "district": "unassigned",
+    "big_picture": "Write-up needed.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Confirm whether TTAN refers to Titan Machinery, ServiceTitan, or another company and add content to /data/companies/TTAN.md.",
+    "sound_bite": ""
+  },
+  "SITM": {
+    "name": "SiTime",
+    "district": "intelligence",
+    "big_picture": "Precision silicon clocks — the tiny heartbeats that keep electronic signals synchronized.",
+    "story": "SiTime makes something deceptively simple but absolutely essential: precision timing devices. Every electronic system needs a clock — a tiny heartbeat that keeps all its signals perfectly synchronized, like a conductor keeping an orchestra in time. If the timing drifts even a fraction of a second, signals collide, data gets corrupted, and systems fail. SiTime's silicon-based clocks are smaller, more accurate, and more resilient to vibration and temperature changes than traditional alternatives, which is why they're showing up inside everything from AI data centers to self-driving cars.",
+    "sound_bite": "The conductor's baton inside every electronic orchestra."
+  },
+  "SPHR": {
+    "name": "Sphere Entertainment",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — operator of the Las Vegas Sphere immersive venue.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add content to /data/companies/SPHR.md.",
+    "sound_bite": ""
+  },
+  "STRL": {
+    "name": "Sterling Infrastructure",
+    "district": "power",
+    "big_picture": "Massive earthwork that turns empty land into functioning data center campuses.",
+    "story": "Sterling Infrastructure does the massive earthwork that turns empty land into a functioning data-center campus — grading the site, pouring foundations, installing underground water and electrical systems, and building the roads within the campus.",
+    "sound_bite": "Before a data center can compute, Sterling has to move the dirt."
+  },
+  "TARS": {
+    "name": "Tarsus Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "First approved treatment for an eye condition caused by microscopic mites on eyelashes — 25M Americans affected.",
+    "story": "Tarsus Pharmaceuticals created the first approved treatment for a surprisingly common eye condition caused by microscopic mites that live on eyelashes and cause chronic redness and irritation in an estimated 25 million Americans who previously had no effective remedy.",
+    "sound_bite": "25 million Americans have it. Until recently, nobody had a treatment."
+  },
+  "WULF": {
+    "name": "TeraWulf",
+    "district": "digital_gold",
+    "big_picture": "Bitcoin miner running on primarily nuclear and hydro power — one of the greenest mining operations in the industry.",
+    "story": "TeraWulf takes a similar approach to Hut 8 but with a distinctive emphasis on clean energy — their flagship facility runs primarily on nuclear and hydroelectric power, making them one of the greenest mining operations in the industry. Like Hut 8, they are expanding their AI hosting capabilities, recognizing that the same infrastructure built for cryptocurrency can serve the exploding demand for artificial intelligence computing.",
+    "sound_bite": "The green Bitcoin miner — and an AI host on the side."
+  },
+  "TERN": {
+    "name": "Terns Pharmaceuticals",
+    "district": "healers",
+    "big_picture": "Attacks the same serious liver disease as Madrigal but through a different mechanism — combination potential.",
+    "story": "Terns Pharmaceuticals attacks the same serious liver disease as Madrigal but through a different scientific mechanism, which matters because different patients respond to different approaches and combining treatments may prove more powerful than any single drug.",
+    "sound_bite": "Different mechanism, same disease — potential combination partner to Madrigal."
+  },
+  "TMDX": {
+    "name": "TransMedics",
+    "district": "healers",
+    "big_picture": "Keeps donor organs alive and functioning during transport instead of packing them in ice — more organs, more lives saved.",
+    "story": "TransMedics has revolutionized organ transplantation. Traditionally, a donor organ is packed in ice and raced to the recipient in a desperate sprint against time, with the organ deteriorating every minute. TransMedics built a portable system that keeps the organ warm, pumps blood through it, and maintains it in a living, functioning state during the entire journey. This extends how far an organ can travel, allows doctors to evaluate its quality before implanting it, and has dramatically expanded the number of transplants that can be performed. More organs available means more lives saved.",
+    "sound_bite": "Organs arriving alive instead of on ice — more transplants, more lives."
+  },
+  "TTMI": {
+    "name": "TTM Technologies",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — printed circuit board manufacturer for defense and data center customers.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Likely fits alongside SANM and FN in The Builders district as a critical PCB supplier to aerospace/defense. Add content to /data/companies/TTMI.md.",
+    "sound_bite": ""
+  },
+  "UTI": {
+    "name": "Universal Technical Institute",
+    "district": "everyday",
+    "big_picture": "Trains the HVAC techs, diesel mechanics, welders, and electricians you can't build data centers without.",
+    "story": "Universal Technical Institute addresses one of the most critical and overlooked gaps in the American economy: training skilled tradespeople. HVAC technicians, diesel mechanics, welders, electricians — you cannot build data centers, power plants, or hospitals without them. As the country embarks on the largest infrastructure buildout in a generation, UTI is one of the only companies positioned to help close the growing gap between the workers we need and the workers we have.",
+    "sound_bite": "You can't build data centers without welders. UTI trains the welders."
+  },
+  "COCO": {
+    "name": "Vita Coco",
+    "district": "unassigned",
+    "big_picture": "Write-up needed — coconut water brand.",
+    "story": "This company is in the small cap fund but does not yet have a City of the Future narrative or write-up. Add content to /data/companies/COCO.md.",
+    "sound_bite": ""
+  },
+  "VSEC": {
+    "name": "VSE Corporation",
+    "district": "defense",
+    "big_picture": "Keeps military and commercial aircraft flying — maintenance, repair, and spare parts for complex machines.",
+    "story": "VSE Corporation keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts that complex machines constantly require. Every flight hour generates wear that must be addressed, every aging component must be replaced on schedule, and every grounded aircraft represents a mission that can't be flown.",
+    "sound_bite": "A grounded aircraft is a failed mission. VSE keeps them in the air."
+  },
+  "WWD": {
+    "name": "Woodward",
+    "district": "builders",
+    "big_picture": "Control systems that precisely meter fuel inside aircraft engines and industrial turbines.",
+    "story": "Woodward designs the control systems that regulate fuel flow and power output inside aircraft engines and industrial turbines. When a pilot pushes the throttle forward, Woodward's technology is what precisely meters the fuel, adjusts the air intake, and ensures the engine delivers exactly the right amount of power without overheating or flaming out.",
+    "sound_bite": "Pushing the throttle is easy. Surviving what happens next is Woodward."
+  },
+  "YSS": {
+    "name": "York Space Systems",
+    "district": "defense",
+    "big_picture": "Brings assembly-line thinking to satellites — standardized platforms built like cars, not one-of-a-kind projects.",
+    "story": "York Space Systems brings assembly-line thinking to satellite manufacturing. Instead of building each satellite as a one-of-a-kind custom project that takes years, York builds standardized platforms the way a car factory builds vehicles — faster, cheaper, and in much greater quantities. The military needs hundreds of small satellites for communications and early-warning systems, and York's approach makes that affordable for the first time.",
+    "sound_bite": "Satellites built on an assembly line — finally."
+  }
+}

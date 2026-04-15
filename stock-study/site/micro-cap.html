@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micro Cap — The City of the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://s3.tradingview.com/tv.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    color: #0f172a;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  /* SITE HEADER */
+  header.site-head {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 24px 32px 0;
+    border-bottom: 3px solid #10b981;
+    color: white;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .kicker {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #10b981;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .header-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+  .header-title .accent { color: #10b981; }
+  .header-sub {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 18px;
+  }
+
+  /* TOP NAV */
+  nav.site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    border-top: 1px solid #1e293b;
+    padding-top: 12px;
+  }
+  nav.site-nav a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav.site-nav a:hover { color: #f1f5f9; }
+  nav.site-nav a.active {
+    color: #10b981;
+    border-bottom-color: #10b981;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 32px auto 64px;
+    padding: 0 24px;
+  }
+
+  /* FUND INTRO CARD */
+  .fund-intro {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 36px;
+    border: 1px solid #1e293b;
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.12);
+  }
+  .fund-intro-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: #10b981;
+    margin-bottom: 18px;
+    letter-spacing: 0.01em;
+  }
+  .fund-intro-body p {
+    font-size: 15.5px;
+    line-height: 1.75;
+    margin-bottom: 14px;
+    color: #e2e8f0;
+  }
+  .fund-intro-body p:last-child { margin-bottom: 0; }
+
+  /* SUMMARY STATS */
+  .summary {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight: 500; }
+  .stat-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; color: #0f172a; margin-top: 2px; }
+  .stat-value.accent { color: #10b981; }
+  .stat-value.small { font-size: 20px; padding-top: 8px; }
+
+  .warning-banner {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: #78350f;
+  }
+  .warning-banner code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  /* TABLE OF CONTENTS */
+  .toc {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .toc h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    margin-bottom: 18px;
+    color: #0f172a;
+  }
+  .toc-district { margin-bottom: 18px; }
+  .toc-district:last-child { margin-bottom: 0; }
+  .toc-district-title {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #10b981;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .toc-district-title:hover { color: #059669; }
+  .toc-district-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2px 16px;
+  }
+  .toc-item {
+    text-decoration: none;
+    color: #0f172a;
+    font-size: 12.5px;
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+  }
+  .toc-item:hover .toc-ticker { color: #059669; }
+  .toc-ticker { font-weight: 600; color: #10b981; min-width: 52px; }
+  .toc-name { color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* DISTRICT SECTIONS */
+  .district { margin-bottom: 64px; }
+  .district-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #10b981;
+  }
+  .district-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .district-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .district-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+  .district-intro {
+    background: #f8fafc;
+    border-left: 3px solid #10b981;
+    padding: 18px 22px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  .district-intro p {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #334155;
+    margin-bottom: 12px;
+  }
+  .district-intro p:last-child { margin-bottom: 0; }
+
+  /* CARDS */
+  .card-grid { display: flex; flex-direction: column; gap: 14px; }
+  .card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #10b981;
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+  }
+  .company-name {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .fund-chips {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .fund-chip {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .big-picture {
+    font-size: 15px;
+    font-weight: 500;
+    color: #0f172a;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .story {
+    font-size: 14.5px;
+    color: #334155;
+    line-height: 1.75;
+  }
+  .sound-bite {
+    margin-top: 14px;
+    padding: 10px 16px;
+    background: #ecfdf5;
+    border-left: 3px solid #10b981;
+    border-radius: 4px;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: #065f46;
+  }
+
+  /* OVERVIEW PAGE: FUND CARDS */
+  .fund-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .fund-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #10b981;
+    border-radius: 10px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: #0f172a;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .fund-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  }
+  .fund-card-name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .fund-card-tagline {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .fund-card-stats {
+    display: flex;
+    gap: 16px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+  }
+  .fund-card-stat { display: flex; flex-direction: column; }
+  .fund-card-stat-num { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: #10b981; }
+  .fund-card-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; }
+
+  .overview-section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #10b981;
+  }
+  .overview-section-sub {
+    font-size: 14px;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 28px;
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  /* SEARCH BAR */
+  .site-search-wrapper {
+    max-width: 480px;
+    margin: 0 auto 16px;
+    position: relative;
+  }
+  .site-search-input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .site-search-input::placeholder { color: #94a3b8; }
+  .site-search-input:focus {
+    border-color: #10b981;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .site-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  #search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+    max-height: 420px;
+    overflow-y: auto;
+    display: none;
+    z-index: 100;
+    text-align: left;
+  }
+  .search-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .search-result:last-child { border-bottom: none; }
+  .search-result:hover { background: #f8fafc; }
+  .search-ticker {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: #10b981;
+    min-width: 60px;
+  }
+  .search-name {
+    flex: 1;
+    color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .search-funds {
+    display: flex;
+    gap: 3px;
+  }
+  .search-fund-chip {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .search-empty {
+    padding: 16px;
+    color: #64748b;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  /* CHART PLACEHOLDER + STOCKCHARTS LINK */
+  .chart-placeholder {
+    margin: 16px 0 0;
+    height: 360px;
+    background: #f8fafc;
+    border: 1px dashed #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+  .chart-container {
+    margin: 16px 0 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    height: 360px;
+    width: 100%;
+  }
+  .chart-container iframe {
+    display: block;
+    width: 100% !important;
+    height: 360px !important;
+    border: none;
+  }
+  .chart-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .sc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: white;
+    border: 1px solid #10b981;
+    border-radius: 6px;
+    color: #10b981;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .sc-link:hover {
+    background: #10b981;
+    color: white;
+  }
+
+  /* Search result highlight when navigated */
+  @keyframes flashHighlight {
+    0%   { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    20%  { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.6); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+  .card.flash { animation: flashHighlight 1.6s ease-out; }
+
+  /* PRINT / PDF */
+  @media print {
+    body { background: white; font-size: 11pt; }
+    header.site-head, .fund-intro {
+      background: #0f172a !important;
+      color: white;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    nav.site-nav { display: none; }
+    .site-search-wrapper { display: none; }
+    main { margin: 16px auto; }
+    .toc { page-break-after: always; }
+    .district { page-break-before: auto; page-break-inside: auto; }
+    .district-intro { page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card { page-break-inside: avoid; box-shadow: none; }
+    .sound-bite { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .chart-placeholder, .chart-container { display: none; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="header-inner">
+    <div class="kicker">Innovation Growth Funds</div>
+    <h1 class="header-title">The City of <span class="accent">the Future</span></h1>
+    <div class="header-sub">Micro Cap Fund · as of 2026-04-14</div>
+    <div class="site-search-wrapper">
+      <span class="site-search-icon">⌕</span>
+      <input id="site-search" class="site-search-input" type="text" placeholder="Search any ticker or company name..." autocomplete="off" />
+      <div id="search-results"></div>
+    </div>
+    <nav class="site-nav"><a href="index.html" class="">Overview</a><a href="focused-large-cap.html" class="">Focused Large Cap</a><a href="large-cap.html" class="">Large Cap</a><a href="mid-cap.html" class="">Mid Cap</a><a href="small-cap.html" class="">Small Cap</a><a href="micro-cap.html" class="active">Micro Cap</a></nav>
+  </div>
+</header>
+
+<main>
+  
+    <section class="fund-intro">
+      <div class="fund-intro-tagline">The City of the Future</div>
+      <div class="fund-intro-body"><p>Micro Cap is where the venture-style bets live. Around 80 names that are still small enough to be unknown — many under $2 billion in market cap — and many of them in the early innings of their stories. The risk is real and the volatility is real. The upside, when a thesis works, is also real.</p><p>Several themes run through the portfolio. The Clinic is unusually deep here, with companies redefining how disease is detected: GeneDx in pediatric whole-genome sequencing, BillionToOne in molecular prenatal and oncology testing, CeriBell in point-of-care EEG, HeartFlow in non-invasive cardiac imaging, Twist Bioscience in synthetic DNA, 10x Genomics in single-cell sequencing. The Research Labs holds early-stage biotechs that could be the next Madrigal or Revolution Medicines if the science works out — Mineralys, NewAmsterdam, Praxis, Forte. The Arsenal owns the small defense and space names with outsized growth (Ondas, BlackSky, Karman, Rocket Lab) and the Power Plant has the hardest-to-replicate clean energy and nuclear plays (Bloom, Centrus, Cipher, TeraWulf, Hut 8).</p><p>Many micro caps in this fund will not become mid caps. That is the nature of the asset class. The ones that do tend to compound at rates you cannot find anywhere else, and the guide exists to help remember why each one is in the portfolio in the first place.</p></div>
+    </section>
+    
+  <section class="summary">
+    <div class="stat"><span class="stat-label">Holdings</span><span class="stat-value">78</span></div>
+    <div class="stat"><span class="stat-label">Written Up</span><span class="stat-value accent">78</span></div>
+    <div class="stat"><span class="stat-label">Districts</span><span class="stat-value">12</span></div>
+    <div class="stat"><span class="stat-label">As Of</span><span class="stat-value small">2026-04-14</span></div>
+  </section>
+  
+  <nav class="toc">
+    <h3>Quick Index</h3>
+    
+        <div class="toc-district">
+          <a href="#district-chip_works" class="toc-district-title">The Chip Works</a>
+          <div class="toc-district-items"><a href="#AEHR" class="toc-item"><span class="toc-ticker">AEHR</span><span class="toc-name">Aehr Test Systems</span></a><a href="#AMBA" class="toc-item"><span class="toc-ticker">AMBA</span><span class="toc-name">Ambarella</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-wires" class="toc-district-title">The Wires</a>
+          <div class="toc-district-items"><a href="#AAOI" class="toc-item"><span class="toc-ticker">AAOI</span><span class="toc-name">Applied Optoelectronics</span></a><a href="#CALX" class="toc-item"><span class="toc-ticker">CALX</span><span class="toc-name">Calix</span></a><a href="#OUST" class="toc-item"><span class="toc-ticker">OUST</span><span class="toc-name">Ouster</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-machine_shop" class="toc-district-title">The Machine Shop</a>
+          <div class="toc-district-items"><a href="#BELFB" class="toc-item"><span class="toc-ticker">BELFB</span><span class="toc-name">Bel Fuse</span></a><a href="#SXI" class="toc-item"><span class="toc-ticker">SXI</span><span class="toc-name">Standex International</span></a><a href="#TRNS" class="toc-item"><span class="toc-ticker">TRNS</span><span class="toc-name">Transcat</span></a><a href="#XMTR" class="toc-item"><span class="toc-ticker">XMTR</span><span class="toc-name">Xometry</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-power_plant" class="toc-district-title">The Power Plant</a>
+          <div class="toc-district-items"><a href="#AGX" class="toc-item"><span class="toc-ticker">AGX</span><span class="toc-name">Argan</span></a><a href="#CIFR" class="toc-item"><span class="toc-ticker">CIFR</span><span class="toc-name">Cipher Mining</span></a><a href="#LEU" class="toc-item"><span class="toc-ticker">LEU</span><span class="toc-name">Centrus Energy</span></a><a href="#WULF" class="toc-item"><span class="toc-ticker">WULF</span><span class="toc-name">TeraWulf</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-construction_yards" class="toc-district-title">The Construction Yards</a>
+          <div class="toc-district-items"><a href="#APLD" class="toc-item"><span class="toc-ticker">APLD</span><span class="toc-name">Applied Digital</span></a><a href="#CDNL" class="toc-item"><span class="toc-ticker">CDNL</span><span class="toc-name">Cardinal Infrastructure Group</span></a><a href="#CECO" class="toc-item"><span class="toc-ticker">CECO</span><span class="toc-name">CECO Environmental</span></a><a href="#LGN" class="toc-item"><span class="toc-ticker">LGN</span><span class="toc-name">Legence</span></a><a href="#MYRG" class="toc-item"><span class="toc-ticker">MYRG</span><span class="toc-name">MYR Group</span></a><a href="#PRIM" class="toc-item"><span class="toc-ticker">PRIM</span><span class="toc-name">Primoris Services</span></a><a href="#STRL" class="toc-item"><span class="toc-ticker">STRL</span><span class="toc-name">Sterling Infrastructure</span></a><a href="#WLDN" class="toc-item"><span class="toc-ticker">WLDN</span><span class="toc-name">Willdan Group</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-arsenal" class="toc-district-title">The Arsenal</a>
+          <div class="toc-district-items"><a href="#AIR" class="toc-item"><span class="toc-ticker">AIR</span><span class="toc-name">AAR Corp</span></a><a href="#BKSY" class="toc-item"><span class="toc-ticker">BKSY</span><span class="toc-name">BlackSky Technology</span></a><a href="#GILT" class="toc-item"><span class="toc-ticker">GILT</span><span class="toc-name">Gilat Satellite Networks</span></a><a href="#LASR" class="toc-item"><span class="toc-ticker">LASR</span><span class="toc-name">nLight</span></a><a href="#MRCY" class="toc-item"><span class="toc-ticker">MRCY</span><span class="toc-name">Mercury Systems</span></a><a href="#ONDS" class="toc-item"><span class="toc-ticker">ONDS</span><span class="toc-name">Ondas Holdings</span></a><a href="#OSIS" class="toc-item"><span class="toc-ticker">OSIS</span><span class="toc-name">OSI Systems</span></a><a href="#TATT" class="toc-item"><span class="toc-ticker">TATT</span><span class="toc-name">TAT Technologies</span></a><a href="#VSEC" class="toc-item"><span class="toc-ticker">VSEC</span><span class="toc-name">VSE Corporation</span></a><a href="#YSS" class="toc-item"><span class="toc-ticker">YSS</span><span class="toc-name">York Space Systems</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-clinic" class="toc-district-title">The Clinic</a>
+          <div class="toc-district-items"><a href="#ADPT" class="toc-item"><span class="toc-ticker">ADPT</span><span class="toc-name">Adaptive Biotechnologies</span></a><a href="#AORT" class="toc-item"><span class="toc-ticker">AORT</span><span class="toc-name">Artivion</span></a><a href="#BLLN" class="toc-item"><span class="toc-ticker">BLLN</span><span class="toc-name">BillionToOne</span></a><a href="#CBLL" class="toc-item"><span class="toc-ticker">CBLL</span><span class="toc-name">CeriBell</span></a><a href="#HTFL" class="toc-item"><span class="toc-ticker">HTFL</span><span class="toc-name">HeartFlow</span></a><a href="#TWST" class="toc-item"><span class="toc-ticker">TWST</span><span class="toc-name">Twist Bioscience</span></a><a href="#TXG" class="toc-item"><span class="toc-ticker">TXG</span><span class="toc-name">10x Genomics</span></a><a href="#WGS" class="toc-item"><span class="toc-ticker">WGS</span><span class="toc-name">GeneDx Holdings</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-research_labs" class="toc-district-title">The Research Labs</a>
+          <div class="toc-district-items"><a href="#CELC" class="toc-item"><span class="toc-ticker">CELC</span><span class="toc-name">Celcuity</span></a><a href="#CGON" class="toc-item"><span class="toc-ticker">CGON</span><span class="toc-name">CG Oncology</span></a><a href="#COGT" class="toc-item"><span class="toc-ticker">COGT</span><span class="toc-name">Cogent Biosciences</span></a><a href="#DNTH" class="toc-item"><span class="toc-ticker">DNTH</span><span class="toc-name">Dianthus Therapeutics</span></a><a href="#FBRX" class="toc-item"><span class="toc-ticker">FBRX</span><span class="toc-name">Forte Biosciences</span></a><a href="#IMCR" class="toc-item"><span class="toc-ticker">IMCR</span><span class="toc-name">Immunocore Holdings</span></a><a href="#MIRM" class="toc-item"><span class="toc-ticker">MIRM</span><span class="toc-name">Mirum Pharmaceuticals</span></a><a href="#MLYS" class="toc-item"><span class="toc-ticker">MLYS</span><span class="toc-name">Mineralys Therapeutics</span></a><a href="#NAMS" class="toc-item"><span class="toc-ticker">NAMS</span><span class="toc-name">NewAmsterdam Pharma</span></a><a href="#NKTR" class="toc-item"><span class="toc-ticker">NKTR</span><span class="toc-name">Nektar Therapeutics</span></a><a href="#PRAX" class="toc-item"><span class="toc-ticker">PRAX</span><span class="toc-name">Praxis Precision Medicines</span></a><a href="#PTCT" class="toc-item"><span class="toc-ticker">PTCT</span><span class="toc-name">PTC Therapeutics</span></a><a href="#RYTM" class="toc-item"><span class="toc-ticker">RYTM</span><span class="toc-name">Rhythm Pharmaceuticals</span></a><a href="#TARS" class="toc-item"><span class="toc-ticker">TARS</span><span class="toc-name">Tarsus Pharmaceuticals</span></a><a href="#TERN" class="toc-item"><span class="toc-ticker">TERN</span><span class="toc-name">Terns Pharmaceuticals</span></a><a href="#TMDX" class="toc-item"><span class="toc-ticker">TMDX</span><span class="toc-name">TransMedics</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-main_street" class="toc-district-title">Main Street</a>
+          <div class="toc-district-items"><a href="#APEI" class="toc-item"><span class="toc-ticker">APEI</span><span class="toc-name">American Public Education</span></a><a href="#CHEF" class="toc-item"><span class="toc-ticker">CHEF</span><span class="toc-name">The Chefs' Warehouse</span></a><a href="#COCO" class="toc-item"><span class="toc-ticker">COCO</span><span class="toc-name">The Vita Coco Company</span></a><a href="#HNGE" class="toc-item"><span class="toc-ticker">HNGE</span><span class="toc-name">Hinge Health</span></a><a href="#LINC" class="toc-item"><span class="toc-ticker">LINC</span><span class="toc-name">Lincoln Educational Services</span></a><a href="#LIND" class="toc-item"><span class="toc-ticker">LIND</span><span class="toc-name">Lindblad Expeditions</span></a><a href="#MAMA" class="toc-item"><span class="toc-ticker">MAMA</span><span class="toc-name">Mama's Creations</span></a><a href="#NEOG" class="toc-item"><span class="toc-ticker">NEOG</span><span class="toc-name">Neogen Corporation</span></a><a href="#UTI" class="toc-item"><span class="toc-ticker">UTI</span><span class="toc-name">Universal Technical Institute</span></a><a href="#WRBY" class="toc-item"><span class="toc-ticker">WRBY</span><span class="toc-name">Warby Parker</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-stadium" class="toc-district-title">The Stadium</a>
+          <div class="toc-district-items"><a href="#IMAX" class="toc-item"><span class="toc-ticker">IMAX</span><span class="toc-name">IMAX Corporation</span></a><a href="#SPHR" class="toc-item"><span class="toc-ticker">SPHR</span><span class="toc-name">Sphere Entertainment</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-software_layer" class="toc-district-title">The Software Layer</a>
+          <div class="toc-district-items"><a href="#FSLY" class="toc-item"><span class="toc-ticker">FSLY</span><span class="toc-name">Fastly</span></a><a href="#NAVN" class="toc-item"><span class="toc-ticker">NAVN</span><span class="toc-name">Navan</span></a><a href="#PAY" class="toc-item"><span class="toc-ticker">PAY</span><span class="toc-name">Paymentus Holdings</span></a><a href="#PTRN" class="toc-item"><span class="toc-ticker">PTRN</span><span class="toc-name">Pattern Group</span></a><a href="#ZETA" class="toc-item"><span class="toc-ticker">ZETA</span><span class="toc-name">Zeta Global</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-financial_district" class="toc-district-title">The Financial District</a>
+          <div class="toc-district-items"><a href="#DAVE" class="toc-item"><span class="toc-ticker">DAVE</span><span class="toc-name">Dave Inc.</span></a><a href="#MIAX" class="toc-item"><span class="toc-ticker">MIAX</span><span class="toc-name">Miami International Holdings</span></a><a href="#MRX" class="toc-item"><span class="toc-ticker">MRX</span><span class="toc-name">Marex Group</span></a><a href="#NP" class="toc-item"><span class="toc-ticker">NP</span><span class="toc-name">Neptune Insurance Holdings</span></a><a href="#PIPR" class="toc-item"><span class="toc-ticker">PIPR</span><span class="toc-name">Piper Sandler Companies</span></a><a href="#SNEX" class="toc-item"><span class="toc-ticker">SNEX</span><span class="toc-name">StoneX Group</span></a></div>
+        </div>
+        
+  </nav>
+  
+        <section class="district" id="district-chip_works">
+          <div class="district-header">
+            <h2 class="district-title">The Chip Works <span class="district-count">2</span></h2>
+            <div class="district-subtitle">Where silicon begins — and where rare earths come from</div>
+          </div>
+          <div class="district-intro"><p>Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chip Works is the district where it happens.</p><p>It begins in the ground. MP Materials (MP) mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and chip-making equipment itself. MP is the only large-scale rare-earth producer in the Western Hemisphere, which makes it a strategic asset as well as a commercial one.</p><p>Inside the fab, Nova (NVMI) builds the inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to any human eye. MKS Instruments (MKSI) controls the gases, temperatures, and energy inside the fabrication chambers — imagine maintaining perfect weather inside a sealed room where a single stray particle could ruin everything. Amkor (AMKR) handles the final step, taking a finished chip thinner than a fingernail and encasing it in a protective housing with hundreds of tiny electrical connections so it can survive the heat and vibration of a working computer. Lattice Semiconductor (LSCC) makes programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need at the moment. And Rambus (RMBS) designs the rules that govern how processors and memory chips talk to each other, which is another way of saying Rambus decides how fast the entire computer can think. Without these six companies, the AI revolution would be a slideshow.</p></div>
+          <div class="card-grid">
+    <article class="card" id="AEHR">
+      <header class="card-head">
+        <span class="ticker">AEHR</span>
+        <span class="company-name">Aehr Test Systems</span>
+        
+      </header>
+      <p class="big-picture">Burn-in test systems for power semiconductors — critical for silicon carbide chips in EVs.</p>
+      <div class="story">Aehr Test Systems builds the wafer-level burn-in systems that semiconductor companies use to stress-test chips before shipping them. Their FOX systems became essential as silicon carbide (SiC) power chips for electric vehicles took off — SiC chips are expensive and field failures are unacceptable, so manufacturers test every wafer. Aehr is small but dominant in its niche.</div>
+      <p class="sound-bite">&ldquo;Every silicon carbide chip in an EV gets stress-tested on an Aehr machine.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AEHR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AEHR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="AMBA">
+      <header class="card-head">
+        <span class="ticker">AMBA</span>
+        <span class="company-name">Ambarella</span>
+        
+      </header>
+      <p class="big-picture">Computer-vision and AI inference chips for cameras, drones, and self-driving systems.</p>
+      <div class="story">Ambarella designs low-power AI vision processors — chips that can run computer-vision and machine-learning models inside cameras, drones, security systems, and increasingly automotive ADAS and robotics. Their CV-series chips are designed specifically to do AI inference at the edge with tiny power budgets, which is exactly what self-driving and embedded AI applications need.</div>
+      <p class="sound-bite">&ldquo;AI inference inside the camera, not the cloud.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AMBA">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AMBA" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-wires">
+          <div class="district-header">
+            <h2 class="district-title">The Wires <span class="district-count">3</span></h2>
+            <div class="district-subtitle">The interconnect that lets the city talk to itself</div>
+          </div>
+          <div class="district-intro"><p>A chip by itself is useless. Chips only matter when they can talk to each other — and in the era of AI, talking means moving vast amounts of data at extraordinary speeds between racks, between buildings, between cities, and across oceans. The Wires is the district where signals travel.</p><p>Credo Technology (CRDO) builds the high-speed cables and connection chips that let thousands of AI processors pass notes at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes — the speed of those notes determines how fast the group can think. Credo makes the notes move at light speed. Astera Labs (ALAB) controls the data flows inside a single rack the way traffic cops manage a highway interchange, preventing collisions and making sure nothing gets stuck. MACOM (MTSI) turns electrical signals into laser light and back again so data can ride glass fibers across continents, billions of times per second.</p><p>SiTime (SITM) makes the precision silicon clocks that keep every signal perfectly synchronized — the conductor's baton inside every electronic orchestra. Semtech (SMTC) cleans up degraded signals so data arrives crisp instead of fuzzy, like preventing a photocopy-of-a-photocopy from losing quality with every pass. And Allegro MicroSystems (ALGM) builds the sensors that measure exactly how fast things are moving inside EVs, factory robots, and data-center cooling fans so control systems can respond in milliseconds. None of these companies make headlines. All of them are essential.</p></div>
+          <div class="card-grid">
+    <article class="card" id="AAOI">
+      <header class="card-head">
+        <span class="ticker">AAOI</span>
+        <span class="company-name">Applied Optoelectronics</span>
+        
+      </header>
+      <p class="big-picture">Fiber-optic transceivers and components for data centers and broadband networks.</p>
+      <div class="story">Applied Optoelectronics designs and manufactures the fiber-optic modules that data centers use to connect servers and switches at very high speeds. The company has been winning new design wins for next-generation 800G transceivers as hyperscalers upgrade their networks to handle AI traffic.</div>
+      <p class="sound-bite">&ldquo;When data needs to ride a beam of light across a data center, AAOI makes the converter.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AAOI">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AAOI" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CALX">
+      <header class="card-head">
+        <span class="ticker">CALX</span>
+        <span class="company-name">Calix</span>
+        
+      </header>
+      <p class="big-picture">Networking equipment that brings high-speed broadband to small and rural internet providers.</p>
+      <div class="story">Calix builds the networking equipment that lets small, local internet providers deliver fast, reliable broadband to rural and underserved communities. Their cloud-based software gives a small-town provider the sophistication of a tech giant, helping close the digital divide one community at a time.</div>
+      <p class="sound-bite">&ldquo;The Cisco for small-town America's broadband.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CALX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CALX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="OUST">
+      <header class="card-head">
+        <span class="ticker">OUST</span>
+        <span class="company-name">Ouster</span>
+        
+      </header>
+      <p class="big-picture">Digital lidar sensors for autonomous vehicles, smart infrastructure, and robotics.</p>
+      <div class="story">Ouster makes solid-state digital lidar sensors that let machines see the world in 3D. Their sensors are used in self-driving vehicles, smart cities, robotics, defense, and security applications. Lidar has been a notoriously difficult business — many companies failed — but Ouster has built a real product portfolio and is one of the few public pure-play lidar names with meaningful revenue.</div>
+      <p class="sound-bite">&ldquo;If a machine needs to see in 3D, Ouster sells the eyes.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="OUST">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=OUST" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-machine_shop">
+          <div class="district-header">
+            <h2 class="district-title">The Machine Shop <span class="district-count">4</span></h2>
+            <div class="district-subtitle">Precision parts, specialty metals, and the hidden hands that assemble the city</div>
+          </div>
+          <div class="district-intro"><p>Chips and wires are useful only if someone can turn them into physical things — airplanes, satellites, medical devices, data-center cooling loops, circuit boards, power supplies. The Machine Shop is the district where raw materials and components become real machines. These are the hidden hands that turn brilliant designs into actual products.</p><p>Carpenter Technology (CRS) forges specialty metals and advanced alloys engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe. RBC Bearings (RBC) makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery — a deceptively simple concept, engineered to survive where nothing else can.</p><p>Sanmina (SANM) handles complex electronic contract manufacturing: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing. Fabrinet (FN) specializes in optical components aligned to tolerances thinner than a wavelength of light. TTM Technologies (TTMI) is one of the top five PCB manufacturers in the world and the largest supplier of printed circuit boards to the U.S. military, and the fastest-growing segment of its business is now data center computing and AI accelerators. Modine Manufacturing (MOD) designs the liquid cooling systems that absorb heat from AI racks the way a car radiator cools an engine — transforming a legacy auto-parts company into an AI infrastructure play. And Bel Fuse (BELFB) makes the power supplies and connectivity components that quietly sit inside almost every piece of essential equipment.</p><p>The last group is about control. Woodward (WWD) designs the fuel-metering control systems inside aircraft engines and industrial turbines — what happens when a pilot pushes the throttle forward is Woodward's responsibility. Crane Company (CR) supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories. And Littelfuse (LFUS) makes circuit-protection components that sacrifice themselves during power surges, absorbing excess energy before expensive equipment is damaged. Every physical machine in the city passes through a shop like one of these.</p></div>
+          <div class="card-grid">
+    <article class="card" id="BELFB">
+      <header class="card-head">
+        <span class="ticker">BELFB</span>
+        <span class="company-name">Bel Fuse</span>
+        
+      </header>
+      <p class="big-picture">Power supplies and connectivity components hiding inside networking gear, radar, and industrial controls.</p>
+      <div class="story">Bel Fuse manufactures the electronic power supplies and connectivity components found inside an enormous range of essential equipment. Networking gear, military radar systems, industrial controls — they all need reliable power conversion and data connections, and Bel Fuse is one of those small companies whose parts quietly show up everywhere.</div>
+      <p class="sound-bite">&ldquo;The parts you'll never see but that everything depends on.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="BELFB">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=BELFB" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="SXI">
+      <header class="card-head">
+        <span class="ticker">SXI</span>
+        <span class="company-name">Standex International</span>
+        
+      </header>
+      <p class="big-picture">Diversified specialty industrial — electronics, engraving, scientific products, and engineering technologies.</p>
+      <div class="story">Standex is a small diversified industrial holding a portfolio of engineered products businesses, including specialty electronics components, custom engraving for consumer brands, and scientific cold storage equipment. Each segment is small but holds a strong niche position. The company has been a quiet compounder run with capital discipline.</div>
+      <p class="sound-bite">&ldquo;A handful of small industrial niches, each with leadership in its lane.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="SXI">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=SXI" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TRNS">
+      <header class="card-head">
+        <span class="ticker">TRNS</span>
+        <span class="company-name">Transcat</span>
+        
+      </header>
+      <p class="big-picture">Calibration services for the precision instruments that quality-critical industries depend on.</p>
+      <div class="story">Transcat provides accredited calibration services for the precision measuring equipment used in life sciences, aerospace, semiconductors, and other regulated industries. When the FDA, FAA, or a chip-fab QA team requires that an instrument be traceable to NIST standards, Transcat is one of the largest providers in North America. The business is recurring (calibration cycles repeat) and growing as regulation gets more rigorous.</div>
+      <p class="sound-bite">&ldquo;The company that makes sure the instruments measuring everything are themselves accurate.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TRNS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TRNS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="XMTR">
+      <header class="card-head">
+        <span class="ticker">XMTR</span>
+        <span class="company-name">Xometry</span>
+        
+      </header>
+      <p class="big-picture">AI-powered marketplace that connects engineers to thousands of small custom-manufacturing shops.</p>
+      <div class="story">Xometry has built something genuinely new: an AI-powered online marketplace for custom manufacturing. An engineer uploads a 3D design file, and Xometry's system instantly analyzes the geometry, picks the right manufacturing method (machining, 3D printing, injection molding, sheet metal), prices it, and routes the order to the best shop in a network of thousands. Finished parts arrive in days. It's bringing the convenience of online shopping to an industry that historically required weeks of phone calls.</div>
+      <p class="sound-bite">&ldquo;Amazon for custom-manufactured parts. With AI doing the routing.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="XMTR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=XMTR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-power_plant">
+          <div class="district-header">
+            <h2 class="district-title">The Power Plant <span class="district-count">4</span></h2>
+            <div class="district-subtitle">Where the electrons come from — and where they get used</div>
+          </div>
+          <div class="district-intro"><p>Intelligence without electricity is just an expensive pile of metal. And the amount of electricity that AI requires is almost hard to believe — a single large AI training run can consume as much power as 120 American homes use in an entire year. The existing grid was never designed for this.</p><p>Bloom Energy (BE) is building a bridge. Their ceramic fuel cells generate electricity through an electrochemical reaction — continuous, on-site, no combustion, no connection to the traditional grid required. A stack can be installed in 90 days and start generating power immediately, compared to the five-to-ten-year timeline for a new power plant. Nextracker (NXT) takes a very different approach to the same crisis: scale the cheapest source of new electricity ever created. Their motorized mounting systems let fields of solar panels follow the sun across the sky, squeezing up to 25% more energy from the same equipment, and have become standard equipment at the largest solar installations in the world. And Argan (AGX) does something more traditional but increasingly rare: it designs, engineers, and actually builds power plants from the ground up. As demand for gas turbine generation surges to feed AI data centers, Argan's skillset is suddenly in short supply.</p><p>But generating power is only half the equation. Someone also has to own the physical sites where those electrons get converted into compute. Three companies in this district were originally built to mine Bitcoin — which required exactly the same infrastructure an AI data center needs: massive power connections, serious cooling systems, and dense racks of processors. It turns out that infrastructure is worth a lot more to an AI customer than to a Bitcoin miner. Hut 8 (HUT) flexes between mining and AI hosting depending on which customer pays more. TeraWulf (WULF) does the same with a distinctive emphasis on clean energy, running primarily on nuclear and hydroelectric power. And Cipher Mining (CIFR) has leaned hardest into the pivot, signing a roughly $5.5 billion 15-year lease with Amazon Web Services to deliver 300 MW of AI capacity in 2026, plus a 168 MW 10-year HPC agreement with Fluidstack worth about $3 billion, plus a 200 MW Ohio site and 95% of a 1-gigawatt West Texas campus. Cipher is transforming into a hybrid Bitcoin miner and power landlord for AI tenants — and is increasingly priced that way.</p></div>
+          <div class="card-grid">
+    <article class="card" id="AGX">
+      <header class="card-head">
+        <span class="ticker">AGX</span>
+        <span class="company-name">Argan</span>
+        
+      </header>
+      <p class="big-picture">Designs, engineers, and constructs power plants from the ground up.</p>
+      <div class="story">Argan builds power plants from the ground up — designing, engineering, and constructing the generation facilities that create the electricity the rest of the city depends on. As gas turbine demand surges to power AI data centers, Argan's skillset is in rare supply.</div>
+      <p class="sound-bite">&ldquo;Someone has to actually build the power plants. Argan is that someone.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AGX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AGX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CIFR">
+      <header class="card-head">
+        <span class="ticker">CIFR</span>
+        <span class="company-name">Cipher Mining</span>
+        
+      </header>
+      <p class="big-picture">Bitcoin miner pivoting hardest to AI — $5.5B AWS lease, $3B+ Fluidstack deals, 1GW West Texas HPC campus.</p>
+      <div class="story">Cipher Mining has leaned hardest into the AI pivot among Bitcoin miners. In late 2025 it signed a roughly $5.5 billion, 15-year lease with Amazon Web Services to deliver 300 MW of turnkey space and power for AI workloads starting in 2026. Separately, Cipher has a 168 MW, 10-year HPC agreement with Fluidstack worth approximately $3 billion in contracted revenue, plus a 56 MW Fluidstack expansion. They recently acquired the 200 MW 'Ulysses' site in Ohio with an AEP Ohio utility agreement, and took 95% majority control of Colchis, a 1-gigawatt HPC development in West Texas. Cipher is transforming into a hybrid bitcoin miner and 'power landlord' for AI data center tenants — and is increasingly being priced that way.</div>
+      <p class="sound-bite">&ldquo;A Bitcoin miner that just signed a $5.5B AWS lease. That's the whole story.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CIFR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CIFR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="LEU">
+      <header class="card-head">
+        <span class="ticker">LEU</span>
+        <span class="company-name">Centrus Energy</span>
+        
+      </header>
+      <p class="big-picture">The only U.S. producer of high-assay low-enriched uranium (HALEU) — the fuel for next-gen reactors.</p>
+      <div class="story">Centrus operates the only U.S. facility licensed by the Nuclear Regulatory Commission to produce high-assay low-enriched uranium (HALEU) — the fuel that next-generation small modular reactors and microreactors will need to run. As of 2026, only Russia and China have HALEU production at scale. With the U.S. ban on Russian uranium imports and the resurgence of nuclear power for AI, Centrus is the only domestic supplier with a working facility, expanding under DOE contract.</div>
+      <p class="sound-bite">&ldquo;Next-gen nuclear runs on HALEU. Centrus is the only American company making it.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="LEU">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=LEU" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="WULF">
+      <header class="card-head">
+        <span class="ticker">WULF</span>
+        <span class="company-name">TeraWulf</span>
+        
+      </header>
+      <p class="big-picture">Bitcoin miner running primarily on nuclear and hydro power — one of the greenest mining operations in the industry.</p>
+      <div class="story">TeraWulf takes a similar approach to Hut 8 but with a distinctive emphasis on clean energy — their flagship facility runs primarily on nuclear and hydroelectric power, making them one of the greenest mining operations in the industry. Like Hut 8, they are expanding their AI hosting capabilities, recognizing that the same infrastructure built for cryptocurrency can serve the exploding demand for artificial intelligence computing.</div>
+      <p class="sound-bite">&ldquo;The green Bitcoin miner. And an AI host on the side.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="WULF">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=WULF" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-construction_yards">
+          <div class="district-header">
+            <h2 class="district-title">The Construction Yards <span class="district-count">8</span></h2>
+            <div class="district-subtitle">The contractors who turn empty land into functioning infrastructure</div>
+          </div>
+          <div class="district-intro"><p>Generating power is still just half the battle. Someone has to build the buildings, pour the foundations, pull the wire, connect the pipes, lay the roads, and keep it all environmentally responsible. When a new data center rises out of empty desert, a small army of specialty contractors shows up first. The Construction Yards is where that army lives.</p><p>Sterling Infrastructure (STRL) grades the site and pours the foundations, turning empty land into a functioning campus. Cardinal Infrastructure Group (CDNL) handles the wet utilities — water, sewer, stormwater — and the site work that has to happen before anything vertical can begin. MasTec (MTZ) runs the heavy power lines from the grid to the property line, plus the pipelines and cell towers that connect the larger network. Construction Partners (ROAD) builds the highways that get everyone from the outside world to the facility, because every data center still needs roads to reach it.</p><p>Inside the building, Comfort Systems USA (FIX) installs the HVAC, plumbing, and electrical systems while IES Holdings (IESC) handles the specialized high-voltage electrical work — wiring facilities that draw as much power as small towns. Legence (LGN) provides engineering, installation, and maintenance for the mission-critical mechanical systems inside technology, life sciences, healthcare, and education buildings. Applied Digital (APLD) takes it one step further, designing entire AI-native data-center facilities from scratch with electrical and cooling systems engineered for demands traditional buildings were never meant to handle. And CECO Environmental (CECO) installs the scrubbers, filters, and wastewater-treatment equipment that ensure all this growth doesn't come at the expense of the air and water around it. Before a single server rack spins up, these companies have already done most of the real work.</p></div>
+          <div class="card-grid">
+    <article class="card" id="APLD">
+      <header class="card-head">
+        <span class="ticker">APLD</span>
+        <span class="company-name">Applied Digital</span>
+        
+      </header>
+      <p class="big-picture">Building AI-native data center facilities from scratch, engineered for extreme electrical and cooling demands.</p>
+      <div class="story">Applied Digital is building entire data-center facilities designed from scratch for AI computing, with electrical and cooling systems engineered specifically for the extreme demands that traditional buildings were never meant to handle.</div>
+      <p class="sound-bite">&ldquo;Traditional data centers were built for websites. Applied Digital is building for AI.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="APLD">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=APLD" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CDNL">
+      <header class="card-head">
+        <span class="ticker">CDNL</span>
+        <span class="company-name">Cardinal Infrastructure Group</span>
+        
+      </header>
+      <p class="big-picture">Wet utilities, site development, and civil contracting across the southeastern US.</p>
+      <div class="story">Cardinal Infrastructure Group is a civil contracting company that provides site development and infrastructure services to residential, commercial, industrial, municipal, and state infrastructure markets in the southeastern United States. They handle wet utility installations of water, sewer, and stormwater systems, as well as grading, site clearing, erosion control, drilling and blasting, paving, and related site services. Before anything vertical can be built on a piece of land, Cardinal has to handle what happens underneath it.</div>
+      <p class="sound-bite">&ldquo;The work that happens before anything vertical can begin.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CDNL">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CDNL" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CECO">
+      <header class="card-head">
+        <span class="ticker">CECO</span>
+        <span class="company-name">CECO Environmental</span>
+        
+      </header>
+      <p class="big-picture">Scrubbers, filters, and wastewater treatment that keep industrial growth from trashing the air and water.</p>
+      <div class="story">CECO Environmental designs and builds the systems that keep industrial operations environmentally responsible — the scrubbers that remove pollutants from factory exhaust, the filters that clean industrial air, and the treatment equipment that purifies wastewater before it returns to rivers and aquifers. It's unglamorous work that ensures economic growth doesn't come at the expense of the air we breathe and the water we drink.</div>
+      <p class="sound-bite">&ldquo;Growth without pollution. CECO is how that happens.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CECO">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CECO" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="LGN">
+      <header class="card-head">
+        <span class="ticker">LGN</span>
+        <span class="company-name">Legence</span>
+        
+      </header>
+      <p class="big-picture">Engineering, installation, and maintenance for mission-critical building systems in tech, life sciences, healthcare, and education.</p>
+      <div class="story">Legence is a leading provider of engineering, installation, and maintenance services for mission-critical systems inside technically demanding buildings — data centers, semiconductor fabs, biotech labs, hospitals, and university research facilities. Founded in January 2025 and headquartered in San Jose, Legence focuses on the high-growth sectors where building systems absolutely cannot fail. When a chip fab needs mechanical engineering that meets class-10 cleanroom standards, or a biotech lab needs HVAC that maintains exact pressure gradients between rooms, Legence is the company that designs, installs, and services it.</div>
+      <p class="sound-bite">&ldquo;The specialist who handles the mechanical systems nobody else knows how to service.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="LGN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=LGN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MYRG">
+      <header class="card-head">
+        <span class="ticker">MYRG</span>
+        <span class="company-name">MYR Group</span>
+        
+      </header>
+      <p class="big-picture">Specialty electrical contractor focused on transmission, distribution, and commercial-industrial electrical work.</p>
+      <div class="story">MYR Group builds high-voltage transmission lines, substations, and distribution systems for utilities, plus large commercial and industrial electrical projects. The company sits in exactly the right place for the U.S. grid expansion driven by AI power, electrification, and renewables.</div>
+      <p class="sound-bite">&ldquo;When a utility needs a new transmission line built, MYR is one of the few who can do it.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MYRG">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MYRG" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PRIM">
+      <header class="card-head">
+        <span class="ticker">PRIM</span>
+        <span class="company-name">Primoris Services</span>
+        
+      </header>
+      <p class="big-picture">Specialty infrastructure construction across utilities, energy, and renewables.</p>
+      <div class="story">Primoris is a specialty contractor for the utility, energy, and renewables sectors — building solar farms, electrical transmission, gas distribution, and pipeline systems. The business has shifted significantly toward renewables and electrical work as those markets grew faster than legacy oil and gas pipeline construction.</div>
+      <p class="sound-bite">&ldquo;Solar farms, transmission lines, gas distribution — the contractor for what the energy transition actually needs built.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PRIM">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PRIM" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="STRL">
+      <header class="card-head">
+        <span class="ticker">STRL</span>
+        <span class="company-name">Sterling Infrastructure</span>
+        
+      </header>
+      <p class="big-picture">Massive earthwork that turns empty land into functioning data center campuses.</p>
+      <div class="story">Sterling Infrastructure does the massive earthwork that turns empty land into a functioning data-center campus — grading the site, pouring foundations, installing underground water and electrical systems, and building the roads within the campus.</div>
+      <p class="sound-bite">&ldquo;Before a data center can compute, Sterling has to move the dirt.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="STRL">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=STRL" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="WLDN">
+      <header class="card-head">
+        <span class="ticker">WLDN</span>
+        <span class="company-name">Willdan Group</span>
+        
+      </header>
+      <p class="big-picture">Engineering and consulting for utilities and municipalities to modernize the grid and improve energy efficiency.</p>
+      <div class="story">Willdan helps utilities, cities, and other public agencies design plans for grid modernization, energy efficiency programs, and electrification. They figure out where new capacity is needed, how existing buildings can use energy more efficiently, and how the transition to greater electrification can happen in an orderly way.</div>
+      <p class="sound-bite">&ldquo;The brain that helps cities and utilities figure out how to upgrade the grid.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="WLDN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=WLDN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-arsenal">
+          <div class="district-header">
+            <h2 class="district-title">The Arsenal <span class="district-count">10</span></h2>
+            <div class="district-subtitle">Drones, rockets, satellites, and the parts that defend and extend the city</div>
+          </div>
+          <div class="district-intro"><p>The city expands beyond Earth. And it needs to be defended. The future of military power is increasingly autonomous, increasingly digital, and increasingly orbital — and the Arsenal is where the drones, rockets, satellites, and precision components that reshape national security and open the space economy get built.</p><p>Kratos Defense (KTOS) builds combat drones around a radical idea: make them affordable enough that military forces can deploy them in large numbers and accept losing some. Traditional fighter jets cost tens of millions each, which makes every loss devastating. Kratos's drones cost a fraction of that, fundamentally changing the math of air combat. Karman Holdings (KRMN) provides the precision components inside advanced military platforms — work that requires decades of specialized knowledge and security clearances competitors simply cannot acquire quickly.</p><p>In space, Rocket Lab (RKLB) operates one of the most reliable small launch vehicles in the world with its Electron rocket, and the next-generation Neutron rocket — designed to carry 40 times more weight to orbit — targets first flight in mid-2026. York Space Systems (YSS) brings assembly-line thinking to satellite manufacturing, building standardized platforms the way a car factory builds vehicles instead of one-off science projects. Planet Labs (PL) operates the world's largest fleet of Earth-imaging satellites, photographing every square meter of the planet every single day, with a 10+ billion km² archive and over $500M of recent deals with Sweden, Japan, Germany, and NATO allies.</p><p>Back on Earth, Mercury Systems (MRCY) builds the computing brains inside military radar and missile-defense systems, turning torrents of raw sensor data into actionable intelligence in fractions of a second. And VSE Corporation (VSEC) keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts complex machines constantly require — every flight hour generates wear, and a grounded aircraft is a mission that can't be flown.</p></div>
+          <div class="card-grid">
+    <article class="card" id="AIR">
+      <header class="card-head">
+        <span class="ticker">AIR</span>
+        <span class="company-name">AAR Corp</span>
+        
+      </header>
+      <p class="big-picture">Aerospace aftermarket — parts, repair, and supply chain services for commercial and military aircraft.</p>
+      <div class="story">AAR provides aftermarket support for commercial airlines and government/defense customers — parts supply, MRO (maintenance, repair, overhaul), and integrated supply chain management. As aircraft fleets age and flight hours grow, the aftermarket has become structurally larger than new aircraft sales. AAR is one of the largest independent aftermarket players.</div>
+      <p class="sound-bite">&ldquo;When an airline or air force needs parts and repairs to keep planes flying, AAR is one of the first calls.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AIR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AIR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="BKSY">
+      <header class="card-head">
+        <span class="ticker">BKSY</span>
+        <span class="company-name">BlackSky Technology</span>
+        
+      </header>
+      <p class="big-picture">Real-time satellite imaging and intelligence for defense and intelligence customers.</p>
+      <div class="story">BlackSky operates a constellation of small earth-observation satellites that can revisit the same spot on Earth multiple times per day, then run AI analytics on the imagery to detect activity in real time. Their customers are primarily defense and intelligence agencies that need persistent monitoring of specific locations — bases, ships, borders, contested zones.</div>
+      <p class="sound-bite">&ldquo;Watch any spot on Earth, in real time, and let AI tell you what's changed.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="BKSY">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=BKSY" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="GILT">
+      <header class="card-head">
+        <span class="ticker">GILT</span>
+        <span class="company-name">Gilat Satellite Networks</span>
+        
+      </header>
+      <p class="big-picture">Satellite communications equipment for in-flight connectivity, defense, and rural broadband.</p>
+      <div class="story">Gilat provides the satellite ground equipment, antennas, and modems that connect remote terminals to satellite networks. Their gear is used in commercial in-flight Wi-Fi, military satcom, maritime, and rural broadband. As low-earth-orbit satellite constellations like Starlink and Project Kuiper proliferate, Gilat is selling the ground infrastructure that talks to them.</div>
+      <p class="sound-bite">&ldquo;If a satellite is talking to the ground, there's a good chance Gilat made the gear on the ground.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="GILT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=GILT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="LASR">
+      <header class="card-head">
+        <span class="ticker">LASR</span>
+        <span class="company-name">nLight</span>
+        
+      </header>
+      <p class="big-picture">High-power lasers for advanced manufacturing, microfabrication, and directed-energy defense weapons.</p>
+      <div class="story">nLight designs and builds the high-power semiconductor and fiber lasers used in industrial cutting, 3D printing, microfabrication, and increasingly in directed-energy weapons for defense. The defense business has become the most exciting growth driver as the Pentagon invests heavily in laser-based counter-drone and missile-defense systems.</div>
+      <p class="sound-bite">&ldquo;The same laser tech that cuts metal in a factory is starting to shoot down drones.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="LASR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=LASR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MRCY">
+      <header class="card-head">
+        <span class="ticker">MRCY</span>
+        <span class="company-name">Mercury Systems</span>
+        
+      </header>
+      <p class="big-picture">Computing brains inside military radar — turns raw sensor torrents into actionable intelligence in fractions of a second.</p>
+      <div class="story">Mercury Systems builds the computing brains inside military radar and missile-defense systems. When a radar station scans the sky, it generates a torrent of data that must be processed in real time to distinguish a flock of birds from an incoming threat. Mercury builds the hardware that does that processing, turning raw radar signals into actionable intelligence in fractions of a second.</div>
+      <p class="sound-bite">&ldquo;The computer that decides, in milliseconds, whether it's a goose or a missile.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MRCY">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MRCY" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="ONDS">
+      <header class="card-head">
+        <span class="ticker">ONDS</span>
+        <span class="company-name">Ondas Holdings</span>
+        
+      </header>
+      <p class="big-picture">Autonomous drones and counter-drone systems for defense, infrastructure, and border security.</p>
+      <div class="story">Ondas builds autonomous drone systems and counter-drone defenses through its subsidiaries American Robotics, Airobotics, and Apeiro Motion. Their Optimus System is the first FAA-certified small UAS for automated security and data capture, and their Iron Drone Raider is a counter-drone platform. In 2025, Ondas won a major government tender to deploy thousands of drones for border protection, plus contracts for counter-UAS at major European airports. Revenue grew 605% in 2025.</div>
+      <p class="sound-bite">&ldquo;Drones to deploy and drones to shoot down other drones.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="ONDS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=ONDS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="OSIS">
+      <header class="card-head">
+        <span class="ticker">OSIS</span>
+        <span class="company-name">OSI Systems</span>
+        
+      </header>
+      <p class="big-picture">Security inspection and screening systems — the X-ray and CT machines at airports, borders, and ports.</p>
+      <div class="story">OSI Systems builds the X-ray and CT-based screening systems used by airports, customs agencies, ports, and large public venues to detect threats and contraband. Their Rapiscan brand is one of the most familiar in the space. The business benefits from rising global defense and security spending plus the steady upgrade cycles of legacy airport equipment.</div>
+      <p class="sound-bite">&ldquo;Every bag at the airport that goes through an X-ray belt — there's a decent chance OSI built the belt.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="OSIS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=OSIS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TATT">
+      <header class="card-head">
+        <span class="ticker">TATT</span>
+        <span class="company-name">TAT Technologies</span>
+        
+      </header>
+      <p class="big-picture">Aerospace heat exchangers and aftermarket repair for commercial and military aircraft.</p>
+      <div class="story">TAT Technologies makes heat exchangers and other thermal management components for commercial and military aircraft, plus provides MRO services. They have particular strength in aftermarket repair of legacy components where newer competitors have not bothered to qualify.</div>
+      <p class="sound-bite">&ldquo;Tiny aerospace niche, dominant position, recurring repair revenue.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TATT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TATT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="VSEC">
+      <header class="card-head">
+        <span class="ticker">VSEC</span>
+        <span class="company-name">VSE Corporation</span>
+        
+      </header>
+      <p class="big-picture">Keeps military and commercial aircraft flying — maintenance, repair, and spare parts for complex machines.</p>
+      <div class="story">VSE Corporation keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts that complex machines constantly require. Every flight hour generates wear that must be addressed, every aging component must be replaced on schedule, and every grounded aircraft represents a mission that can't be flown.</div>
+      <p class="sound-bite">&ldquo;A grounded aircraft is a failed mission. VSE keeps them in the air.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="VSEC">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=VSEC" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="YSS">
+      <header class="card-head">
+        <span class="ticker">YSS</span>
+        <span class="company-name">York Space Systems</span>
+        
+      </header>
+      <p class="big-picture">Brings assembly-line thinking to satellites — standardized platforms built like cars, not one-of-a-kind projects.</p>
+      <div class="story">York Space Systems brings assembly-line thinking to satellite manufacturing. Instead of building each satellite as a one-of-a-kind custom project that takes years, York builds standardized platforms the way a car factory builds vehicles — faster, cheaper, and in much greater quantities. The military needs hundreds of small satellites for communications and early-warning systems, and York's approach makes that affordable for the first time.</div>
+      <p class="sound-bite">&ldquo;Satellites built on an assembly line. Finally.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="YSS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=YSS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-clinic">
+          <div class="district-header">
+            <h2 class="district-title">The Clinic <span class="district-count">8</span></h2>
+            <div class="district-subtitle">Finding disease before it becomes unbearable</div>
+          </div>
+          <div class="district-intro"><p>Before there can be treatment, there has to be detection. The idea at the heart of modern medicine is deceptively simple: find disease earlier and everything changes. The Clinic is a small district but a powerful one, and everything it does flows from that one idea.</p><p>Guardant Health (GH) pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream — Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry. The result reveals not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.</p><p>Natera (NTRA) uses the same basic concept — reading DNA fragments floating in blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of residual disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold. Adaptive Biotechnologies (ADPT) takes the idea even further: every infection, every vaccine, every cancer a person has ever encountered leaves a unique molecular fingerprint on their immune cells — and Adaptive's technology decodes those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible. Three companies, one mission: don't wait until the damage is done.</p></div>
+          <div class="card-grid">
+    <article class="card" id="ADPT">
+      <header class="card-head">
+        <span class="ticker">ADPT</span>
+        <span class="company-name">Adaptive Biotechnologies</span>
+        
+      </header>
+      <p class="big-picture">Reads the immune system like a book — every infection, cancer, and vaccine leaves a molecular fingerprint they can decode.</p>
+      <div class="story">Adaptive Biotechnologies reads the immune system like a book — every infection, every cancer, every vaccine a person has ever encountered leaves a unique molecular fingerprint on their immune cells, and Adaptive's technology can decode those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible.</div>
+      <p class="sound-bite">&ldquo;Your immune system is a history book of every disease you've ever fought. Adaptive reads it.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="ADPT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=ADPT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="AORT">
+      <header class="card-head">
+        <span class="ticker">AORT</span>
+        <span class="company-name">Artivion</span>
+        
+      </header>
+      <p class="big-picture">Heart valves and aortic repair products for cardiovascular surgery.</p>
+      <div class="story">Artivion (formerly CryoLife) makes the heart valves, aortic stent grafts, and surgical repair products that cardiac surgeons use in complex aortic procedures. The business is small but holds strong positions in particular niches like aortic dissections and pediatric cardiac surgery.</div>
+      <p class="sound-bite">&ldquo;Specialty cardiac repair, where there's no margin for error.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="AORT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=AORT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="BLLN">
+      <header class="card-head">
+        <span class="ticker">BLLN</span>
+        <span class="company-name">BillionToOne</span>
+        
+      </header>
+      <p class="big-picture">Molecular diagnostics for prenatal testing and oncology, using a quantitative platform to detect rare mutations.</p>
+      <div class="story">BillionToOne uses its proprietary QCT (Quantitative Counting Templates) platform to detect single-molecule changes in DNA — much more sensitive than older approaches. Their UNITY prenatal tests can screen for fetal genetic conditions and Rh blood type compatibility from a single blood draw, and their Northstar oncology tests are growing fast in tumor profiling. Revenue grew over 100% in 2025, with $430-445M guided for 2026.</div>
+      <p class="sound-bite">&ldquo;Counting individual DNA molecules to catch what other tests miss.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="BLLN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=BLLN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CBLL">
+      <header class="card-head">
+        <span class="ticker">CBLL</span>
+        <span class="company-name">CeriBell</span>
+        
+      </header>
+      <p class="big-picture">Point-of-care EEG headband that lets non-specialists detect seizures in hospital ICUs.</p>
+      <div class="story">CeriBell makes a portable EEG (electroencephalogram) headband that any nurse can put on a patient at the bedside, eliminating the multi-hour wait for a neurologist and a traditional EEG cart. The device uses AI to detect seizures in real time. ICUs have embraced it because undetected seizures are common in critically ill patients and devastating when missed. CeriBell also has FDA Breakthrough Device designation for stroke detection.</div>
+      <p class="sound-bite">&ldquo;EEG that doesn't need a neurologist to set up — and AI that flags the seizure.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CBLL">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CBLL" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="HTFL">
+      <header class="card-head">
+        <span class="ticker">HTFL</span>
+        <span class="company-name">HeartFlow</span>
+        
+      </header>
+      <p class="big-picture">AI that builds a 3D model of a patient's heart arteries from a CT scan to find blockages without invasive testing.</p>
+      <div class="story">HeartFlow uses artificial intelligence to create a detailed 3D model of a patient's heart arteries from a standard CT scan. The model shows exactly where blood is flowing freely and where blockages are restricting it. Traditionally, answering that question required threading a thin tube through a blood vessel into the heart. HeartFlow can often provide the same answer from a simple, non-invasive scan.</div>
+      <p class="sound-bite">&ldquo;Find heart blockages without threading a tube through someone's artery.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="HTFL">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=HTFL" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TWST">
+      <header class="card-head">
+        <span class="ticker">TWST</span>
+        <span class="company-name">Twist Bioscience</span>
+        
+      </header>
+      <p class="big-picture">Synthetic DNA at industrial scale — for biotech research, drug discovery, and DNA data storage.</p>
+      <div class="story">Twist Bioscience makes synthetic DNA on silicon chips at unprecedented scale and quality. Researchers and biotech companies use Twist DNA for gene synthesis, antibody discovery, and increasingly to store digital data in DNA strands (which are millions of times denser than any electronic medium). The company is a key supplier to nearly every modern biotech research lab.</div>
+      <p class="sound-bite">&ldquo;Industrial-scale custom DNA. The toolmaker for the biotech revolution.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TWST">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TWST" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TXG">
+      <header class="card-head">
+        <span class="ticker">TXG</span>
+        <span class="company-name">10x Genomics</span>
+        
+      </header>
+      <p class="big-picture">Single-cell sequencing platforms that let researchers read DNA, RNA, and proteins one cell at a time.</p>
+      <div class="story">10x Genomics builds the instruments and chemistry that let researchers analyze biology at the resolution of individual cells. Traditional sequencing reads the average across millions of cells — 10x lets researchers see exactly what each cell is doing, which is the only way to understand many diseases. Almost every major academic and pharmaceutical research lab has a 10x instrument.</div>
+      <p class="sound-bite">&ldquo;Reading biology one cell at a time. The microscope of the genomics era.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TXG">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TXG" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="WGS">
+      <header class="card-head">
+        <span class="ticker">WGS</span>
+        <span class="company-name">GeneDx Holdings</span>
+        
+      </header>
+      <p class="big-picture">Whole-exome and whole-genome sequencing for diagnosing rare childhood genetic diseases.</p>
+      <div class="story">GeneDx sequences the complete human genome to diagnose rare genetic diseases, especially in children. For families who have spent years visiting specialist after specialist without answers, a single test can finally reveal the underlying cause and open the door to targeted treatment. The company has the largest pediatric exome database in the world, which gives its tests an interpretation advantage no one else can match.</div>
+      <p class="sound-bite">&ldquo;The end of years of unanswered questions for families with sick children.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="WGS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=WGS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-research_labs">
+          <div class="district-header">
+            <h2 class="district-title">The Research Labs <span class="district-count">16</span></h2>
+            <div class="district-subtitle">Treating disease by its molecular mechanism — the largest district in the city</div>
+          </div>
+          <div class="district-intro"><p>The Research Labs is by far the largest district in the city — thirty companies working on some of the most remarkable medical innovation in human history. The unifying thesis is to move beyond treating diseases by where they happen in the body, and start treating them by their molecular mechanism. Some of these companies will face setbacks. Some will deliver breakthroughs that reshape medicine. The breadth of what is happening here is extraordinary.</p><p>Start with the giants. Eli Lilly (LLY) is the most valuable healthcare company in the world, riding the GLP-1 obesity wave with Mounjaro and Zepbound while building a deep next-generation pipeline. Vertex Pharmaceuticals (VRTX) effectively cured cystic fibrosis and is now expanding into pain (suzetrigine), kidney disease, and gene therapy with Casgevy for sickle cell. Gilead (GILD) built the franchise that turned HIV into a manageable condition and is now pushing into oncology and inflammation. argenx (ARGX) created Vyvgart, the first FcRn-blocker, which has become the new standard of care for myasthenia gravis and is being expanded into a half-dozen autoimmune indications.</p><p>The mid-cap rare-disease specialists do extraordinary work. Madrigal (MDGL) developed the first real medication for serious liver disease — a once-daily pill for what used to have only one prescription, 'eat better and exercise more.' BridgeBio (BBIO) hunts rare genetic diseases that individually affect few but collectively touch tens of millions. Insmed (INSM) is rebuilding pulmonary medicine with Arikayce for serious lung infections and brensocatib (TPIP) for bronchiectasis. Tarsus (TARS), Glaukos (GKOS), Rhythm (RYTM), Ascendis (ASND), PTC (PTCT), and Mirum (MIRM) each tackle specific diseases that had no good treatment before — eye mites affecting 25 million Americans, glaucoma, broken hunger signals, daily injections turned weekly, childhood muscle disorders, and bile-processing failures in kids.</p><p>In oncology, Celcuity (CELC) and Cogent (COGT) match patients to therapies based on their tumor's molecular fingerprint — stop guessing which cancer drug works, test it on the actual tumor first. Arrowhead (ARWR) silences disease-causing genes before they can do damage, like shredding a bad recipe before the kitchen can use it. Revolution Medicines (RVMD) finally found a way to drug a cancer target considered impossible for decades — a set of mutations found in roughly one out of every three cancers, including many of the deadliest forms. Nuvalent (NUVL) designs precision lung cancer therapies engineered to block the escape routes tumors use to develop resistance. CG Oncology (CGON) built an engineered virus that selectively infects bladder tumors and bursts them from the inside. Immunocore (IMCR) developed the first approved TCR therapy, Kimmtrak, for a rare eye cancer — and is expanding the platform. Terns (TERN) attacks the same liver disease as Madrigal but through a different mechanism, creating combination potential. Abivax (ABVX) is developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease. And TransMedics (TMDX) has revolutionized organ transplantation — keeping donor organs warm and functioning during transport instead of racing them in ice.</p><p>The next wave includes companies in registration or late-stage clinical work. NewAmsterdam Pharma (NAMS) is bringing obicetrapib — an oral CETP inhibitor that reduced LDL cholesterol by 33% in a Phase 3 trial — to market in Europe with partner Menarini, with EMA decision expected 2H26. Mineralys (MLYS) is developing lorundrostat for treatment-resistant hypertension, a massive market with no good options. Praxis Precision (PRAX) is in late-stage trials for essential tremor and epilepsy. Forte Biosciences (FBRX) targets autoimmune diseases through a novel anti-CD122 mechanism. Dianthus (DNTH), Protagonist (PTGX), and Nektar (NKTR) round out the late-stage block — claseprubart in Phase 3 CIDP, rusfertide NDA filed for polycythemia vera with Takeda, and rezpegaldesleukin hitting endpoints in atopic dermatitis. Thirty companies, one thesis, and a staggering pipeline of medicine that did not exist a decade ago.</p></div>
+          <div class="card-grid">
+    <article class="card" id="CELC">
+      <header class="card-head">
+        <span class="ticker">CELC</span>
+        <span class="company-name">Celcuity</span>
+        
+      </header>
+      <p class="big-picture">Tests a patient's living cancer cells in the lab to match them to the therapy most likely to work.</p>
+      <div class="story">Celcuity takes a different approach to cancer. Rather than treating every tumor the same way, they test a patient's living cancer cells in the lab to determine exactly which biological signals are driving the tumor's growth, then match the patient to the therapy most likely to shut those signals down.</div>
+      <p class="sound-bite">&ldquo;Stop guessing which cancer drug works. Test it on the actual tumor first.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CELC">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CELC" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CGON">
+      <header class="card-head">
+        <span class="ticker">CGON</span>
+        <span class="company-name">CG Oncology</span>
+        
+      </header>
+      <p class="big-picture">Engineered a virus that selectively infects bladder tumor cells, replicates until they burst, then spreads to neighboring cancer.</p>
+      <div class="story">CG Oncology has developed a creative approach to bladder cancer: they've engineered a virus that selectively infects tumor cells, replicates inside them until they burst, and then spreads to neighboring cancer cells — all while leaving healthy tissue untouched. For patients facing the prospect of having their bladder surgically removed, this could be a life-changing alternative.</div>
+      <p class="sound-bite">&ldquo;A virus that hunts cancer and leaves healthy tissue alone.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CGON">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CGON" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="COGT">
+      <header class="card-head">
+        <span class="ticker">COGT</span>
+        <span class="company-name">Cogent Biosciences</span>
+        
+      </header>
+      <p class="big-picture">Designs a cancer drug that fits a specific genetic mutation like a key fits a lock.</p>
+      <div class="story">Cogent Biosciences targets a specific type of gastrointestinal tumor driven by a known genetic mutation, designing a drug that fits the mutation like a key fits a lock. This represents the broader revolution in cancer care: treating the disease based on its molecular fingerprint rather than simply where it appears in the body.</div>
+      <p class="sound-bite">&ldquo;A drug designed to fit one mutation, the way a key fits one lock.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="COGT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=COGT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="DNTH">
+      <header class="card-head">
+        <span class="ticker">DNTH</span>
+        <span class="company-name">Dianthus Therapeutics</span>
+        
+      </header>
+      <p class="big-picture">Next-generation complement antibody therapies for autoimmune neurological diseases like myasthenia gravis and CIDP.</p>
+      <div class="story">Dianthus Therapeutics is leading the next generation of complement antibody therapeutics. Their lead drug, claseprubart (DNTH103), is a highly selective antibody that binds only to the active form of C1s in the classical complement pathway. It's being tested in generalized myasthenia gravis (where a Phase 2 study showed statistically significant improvements with a safety profile comparable to placebo), chronic inflammatory demyelinating polyneuropathy (the Phase 3 CAPTIVATE trial recently got an early GO decision based on a responder analysis), and multifocal motor neuropathy. A second candidate, DNTH212, is a bifunctional fusion protein being tested in lupus.</div>
+      <p class="sound-bite">&ldquo;Pick one lock — the active form of C1s — and don't touch the rest of the immune system.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="DNTH">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=DNTH" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="FBRX">
+      <header class="card-head">
+        <span class="ticker">FBRX</span>
+        <span class="company-name">Forte Biosciences</span>
+        
+      </header>
+      <p class="big-picture">Targeting autoimmune diseases through a novel anti-CD122 antibody.</p>
+      <div class="story">Forte Biosciences develops antibody therapies for autoimmune diseases, with its lead program targeting CD122 — a receptor involved in the activation of pathogenic immune cells. The approach offers potential advantages over older biologics in selectivity and durability of effect.</div>
+      <p class="sound-bite">&ldquo;A new mechanism for autoimmune disease, in early clinical work.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="FBRX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=FBRX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="IMCR">
+      <header class="card-head">
+        <span class="ticker">IMCR</span>
+        <span class="company-name">Immunocore Holdings</span>
+        
+      </header>
+      <p class="big-picture">Developed the first approved TCR therapy — Kimmtrak for a rare eye cancer — and is expanding the platform.</p>
+      <div class="story">Immunocore built the first approved T cell receptor (TCR) therapy, Kimmtrak (tebentafusp), for a rare metastatic eye cancer (uveal melanoma). The TCR platform engages a patient's T cells and redirects them against cancer in a way conventional immunotherapy cannot. Beyond Kimmtrak, Immunocore is advancing TCR therapies in skin cancer, lung cancer, and HIV.</div>
+      <p class="sound-bite">&ldquo;The first commercial TCR therapy. The platform behind it might do much more.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="IMCR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=IMCR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MIRM">
+      <header class="card-head">
+        <span class="ticker">MIRM</span>
+        <span class="company-name">Mirum Pharmaceuticals</span>
+        
+      </header>
+      <p class="big-picture">Treats children whose livers can't process bile — a devastating cause of itching, malnutrition, and organ failure.</p>
+      <div class="story">Mirum Pharmaceuticals treats children whose livers can't properly process bile, a digestive fluid that backs up and causes agonizing itching, malnutrition, and potential organ failure.</div>
+      <p class="sound-bite">&ldquo;For kids living with a broken liver, Mirum is a lifeline.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MIRM">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MIRM" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MLYS">
+      <header class="card-head">
+        <span class="ticker">MLYS</span>
+        <span class="company-name">Mineralys Therapeutics</span>
+        
+      </header>
+      <p class="big-picture">Lorundrostat — a novel oral drug for treatment-resistant hypertension.</p>
+      <div class="story">Mineralys is developing lorundrostat, an aldosterone synthase inhibitor for patients whose high blood pressure does not respond to standard medications — one of the largest unmet needs in cardiovascular medicine. Phase 2 data has been encouraging, and Phase 3 trials are underway.</div>
+      <p class="sound-bite">&ldquo;The blood pressure pill that works on patients other pills can't reach.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MLYS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MLYS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="NAMS">
+      <header class="card-head">
+        <span class="ticker">NAMS</span>
+        <span class="company-name">NewAmsterdam Pharma</span>
+        
+      </header>
+      <p class="big-picture">Obicetrapib — an oral CETP inhibitor that cut LDL cholesterol by 33% in Phase 3, partnered with Menarini in Europe.</p>
+      <div class="story">NewAmsterdam is bringing obicetrapib to market — a once-daily oral CETP inhibitor that reduced LDL cholesterol by 33% in the Phase 3 BROADWAY trial and showed an exploratory 21% reduction in major adverse cardiovascular events. Marketing applications have been accepted by the European Medicines Agency, with a decision expected 2H26. Partner Menarini holds European commercial rights, and a U.S. cardiovascular outcomes trial (PREVAIL) is ongoing.</div>
+      <p class="sound-bite">&ldquo;If obicetrapib gets approved, it could be the biggest cardiovascular drug launch of the decade.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="NAMS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=NAMS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="NKTR">
+      <header class="card-head">
+        <span class="ticker">NKTR</span>
+        <span class="company-name">Nektar Therapeutics</span>
+        
+      </header>
+      <p class="big-picture">First-in-class regulatory T-cell stimulator — hit primary endpoints in a 393-patient Phase 2b for severe atopic dermatitis.</p>
+      <div class="story">Nektar Therapeutics is developing rezpegaldesleukin (REZPEG), a first-in-class regulatory T-cell stimulator that works by targeting the IL-2 receptor complex and preferentially expanding Treg cells to restore immune balance. The global Phase 2b REZOLVE-AD study in 393 patients with moderate-to-severe atopic dermatitis met its primary and key secondary endpoints, with durable responses in the 36-week blinded maintenance period showing both monthly and quarterly dosing work. The FDA granted Fast Track designation for atopic dermatitis and separately for severe-to-very severe alopecia areata, and a Phase 2 trial in Type 1 diabetes is also underway.</div>
+      <p class="sound-bite">&ldquo;Restoring immune balance from the top of the pathway. And it hit its endpoints.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="NKTR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=NKTR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PRAX">
+      <header class="card-head">
+        <span class="ticker">PRAX</span>
+        <span class="company-name">Praxis Precision Medicines</span>
+        
+      </header>
+      <p class="big-picture">Late-stage drugs for essential tremor and epilepsy — neurological disorders with limited options.</p>
+      <div class="story">Praxis Precision Medicines develops therapies for central nervous system disorders, with late-stage programs in essential tremor (ulixacaltamide) and epilepsy. Both indications are large markets where existing drugs have meaningful limitations, and Praxis has shown encouraging Phase 2 and 3 data.</div>
+      <p class="sound-bite">&ldquo;The hands stop shaking. The seizures stop. That's the goal.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PRAX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PRAX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PTCT">
+      <header class="card-head">
+        <span class="ticker">PTCT</span>
+        <span class="company-name">PTC Therapeutics</span>
+        
+      </header>
+      <p class="big-picture">Helps the body read past genetic 'typos' in rare childhood muscle diseases and produce functional protein anyway.</p>
+      <div class="story">PTC Therapeutics works on rare childhood diseases where the genetic instructions for building muscle protein contain an error, like a typo in a recipe, causing muscles to gradually weaken over time. Their therapies aim to help the body read past that error and produce functional protein anyway.</div>
+      <p class="sound-bite">&ldquo;Teaching the body to read past a typo in its own recipe book.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PTCT">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PTCT" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="RYTM">
+      <header class="card-head">
+        <span class="ticker">RYTM</span>
+        <span class="company-name">Rhythm Pharmaceuticals</span>
+        
+      </header>
+      <p class="big-picture">Restores the brain's hunger-signaling system in rare genetic forms of extreme obesity — not willpower, broken biology.</p>
+      <div class="story">Rhythm Pharmaceuticals addresses rare genetic forms of extreme obesity caused by a mutation that breaks the brain's hunger-signaling system. Imagine never feeling full, no matter how much you eat — not a willpower problem, but a broken biological thermostat. Rhythm's medication restores that signal.</div>
+      <p class="sound-bite">&ldquo;For patients whose 'full' signal is permanently broken, Rhythm fixes the thermostat.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="RYTM">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=RYTM" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TARS">
+      <header class="card-head">
+        <span class="ticker">TARS</span>
+        <span class="company-name">Tarsus Pharmaceuticals</span>
+        
+      </header>
+      <p class="big-picture">First approved treatment for an eye condition caused by microscopic mites on eyelashes — 25M Americans affected.</p>
+      <div class="story">Tarsus Pharmaceuticals created the first approved treatment for a surprisingly common eye condition caused by microscopic mites that live on eyelashes and cause chronic redness and irritation in an estimated 25 million Americans who previously had no effective remedy.</div>
+      <p class="sound-bite">&ldquo;25 million Americans have it. Until recently, nobody had a treatment.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TARS">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TARS" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TERN">
+      <header class="card-head">
+        <span class="ticker">TERN</span>
+        <span class="company-name">Terns Pharmaceuticals</span>
+        
+      </header>
+      <p class="big-picture">Attacks the same liver disease as Madrigal but through a different mechanism — combination potential.</p>
+      <div class="story">Terns Pharmaceuticals attacks the same serious liver disease as Madrigal but through a different scientific mechanism, which matters because different patients respond to different approaches and combining treatments may prove more powerful than any single drug.</div>
+      <p class="sound-bite">&ldquo;Different mechanism, same disease. Potential combination partner to Madrigal.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TERN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TERN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="TMDX">
+      <header class="card-head">
+        <span class="ticker">TMDX</span>
+        <span class="company-name">TransMedics</span>
+        
+      </header>
+      <p class="big-picture">Keeps donor organs alive and functioning during transport instead of packing them in ice — more organs, more lives saved.</p>
+      <div class="story">TransMedics has revolutionized organ transplantation. Traditionally, a donor organ is packed in ice and raced to the recipient in a desperate sprint against time, with the organ deteriorating every minute. TransMedics built a portable system that keeps the organ warm, pumps blood through it, and maintains it in a living, functioning state during the entire journey. This extends how far an organ can travel, allows doctors to evaluate its quality before implanting it, and has dramatically expanded the number of transplants that can be performed.</div>
+      <p class="sound-bite">&ldquo;Organs arriving alive instead of on ice. More transplants, more lives.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="TMDX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=TMDX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-main_street">
+          <div class="district-header">
+            <h2 class="district-title">Main Street <span class="district-count">10</span></h2>
+            <div class="district-subtitle">The shops, schools, restaurants, and services where people live their lives</div>
+          </div>
+          <div class="district-intro"><p>A city is ultimately about people. Main Street is the district where they actually spend their days — buying things, eating things, traveling, training for jobs, working out, and living their lives. It is by far the largest district in the city by company count, because the consumer economy is enormous.</p><p>It starts with the megaliths. Apple (AAPL) puts a supercomputer in a billion pockets and sells the services that run on it. Amazon (AMZN) is the everything-store that ships, the cloud that hosts most of the internet, and the advertising platform that monetizes the rest. Costco (COST) is the bulk-buying institution that earned a cult following by treating its customers and its employees better than retail conventionally allows. Tesla (TSLA) is the EV company that became an energy company that became an AI company. McMega names dominate the district by market cap, but the smaller names tell more interesting stories.</p><p>The retail and lifestyle block continues. Boot Barn (BOOT) outfits the workforce that physically builds America. Deckers (DECK) owns Hoka and Ugg, two cult footwear brands. Ross Stores (ROST) runs the off-price treasure-hunt model. Warby Parker (WRBY) brought the eyewear category online with $95 prescription glasses. SharkNinja (SN) builds household appliances that punch above their price. Amer Sports (AS) owns Wilson, Salomon, Arc'teryx, and a portfolio of premium outdoor brands.</p><p>Food and drink: Celsius (CELH) turned energy drinks healthier and became a cultural phenomenon. CAVA (CAVA) is the Mediterranean Chipotle, scaling toward 1,000 restaurants. Vita Coco (COCO) owns 42% of the U.S. coconut water market. The Chefs' Warehouse (CHEF) distributes specialty ingredients to the country's best restaurants. Mama's Creations (MAMA) makes the deli-prepared meals that show up next to the rotisserie chicken. Neogen (NEOG) keeps food and animal products safe across the supply chain.</p><p>Travel, hospitality, and experiences: Hilton (HLT) operates one of the world's largest hotel networks. Royal Caribbean (RCL) and Viking (VIK) run the cruise industry's two most-loved brands — Royal at scale, Viking at the premium river-and-ocean end. Lindblad Expeditions (LIND) runs the polar adventure travel category in partnership with National Geographic. DoorDash (DASH) delivers the food that gets ordered when no one wants to leave. MercadoLibre (MELI) is the Amazon of Latin America, plus a fintech business as big as the marketplace.</p><p>The skilled-trades and wellness block: UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC techs, diesel mechanics, welders, and electricians the country cannot build data centers without. American Public Education (APEI) runs the largest online university serving the U.S. military and federal workforce. Life Time Holdings (LTH) operates resort-style wellness campuses where an entire day can happen. Hinge Health (HNGE) treats chronic back and joint pain through a smartphone app and wearable sensors — physical therapy without the office visit.</p><p>Finally, the freight and identity infrastructure of the consumer economy. Saia (SAIA) and XPO (XPO) move the freight that keeps shelves full. Carvana (CVNA) reinvented used car retail. Clear Secure (YOU) runs biometric identity verification at airports and stadiums with 30+ million members. Together, these are the companies the city interacts with every single day.</p></div>
+          <div class="card-grid">
+    <article class="card" id="APEI">
+      <header class="card-head">
+        <span class="ticker">APEI</span>
+        <span class="company-name">American Public Education</span>
+        
+      </header>
+      <p class="big-picture">Online university serving the U.S. military, federal workforce, and adult learners.</p>
+      <div class="story">American Public Education runs American Military University and American Public University — the largest online university serving the U.S. military, plus adult learners and the federal workforce. The student base is highly stable (military tuition assistance is a reliable funding source), and the model has scaled to over 100,000 students.</div>
+      <p class="sound-bite">&ldquo;Higher education for the people who already have full-time jobs — and serve the country.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="APEI">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=APEI" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="CHEF">
+      <header class="card-head">
+        <span class="ticker">CHEF</span>
+        <span class="company-name">The Chefs' Warehouse</span>
+        
+      </header>
+      <p class="big-picture">Specialty food distribution to the country's best independent restaurants.</p>
+      <div class="story">The Chefs' Warehouse distributes specialty ingredients — artisanal cheeses, charcuterie, oils, pastries, premium proteins — to the country's best independent restaurants and high-end hotels. The business has grown through acquisition and organic share gains as consolidation reshapes a fragmented foodservice industry.</div>
+      <p class="sound-bite">&ldquo;If you ate at a great restaurant in America last week, the cheese probably came from Chefs'.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="CHEF">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=CHEF" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="COCO">
+      <header class="card-head">
+        <span class="ticker">COCO</span>
+        <span class="company-name">The Vita Coco Company</span>
+        
+      </header>
+      <p class="big-picture">The dominant coconut water brand — 42% U.S. market share, growing internationally.</p>
+      <div class="story">Vita Coco is the dominant coconut water brand in the U.S. with a 42% market share, now growing faster than almost any other beverage category. 2025 net sales grew 18% with the Vita Coco brand itself up 26% globally. Growth is driven by expanding household penetration (positioning as a sports-drink alternative), international expansion in Europe, and product innovation like Vita Coco Treats.</div>
+      <p class="sound-bite">&ldquo;Coconut water became a real beverage category. Vita Coco owns it.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="COCO">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=COCO" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="HNGE">
+      <header class="card-head">
+        <span class="ticker">HNGE</span>
+        <span class="company-name">Hinge Health</span>
+        
+      </header>
+      <p class="big-picture">Digital physical therapy for chronic back and joint pain — the largest cause of missed work in America.</p>
+      <div class="story">Hinge Health tackles the single largest cause of missed work in America: chronic back and joint pain. Their program works through a smartphone app paired with wearable motion sensors that guide patients through personalized exercises, track form in real time, and connect them with a dedicated coach. The combination of physical therapy, technology, and human support helps people manage pain without surgery or addictive painkillers.</div>
+      <p class="sound-bite">&ldquo;Physical therapy through your phone — and it actually works.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="HNGE">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=HNGE" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="LINC">
+      <header class="card-head">
+        <span class="ticker">LINC</span>
+        <span class="company-name">Lincoln Educational Services</span>
+        
+      </header>
+      <p class="big-picture">Lincoln Tech — career-oriented post-secondary education in skilled trades, automotive, and health sciences.</p>
+      <div class="story">Lincoln Educational Services operates Lincoln Tech, a group of career-oriented post-secondary vocational schools with campuses across a dozen states. They train recent high school graduates and working adults in skilled trades, automotive, health sciences, and IT — the exact same thesis as UTI, targeting the same skills gap. Lincoln Tech was founded in 1946 to retrain WWII veterans and continues that mission today.</div>
+      <p class="sound-bite">&ldquo;America has a trades gap. Lincoln Tech has been closing it since 1946.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="LINC">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=LINC" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="LIND">
+      <header class="card-head">
+        <span class="ticker">LIND</span>
+        <span class="company-name">Lindblad Expeditions</span>
+        
+      </header>
+      <p class="big-picture">Polar and adventure expedition travel in partnership with National Geographic.</p>
+      <div class="story">Lindblad Expeditions runs small-ship expedition cruises to remote destinations — Antarctica, the Arctic, the Galápagos, Alaska — in long-running partnership with National Geographic. The customer base is older, affluent, and willing to pay premium prices for once-in-a-lifetime experiences with naturalists and photographers on board.</div>
+      <p class="sound-bite">&ldquo;The cruise where the destination is Antarctica and the lecturer is a Nat Geo photographer.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="LIND">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=LIND" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MAMA">
+      <header class="card-head">
+        <span class="ticker">MAMA</span>
+        <span class="company-name">Mama's Creations</span>
+        
+      </header>
+      <p class="big-picture">Fresh deli-prepared foods sold next to the rotisserie chicken — targeting $1B in revenue by 2030.</p>
+      <div class="story">Mama's Creations (formerly MamaMancini's) makes fresh deli-prepared foods — meatballs, meat loaf, chicken, sausage products, pasta and rice entrées — that show up in the prepared-foods section of grocery stores next to the rotisserie chicken. The brand has scaled by adding distribution and acquiring complementary businesses, with a stated goal of $1 billion in annual revenue by 2030.</div>
+      <p class="sound-bite">&ldquo;The Italian comfort food brand sitting in the deli case at your grocery store.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MAMA">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MAMA" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="NEOG">
+      <header class="card-head">
+        <span class="ticker">NEOG</span>
+        <span class="company-name">Neogen Corporation</span>
+        
+      </header>
+      <p class="big-picture">Food safety, animal health, and biosecurity products for the global food supply chain.</p>
+      <div class="story">Neogen makes diagnostic test kits and consumables that food producers, animal health customers, and biosecurity programs use to keep the food supply safe. Tests for pathogens (salmonella, listeria), allergens, mycotoxins, and animal disease screening — the unglamorous infrastructure that keeps the world's food supply trustworthy.</div>
+      <p class="sound-bite">&ldquo;Food safety, behind the scenes. The world relies on it without ever noticing.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="NEOG">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=NEOG" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="UTI">
+      <header class="card-head">
+        <span class="ticker">UTI</span>
+        <span class="company-name">Universal Technical Institute</span>
+        
+      </header>
+      <p class="big-picture">Trains the HVAC techs, diesel mechanics, welders, and electricians the country cannot build data centers without.</p>
+      <div class="story">UTI addresses one of the most critical and overlooked gaps in the American economy: training skilled tradespeople. HVAC technicians, diesel mechanics, welders, electricians — you cannot build data centers, power plants, or hospitals without them. As the country embarks on the largest infrastructure buildout in a generation, UTI is one of the only companies positioned to help close the workforce gap.</div>
+      <p class="sound-bite">&ldquo;You can't build data centers without welders. UTI trains the welders.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="UTI">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=UTI" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="WRBY">
+      <header class="card-head">
+        <span class="ticker">WRBY</span>
+        <span class="company-name">Warby Parker</span>
+        
+      </header>
+      <p class="big-picture">Brought eyewear online with $95 prescription glasses and a vertically integrated brand.</p>
+      <div class="story">Warby Parker built the direct-to-consumer eyewear category by selling stylish prescription glasses for $95 — a fraction of what Luxottica's brands charge — and bypassing the traditional optical retail markup. The company started online, then expanded into physical retail (now hundreds of stores), prescriptions, contact lenses, and eye exams.</div>
+      <p class="sound-bite">&ldquo;Glasses for $95 instead of $400. Then they opened actual stores.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="WRBY">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=WRBY" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-stadium">
+          <div class="district-header">
+            <h2 class="district-title">The Stadium <span class="district-count">2</span></h2>
+            <div class="district-subtitle">Where the city goes to be entertained</div>
+          </div>
+          <div class="district-intro"><p>Every great city has a place where people gather to be entertained — to watch a fight, see a concert, lose themselves in a movie, or play a game with friends. The Stadium is that district. Six companies that compete for the city's attention, its evenings, and its discretionary dollars.</p><p>Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen and 580,000 sq ft of exterior LED displays, now the top-grossing venue in the world by Billboard's and Pollstar's 2025 rankings. Live Nation (LYV) runs the global concert business — venues, ticketing through Ticketmaster, festivals, and artist management — the connective tissue of live music. TKO Group (TKO) houses both UFC and WWE under one roof, two of the most valuable combat-sports franchises in the world with passionate audiences and pricing power that keeps growing. IMAX (IMAX) operates the premium large-format theater network that movie studios use to make blockbusters feel like events.</p><p>On the digital side, Netflix (NFLX) defined and now defends the streaming category — over 300 million subscribers worldwide, profitable, and increasingly leaning into live events, advertising, and gaming alongside its core content engine. Take-Two Interactive (TTWO) owns Rockstar Games and 2K Sports — and the entire video game industry is holding its breath for Grand Theft Auto VI, scheduled for 2026, likely to be the biggest entertainment launch in history.</p></div>
+          <div class="card-grid">
+    <article class="card" id="IMAX">
+      <header class="card-head">
+        <span class="ticker">IMAX</span>
+        <span class="company-name">IMAX Corporation</span>
+        
+      </header>
+      <p class="big-picture">The premium large-format theater network that movie studios use to make blockbusters feel like events.</p>
+      <div class="story">IMAX runs a global network of premium large-format theaters that show the biggest movies on screens designed specifically for that format. The business model is asset-light — IMAX licenses its technology and shares revenue with theater operators rather than owning the theaters. As streaming has eaten most of the movie business, IMAX has become the format where Hollywood concentrates its biggest, most cinematic releases.</div>
+      <p class="sound-bite">&ldquo;The screen for the movies that have to be experienced in a theater.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="IMAX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=IMAX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="SPHR">
+      <header class="card-head">
+        <span class="ticker">SPHR</span>
+        <span class="company-name">Sphere Entertainment</span>
+        
+      </header>
+      <p class="big-picture">Operator of the Las Vegas Sphere — 17,600-seat immersive venue with a 16K wraparound screen, the top-grossing venue in the world.</p>
+      <div class="story">Sphere Entertainment operates the Las Vegas Sphere, a 17,600-seat immersive entertainment venue with a 16K resolution wraparound interior LED screen, speaker arrays using beamforming and wave-field synthesis, and 4D physical effects. The exterior is 580,000 sq ft of LED displays — the largest in the world — and pulls in separate advertising revenue. The venue was ranked #1 on Billboard's and Pollstar's 2025 lists of top-grossing venues worldwide, and the 'Wizard of Oz' immersive experience plus concert residencies are expanding utilization. A second U.S. Sphere is planned for National Harbor outside Washington, D.C., and a venue in Abu Dhabi is also in development. The company also owns MSG Networks, a legacy regional sports network in structural decline — one of the main investor debates around the stock.</div>
+      <p class="sound-bite">&ldquo;The most talked-about venue in the world. And there are more coming.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="SPHR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=SPHR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-software_layer">
+          <div class="district-header">
+            <h2 class="district-title">The Software Layer <span class="district-count">5</span></h2>
+            <div class="district-subtitle">The code that runs quietly beneath everything else</div>
+          </div>
+          <div class="district-intro"><p>Not every software company belongs in a futuristic city. These six do, because they build the scaffolding that lets everything else work — the cloud, the edge, the insurance backbone, the trades management system, and the business travel platform. Unsexy, essential, and increasingly AI-powered.</p><p>JFrog (FROG) manages what you might call the supply chain of software — moving code from a developer's laptop through testing and security checks to the servers that run it in production, making sure no malicious code slips in along the way. DigitalOcean (DOCN) is the developer-friendly cloud for startups and small businesses that can't afford the complexity of AWS; its AI-native revenue has been doubling for five straight quarters as AI startups look for a simpler home. Fastly (FSLY) runs a programmable edge network that speeds up the internet and stops attacks, concentrating servers in the most network-dense hubs rather than spreading them everywhere.</p><p>Guidewire (GWRE) is the operating system of the property and casualty insurance industry — more than 570 insurers in 42 countries, including Allianz, AXA, and Liberty Mutual, run their core claims, policy, and billing systems on it. The shift from on-premise to Guidewire Cloud is a multi-year migration that is now hitting full stride. ServiceTitan (TTAN) is doing for the skilled trades what Guidewire did for insurance — plumbers, electricians, HVAC contractors, landscapers — a full business management suite that lets a family-owned contractor compete with a national chain. And Navan (NAVN) is rebuilding corporate travel and expense management around a traveler-first experience, with $7.6B in annual gross bookings across 10,000+ business customers.</p></div>
+          <div class="card-grid">
+    <article class="card" id="FSLY">
+      <header class="card-head">
+        <span class="ticker">FSLY</span>
+        <span class="company-name">Fastly</span>
+        
+      </header>
+      <p class="big-picture">Programmable edge cloud platform — CDN + security + compute, concentrated in the most network-dense hubs.</p>
+      <div class="story">Fastly runs a programmable edge cloud platform combining content delivery, security, and compute. Unlike traditional CDNs that race to put servers in as many locations as possible, Fastly concentrates its servers in the most network-dense data centers and lets customers program on its platform, which delivers better performance on dynamic content and edge compute workloads. The growth strategy centers on three pillars: platform innovation, security expansion (higher-margin services that diversify revenue), and international growth in Asia-Pacific and Europe.</div>
+      <p class="sound-bite">&ldquo;Fewer, faster, smarter edge locations. Programmable end to end.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="FSLY">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=FSLY" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="NAVN">
+      <header class="card-head">
+        <span class="ticker">NAVN</span>
+        <span class="company-name">Navan</span>
+        
+      </header>
+      <p class="big-picture">All-in-one business travel, payments, and expense management — 10,000+ customers, $7.6B annual gross bookings.</p>
+      <div class="story">Navan is an all-in-one business travel, payments, and expense management platform that competes with both niche players like Expensify and enterprise heavyweights like Oracle and SAP. The pitch is traveler-first: make booking flights and hotels feel like a consumer app, then automate expense reconciliation on the back end with 24/7 support. Trailing 12-month revenue of $613M is growing 32%, across 10,000+ customers, with $7.6B in annual gross bookings (up 34%). Navan IPO'd on Nasdaq in October 2025 at $25/share and a $6.2B valuation, though shares dropped 20% on the first day of trading.</div>
+      <p class="sound-bite">&ldquo;Consumer-app business travel. Enterprise-scale expense automation.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="NAVN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=NAVN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PAY">
+      <header class="card-head">
+        <span class="ticker">PAY</span>
+        <span class="company-name">Paymentus Holdings</span>
+        
+      </header>
+      <p class="big-picture">Cloud-based bill payment platform for utilities, telcos, governments, and other billers.</p>
+      <div class="story">Paymentus provides cloud-based bill payment software to utilities, telecom companies, government agencies, and other billers — the unglamorous but essential infrastructure that lets a customer pay a water bill or electric bill online. The business is recurring, sticky, and benefits from the long-term shift away from paper checks.</div>
+      <p class="sound-bite">&ldquo;The bill payment SaaS that's quietly replacing paper checks one utility at a time.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PAY">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PAY" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PTRN">
+      <header class="card-head">
+        <span class="ticker">PTRN</span>
+        <span class="company-name">Pattern Group</span>
+        
+      </header>
+      <p class="big-picture">AI-powered ecommerce accelerator that helps consumer brands sell on Amazon and other marketplaces.</p>
+      <div class="story">Pattern Group operates as an ecommerce accelerator combining proprietary technology and on-demand expertise to help consumer brands sell on Amazon and other digital marketplaces. The company acquires inventory from brand partners and sells to consumers across health and wellness, beauty, home and lifestyle, pet, sports and outdoors, and consumer electronics categories. 2026 guidance targets $3.1B+ in revenue.</div>
+      <p class="sound-bite">&ldquo;The operator that consumer brands hand their Amazon business to.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PTRN">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PTRN" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="ZETA">
+      <header class="card-head">
+        <span class="ticker">ZETA</span>
+        <span class="company-name">Zeta Global</span>
+        
+      </header>
+      <p class="big-picture">AI-powered marketing cloud and customer data platform serving 40% of the Fortune 100.</p>
+      <div class="story">Zeta Global runs an AI-powered customer data platform and marketing cloud that helps brands acquire, grow, and retain customers across email, social media, connected TV, mobile, and the open web. The platform processes data from 12.7 billion identifiers and serves over 1,000 customers, including 40% of the Fortune 100.</div>
+      <p class="sound-bite">&ldquo;The AI marketing cloud. With actual AI inside it, not just the buzzword.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="ZETA">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=ZETA" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+        <section class="district" id="district-financial_district">
+          <div class="district-header">
+            <h2 class="district-title">The Financial District <span class="district-count">6</span></h2>
+            <div class="district-subtitle">Where the money moves and the deals get done</div>
+          </div>
+          <div class="district-intro"><p>None of this gets built without capital. The Financial District is where the money for the rest of the city flows — the investment banks, the exchanges, and a few specialists where finance meets the physical world in interesting ways.</p><p>Evercore (EVR) is one of the most respected independent investment banks in the world — the financial architect behind some of the most consequential M&amp;A deals and IPOs in the economy. Piper Sandler (PIPR) does similar work with particular depth in healthcare and technology, helping innovative smaller companies raise the capital they need to grow from promising startup to established player. MIAX runs electronic options exchanges — the marketplaces where a farmer locks in next year's crop price and a money manager buys insurance against a market drop.</p><p>FTAI Aviation (FTAI) occupies a fascinating niche where finance meets aerospace — leasing commercial jet engines to airlines and, crucially, rebuilding them in-house through a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate. And Mirion Technologies (MIR) makes the instruments that detect and measure radiation — the monitors worn by nuclear-plant workers, the calibration devices inside hospital imaging equipment, the environmental sensors around radioactive materials. As interest in nuclear energy surges to power AI data centers, Mirion's safety technology only becomes more critical.</p></div>
+          <div class="card-grid">
+    <article class="card" id="DAVE">
+      <header class="card-head">
+        <span class="ticker">DAVE</span>
+        <span class="company-name">Dave Inc.</span>
+        
+      </header>
+      <p class="big-picture">Mobile banking app for everyday Americans — no overdraft fees, small-dollar advances, and credit building.</p>
+      <div class="story">Dave is a mobile banking app aimed at everyday Americans who pay overdraft fees and live paycheck-to-paycheck. The app offers a checking account with no overdraft fees, small-dollar cash advances against an upcoming paycheck (ExtraCash), and credit-building tools. The business has grown rapidly as consumers seek alternatives to traditional bank fee structures.</div>
+      <p class="sound-bite">&ldquo;Banking for the 60% of Americans living paycheck-to-paycheck.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="DAVE">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=DAVE" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MIAX">
+      <header class="card-head">
+        <span class="ticker">MIAX</span>
+        <span class="company-name">Miami International Holdings</span>
+        
+      </header>
+      <p class="big-picture">Runs options exchanges — the marketplaces where investors buy insurance against losses or bets on price moves.</p>
+      <div class="story">MIAX runs options exchanges — the electronic marketplaces where investors buy and sell contracts that let them protect against losses or profit from price changes. Think of it like insurance for investments: a farmer might lock in a price for next year's harvest, and a money manager might protect against a market downturn, and both transactions happen on an exchange like MIAX.</div>
+      <p class="sound-bite">&ldquo;Every financial 'just in case' has to trade somewhere. MIAX is one of those somewheres.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MIAX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MIAX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="MRX">
+      <header class="card-head">
+        <span class="ticker">MRX</span>
+        <span class="company-name">Marex Group</span>
+        
+      </header>
+      <p class="big-picture">Global commodities and financial derivatives broker — energy, metals, agricultural, and financial markets.</p>
+      <div class="story">Marex is a diversified financial services group focused on commodities and financial derivatives clearing, market making, and broking. The company sits at the center of energy, metals, agricultural, and financial market trade flows, and has grown rapidly through acquisitions of specialty brokers in adjacent markets.</div>
+      <p class="sound-bite">&ldquo;The broker for the markets that move physical things — oil, copper, wheat.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="MRX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=MRX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="NP">
+      <header class="card-head">
+        <span class="ticker">NP</span>
+        <span class="company-name">Neptune Insurance Holdings</span>
+        
+      </header>
+      <p class="big-picture">Specialty flood insurance — using technology and analytics to underwrite a market most insurers fled.</p>
+      <div class="story">Neptune Insurance Holdings is a specialty flood insurance carrier that has used technology and analytics to underwrite flood risk more accurately than the federal NFIP program. As climate risk becomes harder to ignore and the federal flood program prices change, private flood insurers like Neptune have a structural growth opportunity in a market most large insurers have stayed away from.</div>
+      <p class="sound-bite">&ldquo;Flood insurance, but underwritten with technology instead of bureaucracy.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="NP">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=NP" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="PIPR">
+      <header class="card-head">
+        <span class="ticker">PIPR</span>
+        <span class="company-name">Piper Sandler Companies</span>
+        
+      </header>
+      <p class="big-picture">Investment bank with deep healthcare and tech expertise — helps innovative smaller companies raise capital.</p>
+      <div class="story">Piper Sandler does deal-advisory work with particular expertise in healthcare and technology, often helping innovative smaller companies raise the capital they need to grow from promising startup to established player.</div>
+      <p class="sound-bite">&ldquo;The boutique investment bank for the next wave of healthcare and tech.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="PIPR">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=PIPR" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    
+    <article class="card" id="SNEX">
+      <header class="card-head">
+        <span class="ticker">SNEX</span>
+        <span class="company-name">StoneX Group</span>
+        
+      </header>
+      <p class="big-picture">Diversified global financial services firm — clearing, market making, payments, and physical commodities.</p>
+      <div class="story">StoneX provides clearing, execution, and risk management services across commodities, currencies, securities, and global payments. The business is a collection of niche franchises serving customers other major banks have neglected — emerging-market currency payments, physical commodity hedging, small institutional clearing.</div>
+      <p class="sound-bite">&ldquo;The financial services firm that picks up the niches the big banks won't bother with.&rdquo;</p>
+      <div class="chart-placeholder" data-ticker="SNEX">Loading chart…</div>
+      <div class="chart-actions"><a href="https://stockcharts.com/h-sc/ui?s=SNEX" target="_blank" rel="noopener" class="sc-link" title="Open this ticker in StockCharts in a new tab">📊 Open in StockCharts &rarr;</a></div>
+    </article>
+    </div>
+        </section>
+        
+</main>
+<footer>
+  Innovation Growth · Micro Cap · 2026-04-14 ·
+  Cmd+P to save as PDF · Press / to search
+</footer>
+
+<script>
+const SEARCH_INDEX = [{"ticker": "AAOI", "name": "Applied Optoelectronics", "district": "wires", "funds": ["MIC"]}, {"ticker": "AAPL", "name": "Apple", "district": "main_street", "funds": ["FLC", "LC"]}, {"ticker": "ABVX", "name": "Abivax", "district": "research_labs", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "ADI", "name": "Analog Devices", "district": "chip_works", "funds": ["LC"]}, {"ticker": "ADPT", "name": "Adaptive Biotechnologies", "district": "clinic", "funds": ["SC", "MIC"]}, {"ticker": "AEHR", "name": "Aehr Test Systems", "district": "chip_works", "funds": ["MIC"]}, {"ticker": "AFRM", "name": "Affirm Holdings", "district": "financial_district", "funds": ["MID"]}, {"ticker": "AGX", "name": "Argan", "district": "power_plant", "funds": ["SC", "MIC"]}, {"ticker": "AIR", "name": "AAR Corp", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "ALAB", "name": "Astera Labs", "district": "wires", "funds": ["MID", "SC"]}, {"ticker": "ALGM", "name": "Allegro MicroSystems", "district": "wires", "funds": ["SC"]}, {"ticker": "AMBA", "name": "Ambarella", "district": "chip_works", "funds": ["MIC"]}, {"ticker": "AMD", "name": "Advanced Micro Devices", "district": "chip_works", "funds": ["LC"]}, {"ticker": "AMKR", "name": "Amkor Technology", "district": "chip_works", "funds": ["SC"]}, {"ticker": "AMZN", "name": "Amazon", "district": "main_street", "funds": ["FLC", "LC"]}, {"ticker": "ANET", "name": "Arista Networks", "district": "wires", "funds": ["FLC", "LC"]}, {"ticker": "AORT", "name": "Artivion", "district": "clinic", "funds": ["MIC"]}, {"ticker": "APEI", "name": "American Public Education", "district": "main_street", "funds": ["MIC"]}, {"ticker": "APG", "name": "APi Group", "district": "construction_yards", "funds": ["MID"]}, {"ticker": "APH", "name": "Amphenol", "district": "wires", "funds": ["LC"]}, {"ticker": "APLD", "name": "Applied Digital", "district": "construction_yards", "funds": ["SC", "MIC"]}, {"ticker": "APP", "name": "AppLovin", "district": "software_layer", "funds": ["FLC", "LC", "MID"]}, {"ticker": "ARGX", "name": "argenx", "district": "research_labs", "funds": ["FLC", "LC", "MID"]}, {"ticker": "ARWR", "name": "Arrowhead Pharmaceuticals", "district": "research_labs", "funds": ["SC"]}, {"ticker": "AS", "name": "Amer Sports", "district": "main_street", "funds": ["MID"]}, {"ticker": "ASND", "name": "Ascendis Pharma", "district": "research_labs", "funds": ["MID", "SC"]}, {"ticker": "AVGO", "name": "Broadcom", "district": "chip_works", "funds": ["FLC", "LC"]}, {"ticker": "AXON", "name": "Axon Enterprise", "district": "arsenal", "funds": ["MID"]}, {"ticker": "BBIO", "name": "BridgeBio Pharma", "district": "research_labs", "funds": ["MID", "SC"]}, {"ticker": "BE", "name": "Bloom Energy", "district": "power_plant", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "BELFB", "name": "Bel Fuse", "district": "machine_shop", "funds": ["SC", "MIC"]}, {"ticker": "BKSY", "name": "BlackSky Technology", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "BLLN", "name": "BillionToOne", "district": "clinic", "funds": ["MIC"]}, {"ticker": "BOOT", "name": "Boot Barn", "district": "main_street", "funds": ["SC"]}, {"ticker": "CALX", "name": "Calix", "district": "wires", "funds": ["MIC"]}, {"ticker": "CAVA", "name": "CAVA Group", "district": "main_street", "funds": ["MID", "SC"]}, {"ticker": "CBLL", "name": "CeriBell", "district": "clinic", "funds": ["MIC"]}, {"ticker": "CDNL", "name": "Cardinal Infrastructure Group", "district": "construction_yards", "funds": ["SC", "MIC"]}, {"ticker": "CECO", "name": "CECO Environmental", "district": "construction_yards", "funds": ["SC", "MIC"]}, {"ticker": "CELC", "name": "Celcuity", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "CELH", "name": "Celsius Holdings", "district": "main_street", "funds": ["MID", "SC"]}, {"ticker": "CGON", "name": "CG Oncology", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "CHEF", "name": "The Chefs' Warehouse", "district": "main_street", "funds": ["MIC"]}, {"ticker": "CIFR", "name": "Cipher Mining", "district": "power_plant", "funds": ["SC", "MIC"]}, {"ticker": "COCO", "name": "The Vita Coco Company", "district": "main_street", "funds": ["SC", "MIC"]}, {"ticker": "COGT", "name": "Cogent Biosciences", "district": "research_labs", "funds": ["FLC", "LC", "MID", "SC", "MIC"]}, {"ticker": "COST", "name": "Costco Wholesale", "district": "main_street", "funds": ["FLC", "LC"]}, {"ticker": "CR", "name": "Crane Company", "district": "machine_shop", "funds": ["MID", "SC"]}, {"ticker": "CRCL", "name": "Circle Internet Group", "district": "financial_district", "funds": ["FLC", "LC", "MID"]}, {"ticker": "CRDO", "name": "Credo Technology", "district": "wires", "funds": ["SC"]}, {"ticker": "CRS", "name": "Carpenter Technology", "district": "machine_shop", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "CRWD", "name": "CrowdStrike", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "CVNA", "name": "Carvana", "district": "main_street", "funds": ["LC", "MID"]}, {"ticker": "CW", "name": "Curtiss-Wright", "district": "machine_shop", "funds": ["MID"]}, {"ticker": "DASH", "name": "DoorDash", "district": "main_street", "funds": ["MID"]}, {"ticker": "DAVE", "name": "Dave Inc.", "district": "financial_district", "funds": ["MIC"]}, {"ticker": "DDOG", "name": "Datadog", "district": "software_layer", "funds": ["MID"]}, {"ticker": "DECK", "name": "Deckers Outdoor", "district": "main_street", "funds": ["MID"]}, {"ticker": "DNTH", "name": "Dianthus Therapeutics", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "DOCN", "name": "DigitalOcean", "district": "software_layer", "funds": ["SC"]}, {"ticker": "EME", "name": "EMCOR Group", "district": "construction_yards", "funds": ["LC", "MID"]}, {"ticker": "EVR", "name": "Evercore", "district": "financial_district", "funds": ["MID", "SC"]}, {"ticker": "FBRX", "name": "Forte Biosciences", "district": "research_labs", "funds": ["MIC"]}, {"ticker": "FIG", "name": "Figma", "district": "software_layer", "funds": ["MID"]}, {"ticker": "FIX", "name": "Comfort Systems USA", "district": "construction_yards", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "FN", "name": "Fabrinet", "district": "machine_shop", "funds": ["MID", "SC"]}, {"ticker": "FROG", "name": "JFrog", "district": "software_layer", "funds": ["SC"]}, {"ticker": "FSLY", "name": "Fastly", "district": "software_layer", "funds": ["SC", "MIC"]}, {"ticker": "FTAI", "name": "FTAI Aviation", "district": "financial_district", "funds": ["MID", "SC"]}, {"ticker": "FTI", "name": "TechnipFMC", "district": "power_plant", "funds": ["MID"]}, {"ticker": "GE", "name": "GE Aerospace", "district": "arsenal", "funds": ["LC"]}, {"ticker": "GEV", "name": "GE Vernova", "district": "power_plant", "funds": ["FLC", "LC"]}, {"ticker": "GH", "name": "Guardant Health", "district": "clinic", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "GILD", "name": "Gilead Sciences", "district": "research_labs", "funds": ["FLC", "LC"]}, {"ticker": "GILT", "name": "Gilat Satellite Networks", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "GKOS", "name": "Glaukos", "district": "research_labs", "funds": ["SC"]}, {"ticker": "GLW", "name": "Corning", "district": "wires", "funds": ["FLC", "LC"]}, {"ticker": "GOOGL", "name": "Alphabet", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "GWRE", "name": "Guidewire Software", "district": "software_layer", "funds": ["SC"]}, {"ticker": "HLT", "name": "Hilton Worldwide", "district": "main_street", "funds": ["LC", "MID"]}, {"ticker": "HNGE", "name": "Hinge Health", "district": "main_street", "funds": ["MIC"]}, {"ticker": "HTFL", "name": "HeartFlow", "district": "clinic", "funds": ["MIC"]}, {"ticker": "HUT", "name": "Hut 8", "district": "power_plant", "funds": ["SC"]}, {"ticker": "HWM", "name": "Howmet Aerospace", "district": "machine_shop", "funds": ["FLC", "LC", "MID"]}, {"ticker": "IBKR", "name": "Interactive Brokers", "district": "financial_district", "funds": ["FLC", "LC", "MID"]}, {"ticker": "IDXX", "name": "IDEXX Laboratories", "district": "clinic", "funds": ["MID"]}, {"ticker": "IESC", "name": "IES Holdings", "district": "construction_yards", "funds": ["SC"]}, {"ticker": "IEX", "name": "IDEX Corporation", "district": "machine_shop", "funds": ["MID"]}, {"ticker": "IMAX", "name": "IMAX Corporation", "district": "stadium", "funds": ["MIC"]}, {"ticker": "IMCR", "name": "Immunocore Holdings", "district": "research_labs", "funds": ["MIC"]}, {"ticker": "INSM", "name": "Insmed", "district": "research_labs", "funds": ["LC", "MID"]}, {"ticker": "ISRG", "name": "Intuitive Surgical", "district": "clinic", "funds": ["LC"]}, {"ticker": "KLAC", "name": "KLA Corporation", "district": "chip_works", "funds": ["LC"]}, {"ticker": "KRMN", "name": "Karman Holdings", "district": "arsenal", "funds": ["LC", "MID", "SC"]}, {"ticker": "KTOS", "name": "Kratos Defense", "district": "arsenal", "funds": ["MID", "SC"]}, {"ticker": "LASR", "name": "nLight", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "LEU", "name": "Centrus Energy", "district": "power_plant", "funds": ["MIC"]}, {"ticker": "LFUS", "name": "Littelfuse", "district": "machine_shop", "funds": ["SC"]}, {"ticker": "LGN", "name": "Legence", "district": "construction_yards", "funds": ["SC", "MIC"]}, {"ticker": "LHX", "name": "L3Harris Technologies", "district": "arsenal", "funds": ["LC", "MID"]}, {"ticker": "LINC", "name": "Lincoln Educational Services", "district": "main_street", "funds": ["SC", "MIC"]}, {"ticker": "LIND", "name": "Lindblad Expeditions", "district": "main_street", "funds": ["MIC"]}, {"ticker": "LITE", "name": "Lumentum", "district": "wires", "funds": ["LC", "MID"]}, {"ticker": "LLY", "name": "Eli Lilly", "district": "research_labs", "funds": ["FLC", "LC"]}, {"ticker": "LNG", "name": "Cheniere Energy", "district": "power_plant", "funds": ["LC", "MID"]}, {"ticker": "LRCX", "name": "Lam Research", "district": "chip_works", "funds": ["FLC", "LC"]}, {"ticker": "LSCC", "name": "Lattice Semiconductor", "district": "chip_works", "funds": ["LC", "MID", "SC"]}, {"ticker": "LTH", "name": "Life Time Holdings", "district": "main_street", "funds": ["SC"]}, {"ticker": "LYV", "name": "Live Nation Entertainment", "district": "stadium", "funds": ["MID"]}, {"ticker": "MAMA", "name": "Mama's Creations", "district": "main_street", "funds": ["MIC"]}, {"ticker": "MDGL", "name": "Madrigal Pharmaceuticals", "district": "research_labs", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "MELI", "name": "MercadoLibre", "district": "main_street", "funds": ["MID"]}, {"ticker": "META", "name": "Meta Platforms", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "MIAX", "name": "Miami International Holdings", "district": "financial_district", "funds": ["SC", "MIC"]}, {"ticker": "MIR", "name": "Mirion Technologies", "district": "financial_district", "funds": ["SC"]}, {"ticker": "MIRM", "name": "Mirum Pharmaceuticals", "district": "research_labs", "funds": ["MID", "SC", "MIC"]}, {"ticker": "MKSI", "name": "MKS Instruments", "district": "chip_works", "funds": ["SC"]}, {"ticker": "MLYS", "name": "Mineralys Therapeutics", "district": "research_labs", "funds": ["MIC"]}, {"ticker": "MOD", "name": "Modine Manufacturing", "district": "machine_shop", "funds": ["MID", "SC"]}, {"ticker": "MP", "name": "MP Materials", "district": "chip_works", "funds": ["SC"]}, {"ticker": "MPWR", "name": "Monolithic Power Systems", "district": "chip_works", "funds": ["LC", "MID"]}, {"ticker": "MRCY", "name": "Mercury Systems", "district": "arsenal", "funds": ["MID", "SC", "MIC"]}, {"ticker": "MRX", "name": "Marex Group", "district": "financial_district", "funds": ["MIC"]}, {"ticker": "MSFT", "name": "Microsoft", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "MTSI", "name": "MACOM Technology", "district": "wires", "funds": ["SC"]}, {"ticker": "MTZ", "name": "MasTec", "district": "construction_yards", "funds": ["MID", "SC"]}, {"ticker": "MU", "name": "Micron Technology", "district": "chip_works", "funds": ["LC"]}, {"ticker": "MYRG", "name": "MYR Group", "district": "construction_yards", "funds": ["MIC"]}, {"ticker": "NAMS", "name": "NewAmsterdam Pharma", "district": "research_labs", "funds": ["MIC"]}, {"ticker": "NAVN", "name": "Navan", "district": "software_layer", "funds": ["SC", "MIC"]}, {"ticker": "NDAQ", "name": "Nasdaq", "district": "financial_district", "funds": ["MID"]}, {"ticker": "NEOG", "name": "Neogen Corporation", "district": "main_street", "funds": ["MIC"]}, {"ticker": "NET", "name": "Cloudflare", "district": "software_layer", "funds": ["FLC", "LC", "MID"]}, {"ticker": "NFLX", "name": "Netflix", "district": "stadium", "funds": ["LC"]}, {"ticker": "NKTR", "name": "Nektar Therapeutics", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "NP", "name": "Neptune Insurance Holdings", "district": "financial_district", "funds": ["MIC"]}, {"ticker": "NTRA", "name": "Natera", "district": "clinic", "funds": ["FLC", "LC", "MID", "SC"]}, {"ticker": "NUVL", "name": "Nuvalent", "district": "research_labs", "funds": ["SC"]}, {"ticker": "NVDA", "name": "NVIDIA", "district": "chip_works", "funds": ["FLC", "LC"]}, {"ticker": "NVMI", "name": "Nova", "district": "chip_works", "funds": ["MID", "SC"]}, {"ticker": "NXT", "name": "Nextracker", "district": "power_plant", "funds": ["LC", "MID", "SC"]}, {"ticker": "ONDS", "name": "Ondas Holdings", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "OSIS", "name": "OSI Systems", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "OUST", "name": "Ouster", "district": "wires", "funds": ["MIC"]}, {"ticker": "PAY", "name": "Paymentus Holdings", "district": "software_layer", "funds": ["MIC"]}, {"ticker": "PIPR", "name": "Piper Sandler Companies", "district": "financial_district", "funds": ["MID", "SC", "MIC"]}, {"ticker": "PL", "name": "Planet Labs", "district": "arsenal", "funds": ["LC", "MID", "SC"]}, {"ticker": "PLTR", "name": "Palantir Technologies", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "PRAX", "name": "Praxis Precision Medicines", "district": "research_labs", "funds": ["MIC"]}, {"ticker": "PRIM", "name": "Primoris Services", "district": "construction_yards", "funds": ["MIC"]}, {"ticker": "PTCT", "name": "PTC Therapeutics", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "PTGX", "name": "Protagonist Therapeutics", "district": "research_labs", "funds": ["SC"]}, {"ticker": "PTRN", "name": "Pattern Group", "district": "software_layer", "funds": ["MIC"]}, {"ticker": "PWR", "name": "Quanta Services", "district": "construction_yards", "funds": ["MID"]}, {"ticker": "RBC", "name": "RBC Bearings", "district": "machine_shop", "funds": ["MID", "SC"]}, {"ticker": "RCL", "name": "Royal Caribbean Group", "district": "main_street", "funds": ["MID"]}, {"ticker": "RDDT", "name": "Reddit", "district": "software_layer", "funds": ["LC", "MID"]}, {"ticker": "RJF", "name": "Raymond James Financial", "district": "financial_district", "funds": ["MID"]}, {"ticker": "RKLB", "name": "Rocket Lab", "district": "arsenal", "funds": ["SC"]}, {"ticker": "RKT", "name": "Rocket Companies", "district": "financial_district", "funds": ["MID"]}, {"ticker": "RMBS", "name": "Rambus", "district": "chip_works", "funds": ["SC"]}, {"ticker": "ROAD", "name": "Construction Partners", "district": "construction_yards", "funds": ["SC"]}, {"ticker": "ROST", "name": "Ross Stores", "district": "main_street", "funds": ["MID"]}, {"ticker": "RVMD", "name": "Revolution Medicines", "district": "research_labs", "funds": ["SC"]}, {"ticker": "RYTM", "name": "Rhythm Pharmaceuticals", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "SAIA", "name": "Saia Inc.", "district": "main_street", "funds": ["SC"]}, {"ticker": "SANM", "name": "Sanmina", "district": "machine_shop", "funds": ["SC"]}, {"ticker": "SHOP", "name": "Shopify", "district": "software_layer", "funds": ["FLC", "LC"]}, {"ticker": "SITM", "name": "SiTime", "district": "wires", "funds": ["SC"]}, {"ticker": "SMTC", "name": "Semtech", "district": "wires", "funds": ["SC"]}, {"ticker": "SN", "name": "SharkNinja", "district": "main_street", "funds": ["MID"]}, {"ticker": "SNDK", "name": "SanDisk", "district": "chip_works", "funds": ["MID"]}, {"ticker": "SNEX", "name": "StoneX Group", "district": "financial_district", "funds": ["MIC"]}, {"ticker": "SNOW", "name": "Snowflake", "district": "software_layer", "funds": ["MID"]}, {"ticker": "SPHR", "name": "Sphere Entertainment", "district": "stadium", "funds": ["SC", "MIC"]}, {"ticker": "STRL", "name": "Sterling Infrastructure", "district": "construction_yards", "funds": ["SC", "MIC"]}, {"ticker": "SXI", "name": "Standex International", "district": "machine_shop", "funds": ["MIC"]}, {"ticker": "TARS", "name": "Tarsus Pharmaceuticals", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "TATT", "name": "TAT Technologies", "district": "arsenal", "funds": ["MIC"]}, {"ticker": "TEL", "name": "TE Connectivity", "district": "wires", "funds": ["LC", "MID"]}, {"ticker": "TER", "name": "Teradyne", "district": "chip_works", "funds": ["LC", "MID"]}, {"ticker": "TERN", "name": "Terns Pharmaceuticals", "district": "research_labs", "funds": ["MID", "SC", "MIC"]}, {"ticker": "TKO", "name": "TKO Group Holdings", "district": "stadium", "funds": ["MID"]}, {"ticker": "TMDX", "name": "TransMedics", "district": "research_labs", "funds": ["SC", "MIC"]}, {"ticker": "TRNS", "name": "Transcat", "district": "machine_shop", "funds": ["MIC"]}, {"ticker": "TSLA", "name": "Tesla", "district": "main_street", "funds": ["FLC", "LC"]}, {"ticker": "TTAN", "name": "ServiceTitan", "district": "software_layer", "funds": ["SC"]}, {"ticker": "TTMI", "name": "TTM Technologies", "district": "machine_shop", "funds": ["MID", "SC"]}, {"ticker": "TTWO", "name": "Take-Two Interactive", "district": "stadium", "funds": ["MID"]}, {"ticker": "TW", "name": "Tradeweb Markets", "district": "financial_district", "funds": ["MID"]}, {"ticker": "TWST", "name": "Twist Bioscience", "district": "clinic", "funds": ["MIC"]}, {"ticker": "TXG", "name": "10x Genomics", "district": "clinic", "funds": ["MIC"]}, {"ticker": "UTI", "name": "Universal Technical Institute", "district": "main_street", "funds": ["MID", "SC", "MIC"]}, {"ticker": "VIK", "name": "Viking Holdings", "district": "main_street", "funds": ["MID"]}, {"ticker": "VRT", "name": "Vertiv Holdings", "district": "machine_shop", "funds": ["LC", "MID"]}, {"ticker": "VRTX", "name": "Vertex Pharmaceuticals", "district": "research_labs", "funds": ["LC"]}, {"ticker": "VSEC", "name": "VSE Corporation", "district": "arsenal", "funds": ["SC", "MIC"]}, {"ticker": "WGS", "name": "GeneDx Holdings", "district": "clinic", "funds": ["MIC"]}, {"ticker": "WLDN", "name": "Willdan Group", "district": "construction_yards", "funds": ["MIC"]}, {"ticker": "WRBY", "name": "Warby Parker", "district": "main_street", "funds": ["MIC"]}, {"ticker": "WULF", "name": "TeraWulf", "district": "power_plant", "funds": ["SC", "MIC"]}, {"ticker": "WWD", "name": "Woodward", "district": "machine_shop", "funds": ["LC", "MID", "SC"]}, {"ticker": "XMTR", "name": "Xometry", "district": "machine_shop", "funds": ["MIC"]}, {"ticker": "XPO", "name": "XPO Inc.", "district": "main_street", "funds": ["FLC", "LC", "MID"]}, {"ticker": "YOU", "name": "Clear Secure", "district": "main_street", "funds": ["SC"]}, {"ticker": "YSS", "name": "York Space Systems", "district": "arsenal", "funds": ["SC", "MIC"]}, {"ticker": "ZETA", "name": "Zeta Global", "district": "software_layer", "funds": ["MIC"]}];
+
+// ========== SEARCH ==========
+(function() {
+  const input = document.getElementById('site-search');
+  const results = document.getElementById('search-results');
+  if (!input || !results) return;
+
+  function render(matches, query) {
+    if (!matches.length) {
+      results.innerHTML = '<div class="search-empty">No matches for &ldquo;' + query + '&rdquo;</div>';
+      results.style.display = 'block';
+      return;
+    }
+    results.innerHTML = matches.map(function(m) {
+      const chips = m.funds.map(function(f) { return '<span class="search-fund-chip">' + f + '</span>'; }).join('');
+      return '<a href="index.html#' + m.ticker + '" class="search-result">' +
+        '<span class="search-ticker">' + m.ticker + '</span>' +
+        '<span class="search-name">' + m.name + '</span>' +
+        '<span class="search-funds">' + chips + '</span>' +
+        '</a>';
+    }).join('');
+    results.style.display = 'block';
+  }
+
+  input.addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { results.style.display = 'none'; return; }
+    const matches = SEARCH_INDEX.filter(function(item) {
+      return item.ticker.toLowerCase().indexOf(q) !== -1 ||
+             item.name.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 12);
+    render(matches, q);
+  });
+
+  // Explicit click handler — handles same-page anchors smoothly with highlight,
+  // and falls through to cross-page navigation for tickers not on this page.
+  results.addEventListener('click', function(e) {
+    const link = e.target.closest('.search-result');
+    if (!link) return;
+    const hashIdx = link.href.indexOf('#');
+    if (hashIdx === -1) return;
+    const ticker = link.href.substring(hashIdx + 1);
+    const card = document.getElementById(ticker);
+    if (card) {
+      e.preventDefault();
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.replaceState(null, '', '#' + ticker);
+      card.classList.remove('flash');
+      void card.offsetWidth; // force reflow so animation restarts
+      card.classList.add('flash');
+      results.style.display = 'none';
+      input.value = '';
+    }
+    // else: let the browser navigate cross-page normally
+  });
+
+  // Flash a card when arriving via #anchor on initial load (e.g. cross-page nav)
+  if (window.location.hash) {
+    setTimeout(function() {
+      const t = window.location.hash.substring(1);
+      const card = document.getElementById(t);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.classList.add('flash');
+      }
+    }, 100);
+  }
+
+  input.addEventListener('focus', function() {
+    if (input.value.trim()) results.style.display = 'block';
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.site-search-wrapper')) {
+      results.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      results.style.display = 'none';
+      input.blur();
+    }
+    // Press '/' to focus search
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+})();
+
+// ========== LAZY CHART LOADER ==========
+// Uses TradingView's tv.js Charting Library widget constructor.
+// This is the only path that reliably honors studies + studies_overrides.
+(function() {
+  let chartCounter = 0;
+
+  function loadPlaceholder(placeholder) {
+    const ticker = placeholder.dataset.ticker;
+    if (!ticker) return;
+    if (typeof TradingView === 'undefined') {
+      // tv.js not yet loaded — retry shortly
+      setTimeout(function() { loadPlaceholder(placeholder); }, 200);
+      return;
+    }
+
+    chartCounter++;
+    const containerId = 'tv_chart_' + ticker + '_' + chartCounter;
+    const container = document.createElement('div');
+    container.id = containerId;
+    container.className = 'chart-container';
+    placeholder.replaceWith(container);
+
+    new TradingView.widget({
+      autosize: true,
+      symbol: ticker,
+      interval: 'W',
+      range: '60M',
+      timezone: 'Etc/UTC',
+      theme: 'light',
+      style: '3',
+      locale: 'en',
+      enable_publishing: false,
+      hide_top_toolbar: true,
+      hide_side_toolbar: true,
+      hide_legend: false,
+      save_image: false,
+      studies: ['MASimple@tv-basicstudies'],
+      studies_overrides: {
+        'Moving Average.length': 30,
+        'Moving Average.linewidth': 2,
+        'Moving Average.plot.color': 'rgba(16, 185, 129, 1)'
+      },
+      overrides: {
+        'paneProperties.background': '#ffffff',
+        'paneProperties.backgroundType': 'solid'
+      },
+      show_popup_button: false,
+      withdateranges: false,
+      allow_symbol_change: false,
+      calendar: false,
+      details: false,
+      hotlist: false,
+      container_id: containerId
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          loadPlaceholder(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '400px 0px' });
+
+    document.querySelectorAll('.chart-placeholder').forEach(function(el) {
+      observer.observe(el);
+    });
+  } else {
+    // Fallback: load all charts immediately
+    document.querySelectorAll('.chart-placeholder').forEach(loadPlaceholder);
+  }
+})();
+</script>
+
+</body>
+</html>

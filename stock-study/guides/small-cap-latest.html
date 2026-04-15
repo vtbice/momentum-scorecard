@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Small Cap Study Guide — 2026-04-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    color: #0f172a;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  header.site-head {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 28px 32px;
+    border-bottom: 3px solid #10b981;
+    color: white;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .kicker {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #10b981;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .header-title {
+    font-family: 'Fraunces', serif;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+  main {
+    max-width: 1100px;
+    margin: 32px auto 64px;
+    padding: 0 24px;
+  }
+
+  /* Fund intro */
+  .fund-intro {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 40px;
+    border: 1px solid #1e293b;
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.12);
+  }
+  .fund-intro-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: #10b981;
+    margin-bottom: 18px;
+    letter-spacing: 0.01em;
+  }
+  .fund-intro-body p {
+    font-size: 15.5px;
+    line-height: 1.75;
+    margin-bottom: 14px;
+    color: #e2e8f0;
+  }
+  .fund-intro-body p:last-child { margin-bottom: 0; }
+
+  /* Summary stats */
+  .summary {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight: 500; }
+  .stat-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; color: #0f172a; margin-top: 2px; }
+  .stat-value.accent { color: #10b981; }
+
+  .warning-banner {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: #78350f;
+  }
+  .warning-banner code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+  /* Table of contents */
+  .toc {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .toc h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    margin-bottom: 18px;
+    color: #0f172a;
+  }
+  .toc-district { margin-bottom: 18px; }
+  .toc-district:last-child { margin-bottom: 0; }
+  .toc-district-title {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #10b981;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .toc-district-title:hover { color: #059669; }
+  .toc-district-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2px 16px;
+  }
+  .toc-item {
+    text-decoration: none;
+    color: #0f172a;
+    font-size: 12.5px;
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+  }
+  .toc-item:hover .toc-ticker { color: #059669; }
+  .toc-ticker { font-weight: 600; color: #10b981; min-width: 52px; }
+  .toc-name { color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* District sections */
+  .district {
+    margin-bottom: 64px;
+  }
+  .district-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #10b981;
+  }
+  .district-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .district-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .district-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+  .district-intro {
+    background: #f8fafc;
+    border-left: 3px solid #10b981;
+    padding: 18px 22px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  .district-intro p {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #334155;
+    margin-bottom: 12px;
+  }
+  .district-intro p:last-child { margin-bottom: 0; }
+
+  /* Cards */
+  .card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #10b981;
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .ticker {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+  }
+  .company-name {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .big-picture {
+    font-size: 15px;
+    font-weight: 500;
+    color: #0f172a;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .story {
+    font-size: 14.5px;
+    color: #334155;
+    line-height: 1.75;
+  }
+  .sound-bite {
+    margin-top: 14px;
+    padding: 10px 16px;
+    background: #ecfdf5;
+    border-left: 3px solid #10b981;
+    border-radius: 4px;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: #065f46;
+  }
+
+  footer {
+    text-align: center;
+    padding: 28px;
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  /* Print / PDF styles */
+  @media print {
+    body { background: white; font-size: 11pt; }
+    header.site-head, .fund-intro {
+      background: #0f172a !important;
+      color: white;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    main { margin: 16px auto; }
+    .toc { page-break-after: always; }
+    .district { page-break-before: auto; page-break-inside: auto; }
+    .district-intro { page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card { page-break-inside: avoid; box-shadow: none; }
+    .sound-bite { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="header-inner">
+    <div class="kicker">Innovation Growth Funds</div>
+    <h1 class="header-title">Small Cap <span style="color:#10b981;">Study Guide</span></h1>
+    <div class="header-sub">As of 2026-04-14</div>
+  </div>
+</header>
+
+<main>
+  
+        <section class="fund-intro">
+          <div class="fund-intro-tagline">The City of the Future</div>
+          <div class="fund-intro-body"><p>The companies in this portfolio are building the things underneath the AI and innovation narrative — the chips and cables and cooling systems, the power plants and transmission lines, the specialty metals and circuit boards, the drones and satellites, the diagnostic tests and rare-disease therapies, the trade schools training the welders, the contractors wiring the buildings. Most people have never heard of them. That is part of the point: in the gap between what the market has already priced and what these companies will become lies the opportunity we are looking for.</p><p>Taken together, these are not isolated bets. They are a connected vision of where innovation is taking us — a city we are building piece by piece. It starts with raw materials and silicon in The Chip Works, The Wires that carry signals between them, and The Machine Shop where precision parts and assemblies are made. From those components we build the city itself: The Power Plant generates the electricity that makes AI real, and The Construction Yards turn empty land into the buildings where it all runs. On top of that foundation come the services. The Arsenal defends the city and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. Main Street feeds, moves, trains, and entertains the people who live in the city. The Software Layer runs the code beneath all of it. And The Financial District moves the capital that funds everything else.</p><p>Every company in this fund is playing a role. This guide is how to remember all of them.</p></div>
+        </section>
+        
+
+  <section class="summary">
+    <div class="stat">
+      <span class="stat-label">Holdings</span>
+      <span class="stat-value">88</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Written Up</span>
+      <span class="stat-value accent">88</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Districts</span>
+      <span class="stat-value">11</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">As Of</span>
+      <span class="stat-value" style="font-size:20px;padding-top:8px;">2026-04-14</span>
+    </div>
+  </section>
+
+  
+
+  <nav class="toc">
+    <h3>Quick Index</h3>
+    
+        <div class="toc-district">
+          <a href="#district-chip_works" class="toc-district-title">The Chip Works</a>
+          <div class="toc-district-items"><a href="#AMKR" class="toc-item"><span class="toc-ticker">AMKR</span><span class="toc-name">Amkor Technology</span></a><a href="#LSCC" class="toc-item"><span class="toc-ticker">LSCC</span><span class="toc-name">Lattice Semiconductor</span></a><a href="#MKSI" class="toc-item"><span class="toc-ticker">MKSI</span><span class="toc-name">MKS Instruments</span></a><a href="#MP" class="toc-item"><span class="toc-ticker">MP</span><span class="toc-name">MP Materials</span></a><a href="#NVMI" class="toc-item"><span class="toc-ticker">NVMI</span><span class="toc-name">Nova</span></a><a href="#RMBS" class="toc-item"><span class="toc-ticker">RMBS</span><span class="toc-name">Rambus</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-wires" class="toc-district-title">The Wires</a>
+          <div class="toc-district-items"><a href="#ALAB" class="toc-item"><span class="toc-ticker">ALAB</span><span class="toc-name">Astera Labs</span></a><a href="#ALGM" class="toc-item"><span class="toc-ticker">ALGM</span><span class="toc-name">Allegro MicroSystems</span></a><a href="#CRDO" class="toc-item"><span class="toc-ticker">CRDO</span><span class="toc-name">Credo Technology</span></a><a href="#MTSI" class="toc-item"><span class="toc-ticker">MTSI</span><span class="toc-name">MACOM Technology</span></a><a href="#SITM" class="toc-item"><span class="toc-ticker">SITM</span><span class="toc-name">SiTime</span></a><a href="#SMTC" class="toc-item"><span class="toc-ticker">SMTC</span><span class="toc-name">Semtech</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-machine_shop" class="toc-district-title">The Machine Shop</a>
+          <div class="toc-district-items"><a href="#BELFB" class="toc-item"><span class="toc-ticker">BELFB</span><span class="toc-name">Bel Fuse</span></a><a href="#CR" class="toc-item"><span class="toc-ticker">CR</span><span class="toc-name">Crane Company</span></a><a href="#CRS" class="toc-item"><span class="toc-ticker">CRS</span><span class="toc-name">Carpenter Technology</span></a><a href="#FN" class="toc-item"><span class="toc-ticker">FN</span><span class="toc-name">Fabrinet</span></a><a href="#LFUS" class="toc-item"><span class="toc-ticker">LFUS</span><span class="toc-name">Littelfuse</span></a><a href="#MOD" class="toc-item"><span class="toc-ticker">MOD</span><span class="toc-name">Modine Manufacturing</span></a><a href="#RBC" class="toc-item"><span class="toc-ticker">RBC</span><span class="toc-name">RBC Bearings</span></a><a href="#SANM" class="toc-item"><span class="toc-ticker">SANM</span><span class="toc-name">Sanmina</span></a><a href="#TTMI" class="toc-item"><span class="toc-ticker">TTMI</span><span class="toc-name">TTM Technologies</span></a><a href="#WWD" class="toc-item"><span class="toc-ticker">WWD</span><span class="toc-name">Woodward</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-power_plant" class="toc-district-title">The Power Plant</a>
+          <div class="toc-district-items"><a href="#AGX" class="toc-item"><span class="toc-ticker">AGX</span><span class="toc-name">Argan</span></a><a href="#BE" class="toc-item"><span class="toc-ticker">BE</span><span class="toc-name">Bloom Energy</span></a><a href="#CIFR" class="toc-item"><span class="toc-ticker">CIFR</span><span class="toc-name">Cipher Mining</span></a><a href="#HUT" class="toc-item"><span class="toc-ticker">HUT</span><span class="toc-name">Hut 8</span></a><a href="#NXT" class="toc-item"><span class="toc-ticker">NXT</span><span class="toc-name">Nextracker</span></a><a href="#WULF" class="toc-item"><span class="toc-ticker">WULF</span><span class="toc-name">TeraWulf</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-construction_yards" class="toc-district-title">The Construction Yards</a>
+          <div class="toc-district-items"><a href="#APLD" class="toc-item"><span class="toc-ticker">APLD</span><span class="toc-name">Applied Digital</span></a><a href="#CDNL" class="toc-item"><span class="toc-ticker">CDNL</span><span class="toc-name">Cardinal Infrastructure Group</span></a><a href="#CECO" class="toc-item"><span class="toc-ticker">CECO</span><span class="toc-name">CECO Environmental</span></a><a href="#FIX" class="toc-item"><span class="toc-ticker">FIX</span><span class="toc-name">Comfort Systems USA</span></a><a href="#IESC" class="toc-item"><span class="toc-ticker">IESC</span><span class="toc-name">IES Holdings</span></a><a href="#LGN" class="toc-item"><span class="toc-ticker">LGN</span><span class="toc-name">Legence</span></a><a href="#MTZ" class="toc-item"><span class="toc-ticker">MTZ</span><span class="toc-name">MasTec</span></a><a href="#ROAD" class="toc-item"><span class="toc-ticker">ROAD</span><span class="toc-name">Construction Partners</span></a><a href="#STRL" class="toc-item"><span class="toc-ticker">STRL</span><span class="toc-name">Sterling Infrastructure</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-arsenal" class="toc-district-title">The Arsenal</a>
+          <div class="toc-district-items"><a href="#KRMN" class="toc-item"><span class="toc-ticker">KRMN</span><span class="toc-name">Karman Holdings</span></a><a href="#KTOS" class="toc-item"><span class="toc-ticker">KTOS</span><span class="toc-name">Kratos Defense</span></a><a href="#MRCY" class="toc-item"><span class="toc-ticker">MRCY</span><span class="toc-name">Mercury Systems</span></a><a href="#PL" class="toc-item"><span class="toc-ticker">PL</span><span class="toc-name">Planet Labs</span></a><a href="#RKLB" class="toc-item"><span class="toc-ticker">RKLB</span><span class="toc-name">Rocket Lab</span></a><a href="#VSEC" class="toc-item"><span class="toc-ticker">VSEC</span><span class="toc-name">VSE Corporation</span></a><a href="#YSS" class="toc-item"><span class="toc-ticker">YSS</span><span class="toc-name">York Space Systems</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-clinic" class="toc-district-title">The Clinic</a>
+          <div class="toc-district-items"><a href="#ADPT" class="toc-item"><span class="toc-ticker">ADPT</span><span class="toc-name">Adaptive Biotechnologies</span></a><a href="#GH" class="toc-item"><span class="toc-ticker">GH</span><span class="toc-name">Guardant Health</span></a><a href="#NTRA" class="toc-item"><span class="toc-ticker">NTRA</span><span class="toc-name">Natera</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-research_labs" class="toc-district-title">The Research Labs</a>
+          <div class="toc-district-items"><a href="#ABVX" class="toc-item"><span class="toc-ticker">ABVX</span><span class="toc-name">Abivax</span></a><a href="#ARWR" class="toc-item"><span class="toc-ticker">ARWR</span><span class="toc-name">Arrowhead Pharmaceuticals</span></a><a href="#ASND" class="toc-item"><span class="toc-ticker">ASND</span><span class="toc-name">Ascendis Pharma</span></a><a href="#BBIO" class="toc-item"><span class="toc-ticker">BBIO</span><span class="toc-name">BridgeBio Pharma</span></a><a href="#CELC" class="toc-item"><span class="toc-ticker">CELC</span><span class="toc-name">Celcuity</span></a><a href="#CGON" class="toc-item"><span class="toc-ticker">CGON</span><span class="toc-name">CG Oncology</span></a><a href="#COGT" class="toc-item"><span class="toc-ticker">COGT</span><span class="toc-name">Cogent Biosciences</span></a><a href="#DNTH" class="toc-item"><span class="toc-ticker">DNTH</span><span class="toc-name">Dianthus Therapeutics</span></a><a href="#GKOS" class="toc-item"><span class="toc-ticker">GKOS</span><span class="toc-name">Glaukos</span></a><a href="#MDGL" class="toc-item"><span class="toc-ticker">MDGL</span><span class="toc-name">Madrigal Pharmaceuticals</span></a><a href="#MIRM" class="toc-item"><span class="toc-ticker">MIRM</span><span class="toc-name">Mirum Pharmaceuticals</span></a><a href="#NKTR" class="toc-item"><span class="toc-ticker">NKTR</span><span class="toc-name">Nektar Therapeutics</span></a><a href="#NUVL" class="toc-item"><span class="toc-ticker">NUVL</span><span class="toc-name">Nuvalent</span></a><a href="#PTCT" class="toc-item"><span class="toc-ticker">PTCT</span><span class="toc-name">PTC Therapeutics</span></a><a href="#PTGX" class="toc-item"><span class="toc-ticker">PTGX</span><span class="toc-name">Protagonist Therapeutics</span></a><a href="#RVMD" class="toc-item"><span class="toc-ticker">RVMD</span><span class="toc-name">Revolution Medicines</span></a><a href="#RYTM" class="toc-item"><span class="toc-ticker">RYTM</span><span class="toc-name">Rhythm Pharmaceuticals</span></a><a href="#TARS" class="toc-item"><span class="toc-ticker">TARS</span><span class="toc-name">Tarsus Pharmaceuticals</span></a><a href="#TERN" class="toc-item"><span class="toc-ticker">TERN</span><span class="toc-name">Terns Pharmaceuticals</span></a><a href="#TMDX" class="toc-item"><span class="toc-ticker">TMDX</span><span class="toc-name">TransMedics</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-main_street" class="toc-district-title">Main Street</a>
+          <div class="toc-district-items"><a href="#BOOT" class="toc-item"><span class="toc-ticker">BOOT</span><span class="toc-name">Boot Barn</span></a><a href="#CAVA" class="toc-item"><span class="toc-ticker">CAVA</span><span class="toc-name">CAVA Group</span></a><a href="#CELH" class="toc-item"><span class="toc-ticker">CELH</span><span class="toc-name">Celsius Holdings</span></a><a href="#COCO" class="toc-item"><span class="toc-ticker">COCO</span><span class="toc-name">Vita Coco</span></a><a href="#LINC" class="toc-item"><span class="toc-ticker">LINC</span><span class="toc-name">Lincoln Educational Services</span></a><a href="#LTH" class="toc-item"><span class="toc-ticker">LTH</span><span class="toc-name">Life Time Holdings</span></a><a href="#SAIA" class="toc-item"><span class="toc-ticker">SAIA</span><span class="toc-name">Saia Inc.</span></a><a href="#SPHR" class="toc-item"><span class="toc-ticker">SPHR</span><span class="toc-name">Sphere Entertainment</span></a><a href="#UTI" class="toc-item"><span class="toc-ticker">UTI</span><span class="toc-name">Universal Technical Institute</span></a><a href="#YOU" class="toc-item"><span class="toc-ticker">YOU</span><span class="toc-name">Clear Secure</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-software_layer" class="toc-district-title">The Software Layer</a>
+          <div class="toc-district-items"><a href="#DOCN" class="toc-item"><span class="toc-ticker">DOCN</span><span class="toc-name">DigitalOcean</span></a><a href="#FROG" class="toc-item"><span class="toc-ticker">FROG</span><span class="toc-name">JFrog</span></a><a href="#FSLY" class="toc-item"><span class="toc-ticker">FSLY</span><span class="toc-name">Fastly</span></a><a href="#GWRE" class="toc-item"><span class="toc-ticker">GWRE</span><span class="toc-name">Guidewire Software</span></a><a href="#NAVN" class="toc-item"><span class="toc-ticker">NAVN</span><span class="toc-name">Navan</span></a><a href="#TTAN" class="toc-item"><span class="toc-ticker">TTAN</span><span class="toc-name">ServiceTitan</span></a></div>
+        </div>
+        
+        <div class="toc-district">
+          <a href="#district-financial_district" class="toc-district-title">The Financial District</a>
+          <div class="toc-district-items"><a href="#EVR" class="toc-item"><span class="toc-ticker">EVR</span><span class="toc-name">Evercore</span></a><a href="#FTAI" class="toc-item"><span class="toc-ticker">FTAI</span><span class="toc-name">FTAI Aviation</span></a><a href="#MIAX" class="toc-item"><span class="toc-ticker">MIAX</span><span class="toc-name">Miami International Holdings</span></a><a href="#MIR" class="toc-item"><span class="toc-ticker">MIR</span><span class="toc-name">Mirion Technologies</span></a><a href="#PIPR" class="toc-item"><span class="toc-ticker">PIPR</span><span class="toc-name">Piper Sandler</span></a></div>
+        </div>
+        
+  </nav>
+
+  
+        <section class="district" id="district-chip_works">
+          <div class="district-header">
+            <h2 class="district-title">The Chip Works <span class="district-count">6</span></h2>
+            <div class="district-subtitle">Where silicon begins — and where rare earths come from</div>
+          </div>
+          <div class="district-intro">
+            <p>Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chip Works is the district where it happens.</p><p>It begins in the ground. MP Materials (MP) mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and chip-making equipment itself. MP is the only large-scale rare-earth producer in the Western Hemisphere, which makes it a strategic asset as well as a commercial one.</p><p>Inside the fab, Nova (NVMI) builds the inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to any human eye. MKS Instruments (MKSI) controls the gases, temperatures, and energy inside the fabrication chambers — imagine maintaining perfect weather inside a sealed room where a single stray particle could ruin everything. Amkor (AMKR) handles the final step, taking a finished chip thinner than a fingernail and encasing it in a protective housing with hundreds of tiny electrical connections so it can survive the heat and vibration of a working computer. Lattice Semiconductor (LSCC) makes programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need at the moment. And Rambus (RMBS) designs the rules that govern how processors and memory chips talk to each other, which is another way of saying Rambus decides how fast the entire computer can think. Without these six companies, the AI revolution would be a slideshow.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="AMKR">
+              <header class="card-head">
+                <span class="ticker">AMKR</span>
+                <span class="company-name">Amkor Technology</span>
+              </header>
+              <p class="big-picture">Packages finished chips into protective housings — the final step before silicon meets the real world.</p>
+              <div class="story">Amkor Technology handles the final step of chipmaking: taking a finished chip — a delicate flake of silicon thinner than a fingernail — and encasing it in a protective housing with hundreds of tiny electrical connections, so it can survive the intense heat and vibration inside a working computer. Advanced packaging has become a bottleneck in AI chip production, and Amkor is one of the few companies with the technology to do it at scale.</div>
+              <p class="sound-bite">&ldquo;Every chip needs armor before it hits the real world. Amkor is the armorer.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="LSCC">
+              <header class="card-head">
+                <span class="ticker">LSCC</span>
+                <span class="company-name">Lattice Semiconductor</span>
+              </header>
+              <p class="big-picture">Programmable chips that can be reconfigured after installation — like a toolbox that transforms into whatever tool you need.</p>
+              <div class="story">Lattice Semiconductor makes programmable chips — processors that can be reconfigured after installation, like a toolbox that can transform into whatever tool you need at the moment. Traditional chips are designed to do one job forever. Lattice's chips can be reprogrammed to handle new tasks as requirements change, making them invaluable in factories, cars, and communication equipment where flexibility matters.</div>
+              <p class="sound-bite">&ldquo;A chip that changes its mind.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MKSI">
+              <header class="card-head">
+                <span class="ticker">MKSI</span>
+                <span class="company-name">MKS Instruments</span>
+              </header>
+              <p class="big-picture">Controls gases, temperatures, and energy inside chip fab chambers — perfect weather inside a sealed room.</p>
+              <div class="story">MKS Instruments provides the instruments that control the gases, temperatures, and energy inside chip fabrication chambers. Think of it as maintaining perfect weather conditions inside a sealed room where even a single stray particle could ruin everything. Every major semiconductor fab in the world relies on MKS equipment.</div>
+              <p class="sound-bite">&ldquo;Perfect weather inside a room where one stray particle ruins everything.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MP">
+              <header class="card-head">
+                <span class="ticker">MP</span>
+                <span class="company-name">MP Materials</span>
+              </header>
+              <p class="big-picture">Only large-scale rare-earth producer in the Western Hemisphere — magnets for EVs, wind, fighter jets.</p>
+              <div class="story">MP Materials mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and computer hard drives. These elements have unique magnetic properties no other material can replicate, which is why they're called 'rare' — not because they're scarce in the earth's crust, but because extracting and refining them is extraordinarily difficult. MP is the only large-scale rare-earth producer in the Western Hemisphere.</div>
+              <p class="sound-bite">&ldquo;The only rare-earth supplier on this side of the Pacific.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NVMI">
+              <header class="card-head">
+                <span class="ticker">NVMI</span>
+                <span class="company-name">Nova</span>
+              </header>
+              <p class="big-picture">Inspection tools that photograph microscopic chip layers with beams of light and electrons.</p>
+              <div class="story">Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step. Nova builds the inspection tools that chipmakers use to verify each microscopic layer during production, essentially photographing the chip's surface with beams of light and electrons to catch defects invisible to any human eye.</div>
+              <p class="sound-bite">&ldquo;The microscope that saves a billion-dollar fab from one bad layer.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="RMBS">
+              <header class="card-head">
+                <span class="ticker">RMBS</span>
+                <span class="company-name">Rambus</span>
+              </header>
+              <p class="big-picture">Designs the rules that govern how processors and memory chips talk — determines how fast the whole computer runs.</p>
+              <div class="story">Rambus designs the rules that govern how processors and memory chips communicate. Think of memory like a library and the processor like a reader — Rambus designs the system that determines how fast the reader can check out and return books. The faster that exchange happens, the faster the entire computer runs, which is why Rambus's memory-interface IP sits inside nearly every modern data center.</div>
+              <p class="sound-bite">&ldquo;The librarian that decides how fast the computer can think.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-wires">
+          <div class="district-header">
+            <h2 class="district-title">The Wires <span class="district-count">6</span></h2>
+            <div class="district-subtitle">The interconnect that lets the city talk to itself</div>
+          </div>
+          <div class="district-intro">
+            <p>A chip by itself is useless. Chips only matter when they can talk to each other — and in the era of AI, talking means moving vast amounts of data at extraordinary speeds between racks, between buildings, between cities, and across oceans. The Wires is the district where signals travel.</p><p>Credo Technology (CRDO) builds the high-speed cables and connection chips that let thousands of AI processors pass notes at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes — the speed of those notes determines how fast the group can think. Credo makes the notes move at light speed. Astera Labs (ALAB) controls the data flows inside a single rack the way traffic cops manage a highway interchange, preventing collisions and making sure nothing gets stuck. MACOM (MTSI) turns electrical signals into laser light and back again so data can ride glass fibers across continents, billions of times per second.</p><p>SiTime (SITM) makes the precision silicon clocks that keep every signal perfectly synchronized — the conductor's baton inside every electronic orchestra. Semtech (SMTC) cleans up degraded signals so data arrives crisp instead of fuzzy, like preventing a photocopy-of-a-photocopy from losing quality with every pass. And Allegro MicroSystems (ALGM) builds the sensors that measure exactly how fast things are moving inside EVs, factory robots, and data-center cooling fans so control systems can respond in milliseconds. None of these companies make headlines. All of them are essential.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="ALAB">
+              <header class="card-head">
+                <span class="ticker">ALAB</span>
+                <span class="company-name">Astera Labs</span>
+              </header>
+              <p class="big-picture">Intelligent traffic controllers for data flowing between AI processors stacked in a single rack.</p>
+              <div class="story">Astera Labs solves data movement at the rack level. When hundreds of processors are stacked together in a single cabinet, they generate an enormous amount of data traffic — imagine thousands of cars all trying to merge onto the same highway at once. Astera builds the intelligent traffic controllers that manage those data flows, prioritizing the most urgent signals, preventing collisions, and making sure nothing gets stuck in a bottleneck. Their technology has become essential inside the world's largest AI installations.</div>
+              <p class="sound-bite">&ldquo;The traffic cops inside every AI rack.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="ALGM">
+              <header class="card-head">
+                <span class="ticker">ALGM</span>
+                <span class="company-name">Allegro MicroSystems</span>
+              </header>
+              <p class="big-picture">Sensors that detect motion, position, and electrical current inside EVs, factory robots, and data center cooling.</p>
+              <div class="story">Allegro MicroSystems builds sensors that detect motion, position, and electrical current inside machines. When an electric car's motor spins, Allegro's sensors measure exactly how fast and in what direction, allowing the control system to adjust power delivery thousands of times per second. The same principle applies to factory robots, data-center cooling fans, and any application where something moves and needs to be precisely controlled.</div>
+              <p class="sound-bite">&ldquo;If it spins, Allegro is watching.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CRDO">
+              <header class="card-head">
+                <span class="ticker">CRDO</span>
+                <span class="company-name">Credo Technology</span>
+              </header>
+              <p class="big-picture">High-speed cables and connection chips that carry signals between AI processors — the nervous system of AI.</p>
+              <div class="story">Credo Technology builds the high-speed cables and connection chips that carry signals between processors at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes — the speed of those notes determines how fast the group can think. Credo makes the notes move at light speed. They are the nervous system of artificial intelligence, and without them, even the most powerful processors sit idle waiting for information.</div>
+              <p class="sound-bite">&ldquo;Even the fastest AI chip is useless without Credo's wiring.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MTSI">
+              <header class="card-head">
+                <span class="ticker">MTSI</span>
+                <span class="company-name">MACOM Technology</span>
+              </header>
+              <p class="big-picture">Chips that convert electrical signals into laser light and back — the magic behind fiber-optic networks.</p>
+              <div class="story">MACOM Technology designs the chips that make fiber-optic networks work. On one end, they take an electrical signal — the language computers speak — and use a tiny laser to convert it into a beam of light that shoots through the glass fiber. On the other end, a sensor catches that light and converts it back into an electrical signal the receiving computer can understand. This conversion happens billions of times per second.</div>
+              <p class="sound-bite">&ldquo;Turning electricity into light and back, billions of times per second.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="SITM">
+              <header class="card-head">
+                <span class="ticker">SITM</span>
+                <span class="company-name">SiTime</span>
+              </header>
+              <p class="big-picture">Precision silicon clocks — the tiny heartbeats that keep electronic signals synchronized.</p>
+              <div class="story">SiTime makes something deceptively simple but absolutely essential: precision timing devices. Every electronic system needs a clock — a tiny heartbeat that keeps all its signals perfectly synchronized, like a conductor keeping an orchestra in time. If the timing drifts even a fraction of a second, signals collide and data gets corrupted. SiTime's silicon-based clocks are smaller, more accurate, and more resilient to vibration and temperature changes than traditional alternatives, which is why they're showing up inside everything from AI data centers to self-driving cars.</div>
+              <p class="sound-bite">&ldquo;The conductor's baton inside every electronic orchestra.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="SMTC">
+              <header class="card-head">
+                <span class="ticker">SMTC</span>
+                <span class="company-name">Semtech</span>
+              </header>
+              <p class="big-picture">Chips that clean up degraded electronic signals — quality control for data moving through cables and circuits.</p>
+              <div class="story">Semtech acts as the quality-control system for electronic signals. As data travels through cables and circuits, the signal gradually degrades — like a photocopy of a photocopy getting fuzzier each time. Semtech's chips clean up and restore those signals so they arrive crisp and intact, even after traveling long distances. Their technology sits inside data-center switches, smart-city sensors, and agricultural monitoring systems around the world.</div>
+              <p class="sound-bite">&ldquo;Stops the photocopy-of-a-photocopy problem inside every cable.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-machine_shop">
+          <div class="district-header">
+            <h2 class="district-title">The Machine Shop <span class="district-count">10</span></h2>
+            <div class="district-subtitle">Precision parts, specialty metals, and the hidden hands that assemble the city</div>
+          </div>
+          <div class="district-intro">
+            <p>Chips and wires are useful only if someone can turn them into physical things — airplanes, satellites, medical devices, data-center cooling loops, circuit boards, power supplies. The Machine Shop is the district where raw materials and components become real machines. These are the hidden hands that turn brilliant designs into actual products.</p><p>Carpenter Technology (CRS) forges specialty metals and advanced alloys engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe. RBC Bearings (RBC) makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery — a deceptively simple concept, engineered to survive where nothing else can.</p><p>Sanmina (SANM) handles complex electronic contract manufacturing: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing. Fabrinet (FN) specializes in optical components aligned to tolerances thinner than a wavelength of light. TTM Technologies (TTMI) is one of the top five PCB manufacturers in the world and the largest supplier of printed circuit boards to the U.S. military, and the fastest-growing segment of its business is now data center computing and AI accelerators. Modine Manufacturing (MOD) designs the liquid cooling systems that absorb heat from AI racks the way a car radiator cools an engine — transforming a legacy auto-parts company into an AI infrastructure play. And Bel Fuse (BELFB) makes the power supplies and connectivity components that quietly sit inside almost every piece of essential equipment.</p><p>The last group is about control. Woodward (WWD) designs the fuel-metering control systems inside aircraft engines and industrial turbines — what happens when a pilot pushes the throttle forward is Woodward's responsibility. Crane Company (CR) supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories. And Littelfuse (LFUS) makes circuit-protection components that sacrifice themselves during power surges, absorbing excess energy before expensive equipment is damaged. Every physical machine in the city passes through a shop like one of these.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="BELFB">
+              <header class="card-head">
+                <span class="ticker">BELFB</span>
+                <span class="company-name">Bel Fuse</span>
+              </header>
+              <p class="big-picture">Power supplies and connectivity components hiding inside networking gear, radar, and industrial controls.</p>
+              <div class="story">Bel Fuse manufactures the electronic power supplies and connectivity components found inside an enormous range of essential equipment. Networking gear, military radar systems, industrial controls — they all need reliable power conversion and data connections, and Bel Fuse is one of those small companies whose parts quietly show up everywhere.</div>
+              <p class="sound-bite">&ldquo;The parts you'll never see but that everything depends on.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CR">
+              <header class="card-head">
+                <span class="ticker">CR</span>
+                <span class="company-name">Crane Company</span>
+              </header>
+              <p class="big-picture">Engineered valves, sensors, and fluid-handling systems for aircraft, naval vessels, and factories.</p>
+              <div class="story">Crane Company supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories — components that control the flow of fuel, hydraulic fluid, and air in environments where reliability is everything.</div>
+              <p class="sound-bite">&ldquo;The valves and sensors that absolutely cannot fail because lives depend on them.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CRS">
+              <header class="card-head">
+                <span class="ticker">CRS</span>
+                <span class="company-name">Carpenter Technology</span>
+              </header>
+              <p class="big-picture">Forges specialty metals that withstand 2,000° heat, corrosive chemicals, and extreme pressure.</p>
+              <div class="story">Carpenter Technology forges specialty metals and advanced alloys — materials engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe.</div>
+              <p class="sound-bite">&ldquo;Metals so specialized that failure isn't an inconvenience. It's a catastrophe.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="FN">
+              <header class="card-head">
+                <span class="ticker">FN</span>
+                <span class="company-name">Fabrinet</span>
+              </header>
+              <p class="big-picture">Precision contract manufacturing for optics aligned to tolerances thinner than a wavelength of light.</p>
+              <div class="story">Fabrinet specializes in work that requires almost unimaginable precision — the tiny optical components inside fiber-optic networks that must be aligned to tolerances measured in millionths of a meter, thinner than a wavelength of light. They are one of the hidden hands that turn designs into reality.</div>
+              <p class="sound-bite">&ldquo;Precision so extreme you measure it in wavelengths of light.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="LFUS">
+              <header class="card-head">
+                <span class="ticker">LFUS</span>
+                <span class="company-name">Littelfuse</span>
+              </header>
+              <p class="big-picture">Circuit protection components that sacrifice themselves to save expensive equipment during surges.</p>
+              <div class="story">Littelfuse protects electrical circuits from destruction. Every time there's a power surge, a lightning strike, or an unexpected spike in current, Littelfuse's components sacrifice themselves — absorbing the excess energy and breaking the circuit before expensive equipment is damaged, like a fuse blowing to protect your house's wiring. As the world fills with more sensitive electronics, that protection becomes more important, not less.</div>
+              <p class="sound-bite">&ldquo;Dies so the rest of the circuit can live.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MOD">
+              <header class="card-head">
+                <span class="ticker">MOD</span>
+                <span class="company-name">Modine Manufacturing</span>
+              </header>
+              <p class="big-picture">Liquid cooling for AI data centers — transformed from a legacy auto-parts company into an AI infrastructure name.</p>
+              <div class="story">A single rack of AI processors generates as much warmth as a small house, and a data center full of them produces heat like a furnace. Traditional air conditioning simply cannot keep up. Modine Manufacturing designs advanced cooling systems that pump liquid directly past the hottest components, absorbing heat the way a car's radiator cools an engine, then carrying it away to be dissipated safely. They've transformed from a legacy auto-parts company into one of the most important names in AI infrastructure.</div>
+              <p class="sound-bite">&ldquo;The radiator company that woke up one morning as an AI infrastructure play.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="RBC">
+              <header class="card-head">
+                <span class="ticker">RBC</span>
+                <span class="company-name">RBC Bearings</span>
+              </header>
+              <p class="big-picture">Precision bearings for helicopter rotors, submarines, and industrial machinery — flawless under extreme force.</p>
+              <div class="story">RBC Bearings makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery. A bearing is a deceptively simple concept — it reduces friction between moving parts — but engineering one that operates flawlessly under thousands of pounds of force, at extreme temperatures, for years without maintenance, is anything but simple.</div>
+              <p class="sound-bite">&ldquo;A simple idea, engineered to survive where nothing else can.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="SANM">
+              <header class="card-head">
+                <span class="ticker">SANM</span>
+                <span class="company-name">Sanmina</span>
+              </header>
+              <p class="big-picture">Contract manufacturer of complex electronics — medical imaging, military vehicles, cloud servers.</p>
+              <div class="story">Sanmina is one of the world's most important contract manufacturers — the company brilliant inventors turn to when they've designed something remarkable but need someone who can actually build it. Sanmina handles complex electronic assemblies: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing.</div>
+              <p class="sound-bite">&ldquo;The hidden hands that turn brilliant designs into actual products.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="TTMI">
+              <header class="card-head">
+                <span class="ticker">TTMI</span>
+                <span class="company-name">TTM Technologies</span>
+              </header>
+              <p class="big-picture">Top-five global PCB manufacturer, largest supplier of PCBs to the U.S. military, fastest growth from AI accelerators.</p>
+              <div class="story">TTM Technologies is one of the top five printed circuit board manufacturers in the world, the largest in North America, and the largest supplier of PCBs to the U.S. military. Aerospace and defense account for ~45% of revenue, supported by a record $1.6B backlog and a recent $200M multi-year Raytheon contract for LTAMDS radar components. But the fastest-growing part of the business is data center computing — combined with networking, it now represents 36% of total revenue, up from the mid-20s just a year ago, driven by demand for high-density PCBs used in AI accelerators. A new advanced-technology facility in Syracuse is ramping in the second half of 2026.</div>
+              <p class="sound-bite">&ldquo;Defense backlog for the floor, AI accelerators for the growth.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="WWD">
+              <header class="card-head">
+                <span class="ticker">WWD</span>
+                <span class="company-name">Woodward</span>
+              </header>
+              <p class="big-picture">Control systems that precisely meter fuel inside aircraft engines and industrial turbines.</p>
+              <div class="story">Woodward designs the control systems that regulate fuel flow and power output inside aircraft engines and industrial turbines. When a pilot pushes the throttle forward, Woodward's technology is what precisely meters the fuel, adjusts the air intake, and ensures the engine delivers exactly the right amount of power without overheating or flaming out.</div>
+              <p class="sound-bite">&ldquo;Pushing the throttle is easy. Surviving what happens next is Woodward.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-power_plant">
+          <div class="district-header">
+            <h2 class="district-title">The Power Plant <span class="district-count">6</span></h2>
+            <div class="district-subtitle">Where the electrons come from — and where they get used</div>
+          </div>
+          <div class="district-intro">
+            <p>Intelligence without electricity is just an expensive pile of metal. And the amount of electricity that AI requires is almost hard to believe — a single large AI training run can consume as much power as 120 American homes use in an entire year. The existing grid was never designed for this.</p><p>Bloom Energy (BE) is building a bridge. Their ceramic fuel cells generate electricity through an electrochemical reaction — continuous, on-site, no combustion, no connection to the traditional grid required. A stack can be installed in 90 days and start generating power immediately, compared to the five-to-ten-year timeline for a new power plant. Nextracker (NXT) takes a very different approach to the same crisis: scale the cheapest source of new electricity ever created. Their motorized mounting systems let fields of solar panels follow the sun across the sky, squeezing up to 25% more energy from the same equipment, and have become standard equipment at the largest solar installations in the world. And Argan (AGX) does something more traditional but increasingly rare: it designs, engineers, and actually builds power plants from the ground up. As demand for gas turbine generation surges to feed AI data centers, Argan's skillset is suddenly in short supply.</p><p>But generating power is only half the equation. Someone also has to own the physical sites where those electrons get converted into compute. Three companies in this district were originally built to mine Bitcoin — which required exactly the same infrastructure an AI data center needs: massive power connections, serious cooling systems, and dense racks of processors. It turns out that infrastructure is worth a lot more to an AI customer than to a Bitcoin miner. Hut 8 (HUT) flexes between mining and AI hosting depending on which customer pays more. TeraWulf (WULF) does the same with a distinctive emphasis on clean energy, running primarily on nuclear and hydroelectric power. And Cipher Mining (CIFR) has leaned hardest into the pivot, signing a roughly $5.5 billion 15-year lease with Amazon Web Services to deliver 300 MW of AI capacity in 2026, plus a 168 MW 10-year HPC agreement with Fluidstack worth about $3 billion, plus a 200 MW Ohio site and 95% of a 1-gigawatt West Texas campus. Cipher is transforming into a hybrid Bitcoin miner and power landlord for AI tenants — and is increasingly priced that way.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="AGX">
+              <header class="card-head">
+                <span class="ticker">AGX</span>
+                <span class="company-name">Argan</span>
+              </header>
+              <p class="big-picture">Designs, engineers, and constructs power plants from the ground up.</p>
+              <div class="story">Argan builds power plants from the ground up — designing, engineering, and constructing the generation facilities that create the electricity the rest of the city depends on. As gas turbine demand surges to power AI data centers, Argan's skillset is in rare supply.</div>
+              <p class="sound-bite">&ldquo;Someone has to actually build the power plants. Argan is that someone.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="BE">
+              <header class="card-head">
+                <span class="ticker">BE</span>
+                <span class="company-name">Bloom Energy</span>
+              </header>
+              <p class="big-picture">On-site fuel cells that generate power in 90 days vs. 5-10 years for a new power plant — the answer to AI's electricity crisis.</p>
+              <div class="story">Bloom Energy's fuel cells generate electricity through an electrochemical reaction — similar in concept to a battery, but instead of storing energy and running down, they continuously convert natural gas or hydrogen into electricity as long as fuel is supplied. No combustion, no turbines, no connection to the traditional power grid required. A stack of Bloom's ceramic fuel cells can be installed on-site in as little as 90 days and start generating power immediately. Compare that to the five-to-ten-year timeline for building a new power plant, and you start to understand why some of the world's largest investors are pouring billions into deploying them at AI data centers. Bloom is doubling its manufacturing capacity to meet the surge in demand.</div>
+              <p class="sound-bite">&ldquo;90 days to power a data center, not 10 years.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CIFR">
+              <header class="card-head">
+                <span class="ticker">CIFR</span>
+                <span class="company-name">Cipher Mining</span>
+              </header>
+              <p class="big-picture">Bitcoin miner pivoting hardest to AI — $5.5B AWS lease, $3B+ Fluidstack deals, 1GW West Texas HPC campus.</p>
+              <div class="story">Cipher Mining has leaned hardest into the AI pivot among Bitcoin miners. In late 2025 it signed a roughly $5.5 billion, 15-year lease with Amazon Web Services to deliver 300 MW of turnkey space and power for AI workloads starting in 2026. Separately, Cipher has a 168 MW, 10-year HPC agreement with Fluidstack worth approximately $3 billion in contracted revenue, plus a 56 MW Fluidstack expansion. They recently acquired the 200 MW 'Ulysses' site in Ohio with an AEP Ohio utility agreement, and took 95% majority control of Colchis, a 1-gigawatt HPC development in West Texas. Cipher is transforming into a hybrid bitcoin miner and 'power landlord' for AI data center tenants — and is increasingly being priced that way.</div>
+              <p class="sound-bite">&ldquo;A Bitcoin miner that just signed a $5.5B AWS lease. That's the whole story.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="HUT">
+              <header class="card-head">
+                <span class="ticker">HUT</span>
+                <span class="company-name">Hut 8</span>
+              </header>
+              <p class="big-picture">Bitcoin miner flexibly renting facilities to AI companies — same building, different customers.</p>
+              <div class="story">Hut 8 operates large-scale facilities equipped for Bitcoin mining and has increasingly begun renting that same computing capacity to AI companies. The infrastructure is similar — power connections, cooling systems, dense racks of processors — so when Bitcoin prices are strong, they mine, and when AI companies need capacity, they rent it out. It's a flexible model.</div>
+              <p class="sound-bite">&ldquo;When Bitcoin is hot, they mine. When AI is hot, they host. Same building.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NXT">
+              <header class="card-head">
+                <span class="ticker">NXT</span>
+                <span class="company-name">Nextracker</span>
+              </header>
+              <p class="big-picture">Motorized trackers that let solar panels follow the sun — squeezing 25% more energy from the same equipment.</p>
+              <div class="story">Nextracker makes the motorized mounting systems that allow massive fields of solar panels to follow the sun across the sky throughout the day, like sunflowers turning toward light. A fixed solar panel captures whatever light hits it at the angle it happens to be facing. A tracking panel adjusts its angle every few minutes to face the sun directly, squeezing up to 25% more energy from the same equipment. It has become standard equipment at the largest solar installations in the world.</div>
+              <p class="sound-bite">&ldquo;Solar panels that follow the sun like sunflowers.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="WULF">
+              <header class="card-head">
+                <span class="ticker">WULF</span>
+                <span class="company-name">TeraWulf</span>
+              </header>
+              <p class="big-picture">Bitcoin miner running primarily on nuclear and hydro power — one of the greenest mining operations in the industry.</p>
+              <div class="story">TeraWulf takes a similar approach to Hut 8 but with a distinctive emphasis on clean energy — their flagship facility runs primarily on nuclear and hydroelectric power, making them one of the greenest mining operations in the industry. Like Hut 8, they are expanding their AI hosting capabilities, recognizing that the same infrastructure built for cryptocurrency can serve the exploding demand for artificial intelligence computing.</div>
+              <p class="sound-bite">&ldquo;The green Bitcoin miner. And an AI host on the side.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-construction_yards">
+          <div class="district-header">
+            <h2 class="district-title">The Construction Yards <span class="district-count">9</span></h2>
+            <div class="district-subtitle">The contractors who turn empty land into functioning infrastructure</div>
+          </div>
+          <div class="district-intro">
+            <p>Generating power is still just half the battle. Someone has to build the buildings, pour the foundations, pull the wire, connect the pipes, lay the roads, and keep it all environmentally responsible. When a new data center rises out of empty desert, a small army of specialty contractors shows up first. The Construction Yards is where that army lives.</p><p>Sterling Infrastructure (STRL) grades the site and pours the foundations, turning empty land into a functioning campus. Cardinal Infrastructure Group (CDNL) handles the wet utilities — water, sewer, stormwater — and the site work that has to happen before anything vertical can begin. MasTec (MTZ) runs the heavy power lines from the grid to the property line, plus the pipelines and cell towers that connect the larger network. Construction Partners (ROAD) builds the highways that get everyone from the outside world to the facility, because every data center still needs roads to reach it.</p><p>Inside the building, Comfort Systems USA (FIX) installs the HVAC, plumbing, and electrical systems while IES Holdings (IESC) handles the specialized high-voltage electrical work — wiring facilities that draw as much power as small towns. Legence (LGN) provides engineering, installation, and maintenance for the mission-critical mechanical systems inside technology, life sciences, healthcare, and education buildings. Applied Digital (APLD) takes it one step further, designing entire AI-native data-center facilities from scratch with electrical and cooling systems engineered for demands traditional buildings were never meant to handle. And CECO Environmental (CECO) installs the scrubbers, filters, and wastewater-treatment equipment that ensure all this growth doesn't come at the expense of the air and water around it. Before a single server rack spins up, these companies have already done most of the real work.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="APLD">
+              <header class="card-head">
+                <span class="ticker">APLD</span>
+                <span class="company-name">Applied Digital</span>
+              </header>
+              <p class="big-picture">Building AI-native data center facilities from scratch, engineered for extreme electrical and cooling demands.</p>
+              <div class="story">Applied Digital is building entire data-center facilities designed from scratch for AI computing, with electrical and cooling systems engineered specifically for the extreme demands that traditional buildings were never meant to handle.</div>
+              <p class="sound-bite">&ldquo;Traditional data centers were built for websites. Applied Digital is building for AI.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CDNL">
+              <header class="card-head">
+                <span class="ticker">CDNL</span>
+                <span class="company-name">Cardinal Infrastructure Group</span>
+              </header>
+              <p class="big-picture">Wet utilities, site development, and civil contracting across the southeastern US.</p>
+              <div class="story">Cardinal Infrastructure Group is a civil contracting company that provides site development and infrastructure services to residential, commercial, industrial, municipal, and state infrastructure markets in the southeastern United States. They handle wet utility installations of water, sewer, and stormwater systems, as well as grading, site clearing, erosion control, drilling and blasting, paving, and related site services. Before anything vertical can be built on a piece of land, Cardinal has to handle what happens underneath it.</div>
+              <p class="sound-bite">&ldquo;The work that happens before anything vertical can begin.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CECO">
+              <header class="card-head">
+                <span class="ticker">CECO</span>
+                <span class="company-name">CECO Environmental</span>
+              </header>
+              <p class="big-picture">Scrubbers, filters, and wastewater treatment that keep industrial growth from trashing the air and water.</p>
+              <div class="story">CECO Environmental designs and builds the systems that keep industrial operations environmentally responsible — the scrubbers that remove pollutants from factory exhaust, the filters that clean industrial air, and the treatment equipment that purifies wastewater before it returns to rivers and aquifers. It's unglamorous work that ensures economic growth doesn't come at the expense of the air we breathe and the water we drink.</div>
+              <p class="sound-bite">&ldquo;Growth without pollution. CECO is how that happens.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="FIX">
+              <header class="card-head">
+                <span class="ticker">FIX</span>
+                <span class="company-name">Comfort Systems USA</span>
+              </header>
+              <p class="big-picture">Installs the HVAC, plumbing, and electrical guts of every new data center and hospital being built.</p>
+              <div class="story">Comfort Systems USA installs the heating, cooling, plumbing, electrical, and fire-protection systems inside large commercial buildings. When a new data center or hospital is constructed, Comfort Systems is the company making sure the air flows properly, the water runs, the temperature stays within precise limits, and the power reaches every room. They've become one of the most in-demand contractors in the country.</div>
+              <p class="sound-bite">&ldquo;Every data center America builds, Comfort Systems plumbs and wires.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="IESC">
+              <header class="card-head">
+                <span class="ticker">IESC</span>
+                <span class="company-name">IES Holdings</span>
+              </header>
+              <p class="big-picture">Specialized heavy-duty electrical contracting for facilities that draw as much power as a small town.</p>
+              <div class="story">IES Holdings handles the specialized electrical work — running the heavy-duty wiring that connects buildings to power sources and distributing electricity safely through facilities that may draw as much power as a small town.</div>
+              <p class="sound-bite">&ldquo;When a data center needs as much power as a small town, IES wires it.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="LGN">
+              <header class="card-head">
+                <span class="ticker">LGN</span>
+                <span class="company-name">Legence</span>
+              </header>
+              <p class="big-picture">Engineering, installation, and maintenance for mission-critical building systems in tech, life sciences, healthcare, and education.</p>
+              <div class="story">Legence is a leading provider of engineering, installation, and maintenance services for mission-critical systems inside technically demanding buildings — data centers, semiconductor fabs, biotech labs, hospitals, and university research facilities. Founded in January 2025 and headquartered in San Jose, Legence focuses on the high-growth sectors where building systems absolutely cannot fail. When a chip fab needs mechanical engineering that meets class-10 cleanroom standards, or a biotech lab needs HVAC that maintains exact pressure gradients between rooms, Legence is the company that designs, installs, and services it.</div>
+              <p class="sound-bite">&ldquo;The specialist who handles the mechanical systems nobody else knows how to service.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MTZ">
+              <header class="card-head">
+                <span class="ticker">MTZ</span>
+                <span class="company-name">MasTec</span>
+              </header>
+              <p class="big-picture">One of the country's largest infrastructure contractors — power lines, pipelines, cell towers.</p>
+              <div class="story">MasTec is one of the largest infrastructure contractors in the country, building the power lines that carry electricity from generation sources to where it's needed, the pipelines that deliver fuel, and the cell towers that connect wireless networks.</div>
+              <p class="sound-bite">&ldquo;If electricity, fuel, or wireless signal has to travel, MasTec probably built the path.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="ROAD">
+              <header class="card-head">
+                <span class="ticker">ROAD</span>
+                <span class="company-name">Construction Partners</span>
+              </header>
+              <p class="big-picture">Builds and maintains the highways connecting every data center, power plant, and factory to the outside world.</p>
+              <div class="story">Construction Partners builds and maintains the highways connecting all of these facilities to the outside world — easy to overlook, but every data center, every power plant, every factory needs roads to reach it.</div>
+              <p class="sound-bite">&ldquo;You can't run a data center no one can drive to.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="STRL">
+              <header class="card-head">
+                <span class="ticker">STRL</span>
+                <span class="company-name">Sterling Infrastructure</span>
+              </header>
+              <p class="big-picture">Massive earthwork that turns empty land into functioning data center campuses.</p>
+              <div class="story">Sterling Infrastructure does the massive earthwork that turns empty land into a functioning data-center campus — grading the site, pouring foundations, installing underground water and electrical systems, and building the roads within the campus.</div>
+              <p class="sound-bite">&ldquo;Before a data center can compute, Sterling has to move the dirt.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-arsenal">
+          <div class="district-header">
+            <h2 class="district-title">The Arsenal <span class="district-count">7</span></h2>
+            <div class="district-subtitle">Drones, rockets, satellites, and the parts that defend and extend the city</div>
+          </div>
+          <div class="district-intro">
+            <p>The city expands beyond Earth. And it needs to be defended. The future of military power is increasingly autonomous, increasingly digital, and increasingly orbital — and the Arsenal is where the drones, rockets, satellites, and precision components that reshape national security and open the space economy get built.</p><p>Kratos Defense (KTOS) builds combat drones around a radical idea: make them affordable enough that military forces can deploy them in large numbers and accept losing some. Traditional fighter jets cost tens of millions each, which makes every loss devastating. Kratos's drones cost a fraction of that, fundamentally changing the math of air combat. Karman Holdings (KRMN) provides the precision components inside advanced military platforms — work that requires decades of specialized knowledge and security clearances competitors simply cannot acquire quickly.</p><p>In space, Rocket Lab (RKLB) operates one of the most reliable small launch vehicles in the world with its Electron rocket, and the next-generation Neutron rocket — designed to carry 40 times more weight to orbit — targets first flight in mid-2026. York Space Systems (YSS) brings assembly-line thinking to satellite manufacturing, building standardized platforms the way a car factory builds vehicles instead of one-off science projects. Planet Labs (PL) operates the world's largest fleet of Earth-imaging satellites, photographing every square meter of the planet every single day, with a 10+ billion km² archive and over $500M of recent deals with Sweden, Japan, Germany, and NATO allies.</p><p>Back on Earth, Mercury Systems (MRCY) builds the computing brains inside military radar and missile-defense systems, turning torrents of raw sensor data into actionable intelligence in fractions of a second. And VSE Corporation (VSEC) keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts complex machines constantly require — every flight hour generates wear, and a grounded aircraft is a mission that can't be flown.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="KRMN">
+              <header class="card-head">
+                <span class="ticker">KRMN</span>
+                <span class="company-name">Karman Holdings</span>
+              </header>
+              <p class="big-picture">Precision-engineered components for advanced military platforms — decades of specialized know-how and security clearances.</p>
+              <div class="story">Karman Holdings provides the precision-engineered components that go into advanced military platforms — the kind of work that requires decades of specialized knowledge and security clearances that create very high barriers to competition.</div>
+              <p class="sound-bite">&ldquo;The moat isn't technology. It's decades of clearances and know-how.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="KTOS">
+              <header class="card-head">
+                <span class="ticker">KTOS</span>
+                <span class="company-name">Kratos Defense</span>
+              </header>
+              <p class="big-picture">Affordable combat drones — changes the math of air combat by being cheap enough to lose.</p>
+              <div class="story">Kratos Defense builds drone systems designed around a radical idea: make them affordable enough that military forces can deploy them in large numbers and accept losing some. Traditional fighter jets cost tens of millions of dollars each, making every loss devastating. Kratos's drones cost a fraction of that, fundamentally changing the math of air combat.</div>
+              <p class="sound-bite">&ldquo;Cheap enough to lose. That's the whole point.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MRCY">
+              <header class="card-head">
+                <span class="ticker">MRCY</span>
+                <span class="company-name">Mercury Systems</span>
+              </header>
+              <p class="big-picture">Computing brains inside military radar — turns raw sensor torrents into actionable intelligence in fractions of a second.</p>
+              <div class="story">Mercury Systems builds the computing brains inside military radar and missile-defense systems. When a radar station scans the sky, it generates a torrent of data that must be processed in real time to distinguish a flock of birds from an incoming threat. Mercury builds the hardware that does that processing, turning raw radar signals into actionable intelligence in fractions of a second.</div>
+              <p class="sound-bite">&ldquo;The computer that decides, in milliseconds, whether it's a goose or a missile.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="PL">
+              <header class="card-head">
+                <span class="ticker">PL</span>
+                <span class="company-name">Planet Labs</span>
+              </header>
+              <p class="big-picture">World's largest fleet of Earth-imaging satellites — photographing the entire planet every day.</p>
+              <div class="story">Planet Labs operates the world's largest fleet of Earth-imaging satellites, with the explicit mission of photographing every square meter of the planet every single day. Their PlanetScope 'Dove' constellation delivers 3-5 meter resolution imagery, their SkySat constellation provides sub-meter resolution and HD video, and their new Pelican constellation is designed for up to 10 revisits per day globally. The archive now exceeds 10 billion km² of imagery going back to 2009. Recent deals with Sweden, Japan, Germany, and NATO allies total over $500 million, cementing Planet's role as a key partner for Western defense and intelligence. A partnership with Nvidia is enabling on-orbit AI inference directly on Pelican satellites.</div>
+              <p class="sound-bite">&ldquo;Photograph the entire planet, every day, and sell the data.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="RKLB">
+              <header class="card-head">
+                <span class="ticker">RKLB</span>
+                <span class="company-name">Rocket Lab</span>
+              </header>
+              <p class="big-picture">Electron is one of the most reliable small launch vehicles in the world — Neutron rocket targets 40x payload in 2026.</p>
+              <div class="story">Rocket Lab is proving that getting to orbit doesn't have to be the exclusive domain of giant contractors. Their Electron rocket has become one of the most reliable launch vehicles in the world, carrying satellites to orbit with a track record that keeps improving. They recently won their largest contract ever to build a constellation of missile-warning satellites, and their next-generation Neutron rocket — designed to carry 40 times more weight to orbit — is targeting its first flight in mid-2026. If it works, it opens up an enormous new market.</div>
+              <p class="sound-bite">&ldquo;The only serious Western alternative to SpaceX for small and medium launch.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="VSEC">
+              <header class="card-head">
+                <span class="ticker">VSEC</span>
+                <span class="company-name">VSE Corporation</span>
+              </header>
+              <p class="big-picture">Keeps military and commercial aircraft flying — maintenance, repair, and spare parts for complex machines.</p>
+              <div class="story">VSE Corporation keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts that complex machines constantly require. Every flight hour generates wear that must be addressed, every aging component must be replaced on schedule, and every grounded aircraft represents a mission that can't be flown.</div>
+              <p class="sound-bite">&ldquo;A grounded aircraft is a failed mission. VSE keeps them in the air.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="YSS">
+              <header class="card-head">
+                <span class="ticker">YSS</span>
+                <span class="company-name">York Space Systems</span>
+              </header>
+              <p class="big-picture">Brings assembly-line thinking to satellites — standardized platforms built like cars, not one-of-a-kind projects.</p>
+              <div class="story">York Space Systems brings assembly-line thinking to satellite manufacturing. Instead of building each satellite as a one-of-a-kind custom project that takes years, York builds standardized platforms the way a car factory builds vehicles — faster, cheaper, and in much greater quantities. The military needs hundreds of small satellites for communications and early-warning systems, and York's approach makes that affordable for the first time.</div>
+              <p class="sound-bite">&ldquo;Satellites built on an assembly line. Finally.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-clinic">
+          <div class="district-header">
+            <h2 class="district-title">The Clinic <span class="district-count">3</span></h2>
+            <div class="district-subtitle">Finding disease before it becomes unbearable</div>
+          </div>
+          <div class="district-intro">
+            <p>Before there can be treatment, there has to be detection. The idea at the heart of modern medicine is deceptively simple: find disease earlier and everything changes. The Clinic is a small district but a powerful one, and everything it does flows from that one idea.</p><p>Guardant Health (GH) pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream — Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry. The result reveals not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.</p><p>Natera (NTRA) uses the same basic concept — reading DNA fragments floating in blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of residual disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold. Adaptive Biotechnologies (ADPT) takes the idea even further: every infection, every vaccine, every cancer a person has ever encountered leaves a unique molecular fingerprint on their immune cells — and Adaptive's technology decodes those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible. Three companies, one mission: don't wait until the damage is done.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="ADPT">
+              <header class="card-head">
+                <span class="ticker">ADPT</span>
+                <span class="company-name">Adaptive Biotechnologies</span>
+              </header>
+              <p class="big-picture">Reads the immune system like a book — every infection, cancer, and vaccine leaves a molecular fingerprint they can decode.</p>
+              <div class="story">Adaptive Biotechnologies reads the immune system like a book — every infection, every cancer, every vaccine a person has ever encountered leaves a unique molecular fingerprint on their immune cells, and Adaptive's technology can decode those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible.</div>
+              <p class="sound-bite">&ldquo;Your immune system is a history book of every disease you've ever fought. Adaptive reads it.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="GH">
+              <header class="card-head">
+                <span class="ticker">GH</span>
+                <span class="company-name">Guardant Health</span>
+              </header>
+              <p class="big-picture">Detects and monitors cancer from a simple blood draw — no biopsy needle required.</p>
+              <div class="story">Guardant Health has pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream. Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry — revealing not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.</div>
+              <p class="sound-bite">&ldquo;Find cancer in a tube of blood, before you ever feel a symptom.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NTRA">
+              <header class="card-head">
+                <span class="ticker">NTRA</span>
+                <span class="company-name">Natera</span>
+              </header>
+              <p class="big-picture">Reads DNA fragments in the blood to detect fetal conditions in pregnancy and microscopic cancer residue after treatment.</p>
+              <div class="story">Natera uses the same basic concept as Guardant — reading DNA fragments floating in the blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of remaining disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold.</div>
+              <p class="sound-bite">&ldquo;Sees cancer coming back months before any scan would.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-research_labs">
+          <div class="district-header">
+            <h2 class="district-title">The Research Labs <span class="district-count">20</span></h2>
+            <div class="district-subtitle">The largest district in the city — treating disease by its molecular mechanism</div>
+          </div>
+          <div class="district-intro">
+            <p>The Research Labs is the largest district in the city — twenty companies working on some of the most remarkable medical innovation in human history. The unifying thesis is to move beyond treating diseases by where they happen in the body, and start treating them by their molecular mechanism. Some of these companies will face setbacks. Some will deliver breakthroughs that reshape medicine. That is the nature of the work.</p><p>Start with drugs that create markets where none existed. Madrigal (MDGL) developed the first real medication for a serious liver condition that affects tens of millions — a once-daily pill for a disease whose only previous prescription was 'eat better and exercise more.' BridgeBio (BBIO) hunts rare genetic diseases that individually affect few but collectively touch tens of millions; their first approved drug treats a heart condition where abnormal protein builds up like plaque in a pipe, and trials in limb-girdle muscular dystrophy and a rare calcium disorder are heading toward approval. Tarsus (TARS) created the first approved treatment for an eye condition caused by microscopic mites on eyelashes that affects an estimated 25 million Americans. And Rhythm (RYTM) restores the brain's hunger-signaling system in rare genetic forms of extreme obesity — not a willpower problem, a broken biological thermostat.</p><p>The children's-disease block continues. PTC Therapeutics (PTCT) helps the body read past genetic typos in rare childhood muscle diseases. Mirum Pharmaceuticals (MIRM) treats kids whose livers can't process bile. Glaukos (GKOS) makes tiny implants that relieve glaucoma pressure during routine eye surgery, replacing daily eye drops forever. And Ascendis Pharma (ASND) turns daily-injection drugs into weekly or monthly ones by wrapping them in a slow-release molecular coating — for a child facing years of daily growth hormone injections, the difference between seven shots a week and one is profound.</p><p>In oncology, Celcuity (CELC) and Cogent (COGT) match patients to therapies based on their tumor's molecular fingerprint — stop guessing which cancer drug works, test it on the actual tumor first. Arrowhead (ARWR) silences disease-causing genes before they can do damage, like shredding a bad recipe before the kitchen can use it. Revolution Medicines (RVMD) finally found a way to drug a cancer target that was considered impossible for decades — a set of mutations found in roughly one out of every three cancers, including many of the deadliest forms. Nuvalent (NUVL) designs precision lung cancer therapies engineered to block the escape routes tumors use to develop resistance. CG Oncology (CGON) built an engineered virus that selectively infects bladder tumors and bursts them from the inside. Terns (TERN) attacks the same liver disease as Madrigal but through a different mechanism, creating combination potential. Abivax (ABVX) is developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease. And TransMedics (TMDX) has revolutionized organ transplantation — keeping donor organs warm and functioning during transport instead of racing them in ice, dramatically expanding the number of transplants that can be performed.</p><p>The newer names continue the theme. Dianthus Therapeutics (DNTH) is advancing a next-generation complement antibody — claseprubart — through Phase 3 trials in autoimmune neurological diseases like myasthenia gravis and CIDP. Protagonist Therapeutics (PTGX) recently submitted rusfertide for FDA approval in polycythemia vera with partner Takeda and already has its oral IL-23 peptide approved for severe psoriasis with Johnson &amp; Johnson — a rare small-cap biotech with real commercial traction. And Nektar (NKTR) is developing rezpegaldesleukin, a first-in-class regulatory T-cell stimulator that hit its primary endpoints in a 393-patient Phase 2b for severe atopic dermatitis and has FDA Fast Track status. Twenty companies, one thesis, and a staggering amount of potential medicine in the pipeline.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="ABVX">
+              <header class="card-head">
+                <span class="ticker">ABVX</span>
+                <span class="company-name">Abivax</span>
+              </header>
+              <p class="big-picture">Developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease.</p>
+              <div class="story">Abivax is developing what could become the first pill for moderate-to-severe inflammatory bowel disease — a chronic condition where the immune system mistakenly attacks the digestive tract, causing debilitating pain, bleeding, and long-term damage. Current treatments for serious cases require injections or hours-long infusions in a clinic. An effective oral pill would transform daily life for millions of patients.</div>
+              <p class="sound-bite">&ldquo;The first pill for a disease that today requires hours in an infusion chair.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="ARWR">
+              <header class="card-head">
+                <span class="ticker">ARWR</span>
+                <span class="company-name">Arrowhead Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">Silences disease-causing genes before they can do damage — shredding bad recipes before the body can use them.</p>
+              <div class="story">Arrowhead Pharmaceuticals is pioneering an approach that silences disease-causing genes before they can do damage. Many serious illnesses are caused by the body producing too much of a harmful protein — Arrowhead's therapies intercept the genetic instructions for that protein and destroy them, like shredding a bad recipe before the kitchen can use it.</div>
+              <p class="sound-bite">&ldquo;Stop the disease before the body reads the recipe.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="ASND">
+              <header class="card-head">
+                <span class="ticker">ASND</span>
+                <span class="company-name">Ascendis Pharma</span>
+              </header>
+              <p class="big-picture">Turns daily-injection drugs into weekly or monthly treatments by wrapping them in a slow-release molecular coating.</p>
+              <div class="story">Ascendis Pharma has solved a practical problem that makes an enormous difference in patients' lives: turning medications that require painful daily injections into formulations that work with just one shot per week, by wrapping the active drug in a molecular coating that slowly releases it over time. For a child facing years of daily growth hormone injections, the difference between seven shots a week and one is profound.</div>
+              <p class="sound-bite">&ldquo;Seven shots a week becomes one. For kids who need it most.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="BBIO">
+              <header class="card-head">
+                <span class="ticker">BBIO</span>
+                <span class="company-name">BridgeBio Pharma</span>
+              </header>
+              <p class="big-picture">Hunts rare genetic diseases — first drug for a heart condition where abnormal protein builds up like plaque in a pipe.</p>
+              <div class="story">BridgeBio Pharma hunts for rare genetic diseases — conditions that individually affect small numbers of people but collectively touch tens of millions worldwide. Their first major drug treats a heart condition where an abnormal protein gradually builds up in the heart muscle like plaque in a pipe, stiffening it until it can no longer pump effectively. They then announced successful trials for limb-girdle muscular dystrophy, a devastating disease where muscles in the hips and shoulders progressively waste away, and for a rare disorder where the body can't properly regulate calcium levels. Both therapies are heading toward approval.</div>
+              <p class="sound-bite">&ldquo;For families with rare genetic diseases, BridgeBio is genuine hope.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CELC">
+              <header class="card-head">
+                <span class="ticker">CELC</span>
+                <span class="company-name">Celcuity</span>
+              </header>
+              <p class="big-picture">Tests a patient's living cancer cells in the lab to match them to the therapy most likely to work.</p>
+              <div class="story">Celcuity takes a different approach to cancer. Rather than treating every tumor the same way, they test a patient's living cancer cells in the lab to determine exactly which biological signals are driving the tumor's growth, then match the patient to the therapy most likely to shut those signals down.</div>
+              <p class="sound-bite">&ldquo;Stop guessing which cancer drug works. Test it on the actual tumor first.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CGON">
+              <header class="card-head">
+                <span class="ticker">CGON</span>
+                <span class="company-name">CG Oncology</span>
+              </header>
+              <p class="big-picture">Engineered a virus that selectively infects bladder tumor cells, replicates until they burst, then spreads to neighboring cancer.</p>
+              <div class="story">CG Oncology has developed a creative approach to bladder cancer: they've engineered a virus that selectively infects tumor cells, replicates inside them until they burst, and then spreads to neighboring cancer cells — all while leaving healthy tissue untouched. For patients facing the prospect of having their bladder surgically removed, this could be a life-changing alternative.</div>
+              <p class="sound-bite">&ldquo;A virus that hunts cancer and leaves healthy tissue alone.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="COGT">
+              <header class="card-head">
+                <span class="ticker">COGT</span>
+                <span class="company-name">Cogent Biosciences</span>
+              </header>
+              <p class="big-picture">Designs a cancer drug that fits a specific genetic mutation like a key fits a lock.</p>
+              <div class="story">Cogent Biosciences targets a specific type of gastrointestinal tumor driven by a known genetic mutation, designing a drug that fits the mutation like a key fits a lock. This represents the broader revolution in cancer care: treating the disease based on its molecular fingerprint rather than simply where it appears in the body.</div>
+              <p class="sound-bite">&ldquo;A drug designed to fit one mutation, the way a key fits one lock.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="DNTH">
+              <header class="card-head">
+                <span class="ticker">DNTH</span>
+                <span class="company-name">Dianthus Therapeutics</span>
+              </header>
+              <p class="big-picture">Next-generation complement antibody therapies for autoimmune neurological diseases like myasthenia gravis and CIDP.</p>
+              <div class="story">Dianthus Therapeutics is leading the next generation of complement antibody therapeutics. Their lead drug, claseprubart (DNTH103), is a highly selective antibody that binds only to the active form of C1s in the classical complement pathway. It's being tested in generalized myasthenia gravis (where a Phase 2 study showed statistically significant improvements with a safety profile comparable to placebo), chronic inflammatory demyelinating polyneuropathy (the Phase 3 CAPTIVATE trial recently got an early GO decision based on a responder analysis), and multifocal motor neuropathy. A second candidate, DNTH212, is a bifunctional fusion protein being tested in lupus.</div>
+              <p class="sound-bite">&ldquo;Pick one lock — the active form of C1s — and don't touch the rest of the immune system.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="GKOS">
+              <header class="card-head">
+                <span class="ticker">GKOS</span>
+                <span class="company-name">Glaukos</span>
+              </header>
+              <p class="big-picture">Tiny implants that relieve glaucoma pressure during routine eye surgery — replacing daily eye drops forever.</p>
+              <div class="story">Glaukos has developed tiny implants — so small they're barely visible — that can be inserted during routine eye surgery to relieve the pressure that causes glaucoma, the leading cause of irreversible blindness worldwide, replacing the burden of daily eye drops with a lasting solution.</div>
+              <p class="sound-bite">&ldquo;No more daily eye drops. Just an implant too small to see.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MDGL">
+              <header class="card-head">
+                <span class="ticker">MDGL</span>
+                <span class="company-name">Madrigal Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">First and only approved medication for a serious liver condition affecting tens of millions — a once-daily pill.</p>
+              <div class="story">Madrigal Pharmaceuticals developed the first and only approved medication for a serious liver condition that affects tens of millions of Americans. The disease causes fat to accumulate in the liver, which triggers inflammation and progressive scarring. Over time, the scarring can become so severe that the liver fails entirely. Before Madrigal's drug, the only medical advice was to eat better and exercise more. Now there's a once-daily pill that directly addresses the underlying liver damage, with the vast majority of patients who could benefit still untreated.</div>
+              <p class="sound-bite">&ldquo;The first real drug for a disease that used to have only one prescription: eat better.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MIRM">
+              <header class="card-head">
+                <span class="ticker">MIRM</span>
+                <span class="company-name">Mirum Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">Treats children whose livers can't process bile — a devastating cause of itching, malnutrition, and organ failure.</p>
+              <div class="story">Mirum Pharmaceuticals treats children whose livers can't properly process bile, a digestive fluid that backs up and causes agonizing itching, malnutrition, and potential organ failure.</div>
+              <p class="sound-bite">&ldquo;For kids living with a broken liver, Mirum is a lifeline.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NKTR">
+              <header class="card-head">
+                <span class="ticker">NKTR</span>
+                <span class="company-name">Nektar Therapeutics</span>
+              </header>
+              <p class="big-picture">First-in-class regulatory T-cell stimulator — hit primary endpoints in a 393-patient Phase 2b for severe atopic dermatitis.</p>
+              <div class="story">Nektar Therapeutics is developing rezpegaldesleukin (REZPEG), a first-in-class regulatory T-cell stimulator that works by targeting the IL-2 receptor complex and preferentially expanding Treg cells to restore immune balance. The global Phase 2b REZOLVE-AD study in 393 patients with moderate-to-severe atopic dermatitis met its primary and key secondary endpoints, with durable responses in the 36-week blinded maintenance period showing both monthly and quarterly dosing work. The FDA granted Fast Track designation for atopic dermatitis and separately for severe-to-very severe alopecia areata, and a Phase 2 trial in Type 1 diabetes is also underway.</div>
+              <p class="sound-bite">&ldquo;Restoring immune balance from the top of the pathway. And it hit its endpoints.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NUVL">
+              <header class="card-head">
+                <span class="ticker">NUVL</span>
+                <span class="company-name">Nuvalent</span>
+              </header>
+              <p class="big-picture">Precision lung cancer drugs engineered to block the escape routes tumors use to develop resistance.</p>
+              <div class="story">Nuvalent designs precision lung cancer therapies engineered to solve a specific problem: drug resistance. Many targeted cancer drugs work brilliantly at first, but the tumor eventually evolves a workaround and starts growing again. Nuvalent's drugs are designed from the start to block those escape routes, keeping the treatment effective longer.</div>
+              <p class="sound-bite">&ldquo;Designed from day one to stay ahead of the tumor's next move.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="PTCT">
+              <header class="card-head">
+                <span class="ticker">PTCT</span>
+                <span class="company-name">PTC Therapeutics</span>
+              </header>
+              <p class="big-picture">Helps the body read past genetic 'typos' in rare childhood muscle diseases and produce functional protein anyway.</p>
+              <div class="story">PTC Therapeutics works on rare childhood diseases where the genetic instructions for building muscle protein contain an error, like a typo in a recipe, causing muscles to gradually weaken over time. Their therapies aim to help the body read past that error and produce functional protein anyway.</div>
+              <p class="sound-bite">&ldquo;Teaching the body to read past a typo in its own recipe book.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="PTGX">
+              <header class="card-head">
+                <span class="ticker">PTGX</span>
+                <span class="company-name">Protagonist Therapeutics</span>
+              </header>
+              <p class="big-picture">First-in-class peptide therapies — NDA filed for polycythemia vera with Takeda, JAK-free psoriasis pill approved with J&amp;J.</p>
+              <div class="story">Protagonist Therapeutics develops first-in-class peptide drugs for immune and hematological diseases. Their lead candidate, rusfertide, is a hepcidin mimetic that targets red blood cell overproduction in polycythemia vera — a type of blood cancer. The Phase 3 VERIFY study met its primary and all four key secondary endpoints, with 61.9% of patients maintaining absence of phlebotomy eligibility through week 52 and a greater than 13-fold reduction in annual phlebotomy rate. Partner Takeda submitted the NDA to the FDA in January 2026. Separately, Protagonist's oral IL-23 receptor peptide, icotrokinra, was already approved by the FDA as ICOTYDE for moderate-to-severe plaque psoriasis, licensed to Johnson &amp; Johnson.</div>
+              <p class="sound-bite">&ldquo;One approved drug with J&amp;J, one NDA filed with Takeda. A rare small-cap biotech with real commercial traction.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="RVMD">
+              <header class="card-head">
+                <span class="ticker">RVMD</span>
+                <span class="company-name">Revolution Medicines</span>
+              </header>
+              <p class="big-picture">Going after a cancer mutation in 1 of every 3 cancers that was considered 'undruggable' for decades.</p>
+              <div class="story">Revolution Medicines is going after one of the most important targets in all of cancer research: a group of mutations found in roughly one out of every three cancers, including many of the deadliest forms. For decades, scientists considered these mutations impossible to treat because the protein's surface was perfectly smooth, with no crevice for a drug molecule to grab onto. Revolution found a way in, and the research community is watching with intense interest.</div>
+              <p class="sound-bite">&ldquo;The 'undruggable' target that finally has a door.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="RYTM">
+              <header class="card-head">
+                <span class="ticker">RYTM</span>
+                <span class="company-name">Rhythm Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">Restores the brain's hunger-signaling system in rare genetic forms of extreme obesity — not willpower, broken biology.</p>
+              <div class="story">Rhythm Pharmaceuticals addresses rare genetic forms of extreme obesity caused by a mutation that breaks the brain's hunger-signaling system. Imagine never feeling full, no matter how much you eat — not a willpower problem, but a broken biological thermostat. Rhythm's medication restores that signal.</div>
+              <p class="sound-bite">&ldquo;For patients whose 'full' signal is permanently broken, Rhythm fixes the thermostat.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="TARS">
+              <header class="card-head">
+                <span class="ticker">TARS</span>
+                <span class="company-name">Tarsus Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">First approved treatment for an eye condition caused by microscopic mites on eyelashes — 25M Americans affected.</p>
+              <div class="story">Tarsus Pharmaceuticals created the first approved treatment for a surprisingly common eye condition caused by microscopic mites that live on eyelashes and cause chronic redness and irritation in an estimated 25 million Americans who previously had no effective remedy.</div>
+              <p class="sound-bite">&ldquo;25 million Americans have it. Until recently, nobody had a treatment.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="TERN">
+              <header class="card-head">
+                <span class="ticker">TERN</span>
+                <span class="company-name">Terns Pharmaceuticals</span>
+              </header>
+              <p class="big-picture">Attacks the same liver disease as Madrigal but through a different mechanism — combination potential.</p>
+              <div class="story">Terns Pharmaceuticals attacks the same serious liver disease as Madrigal but through a different scientific mechanism, which matters because different patients respond to different approaches and combining treatments may prove more powerful than any single drug.</div>
+              <p class="sound-bite">&ldquo;Different mechanism, same disease. Potential combination partner to Madrigal.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="TMDX">
+              <header class="card-head">
+                <span class="ticker">TMDX</span>
+                <span class="company-name">TransMedics</span>
+              </header>
+              <p class="big-picture">Keeps donor organs alive and functioning during transport instead of packing them in ice — more organs, more lives saved.</p>
+              <div class="story">TransMedics has revolutionized organ transplantation. Traditionally, a donor organ is packed in ice and raced to the recipient in a desperate sprint against time, with the organ deteriorating every minute. TransMedics built a portable system that keeps the organ warm, pumps blood through it, and maintains it in a living, functioning state during the entire journey. This extends how far an organ can travel, allows doctors to evaluate its quality before implanting it, and has dramatically expanded the number of transplants that can be performed.</div>
+              <p class="sound-bite">&ldquo;Organs arriving alive instead of on ice. More transplants, more lives.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-main_street">
+          <div class="district-header">
+            <h2 class="district-title">Main Street <span class="district-count">10</span></h2>
+            <div class="district-subtitle">The shops, schools, venues, and services where people actually live their lives</div>
+          </div>
+          <div class="district-intro">
+            <p>A city is ultimately about people. It needs to move them, clothe them, feed them, train them, entertain them, and keep them healthy enough to show up tomorrow. Main Street is the district where the people who live in the city actually spend their days.</p><p>Saia (SAIA) is one of the largest freight carriers in the country — the quiet arteries of American commerce that nobody thinks about until a package doesn't arrive. Boot Barn (BOOT) outfits the American workforce actually building the future, with over 400 stores serving ranchers, construction crews, and oil-field workers. Celsius Holdings (CELH) turned the energy-drink category upside down by betting younger consumers wanted a healthier option, not a more extreme one — and became a genuine cultural phenomenon. CAVA Group (CAVA) is doing the same thing in Mediterranean fast-casual dining, scaling toward 1,000 restaurants with 28% revenue growth and industry-leading margins. And Vita Coco (COCO) turned coconut water into a ~$700M brand with 42% U.S. market share, growing 18%+ and expanding internationally.</p><p>Life Time Holdings (LTH) operates resort-style wellness campuses where an entire day can happen — pools, tennis, coworking, kids' programs — for people building their lives around health and community. UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC technicians, diesel mechanics, welders, and electricians the country cannot build data centers, power plants, or hospitals without — closing the biggest workforce gap in the American economy.</p><p>Clear Secure (YOU) runs biometric identity verification across airports and stadiums with 30+ million members, sharing revenue with the airports themselves, and is expanding its 'verify once, use everywhere' platform into healthcare, financial services, and hospitality. And Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen and 580,000 sq ft of exterior LED displays, now the top-grossing venue in the world by Billboard's and Pollstar's 2025 rankings, with expansion plans to Abu Dhabi and National Harbor.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="BOOT">
+              <header class="card-head">
+                <span class="ticker">BOOT</span>
+                <span class="company-name">Boot Barn</span>
+              </header>
+              <p class="big-picture">Outfits the American workforce — ranchers, construction crews, oil-field workers — with boots, workwear, and gear.</p>
+              <div class="story">Boot Barn outfits the American workforce with western and work-related boots, clothing, and gear, serving ranchers, construction workers, and oil-field crews through over 400 stores with a fiercely loyal following.</div>
+              <p class="sound-bite">&ldquo;Every data center America builds gets built by people wearing boots from Boot Barn.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CAVA">
+              <header class="card-head">
+                <span class="ticker">CAVA</span>
+                <span class="company-name">CAVA Group</span>
+              </header>
+              <p class="big-picture">Largest Mediterranean fast-casual chain in the US — ~400 restaurants, 28% revenue growth, scaling toward 1,000 by 2032.</p>
+              <div class="story">CAVA Group is the largest restaurant operator in the Mediterranean fast-casual category in the U.S., with around 400 company-owned restaurants and a target of 1,000 by 2032. The assembly-line format allows for over 17 billion meal combinations, catering to vegan, vegetarian, and keto diets. Q1 2025 revenue hit $328.5M (up 28%) with 24.4% restaurant-level margins — well ahead of larger competitors. They acquired Zoës Kitchen in 2018 and converted most locations to CAVA. A consumer packaged goods segment (dips and spreads) adds a second revenue stream and builds brand awareness in grocery.</div>
+              <p class="sound-bite">&ldquo;Mediterranean food, Chipotle model, 24% margins. The growth story is in the real estate pipeline.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="CELH">
+              <header class="card-head">
+                <span class="ticker">CELH</span>
+                <span class="company-name">Celsius Holdings</span>
+              </header>
+              <p class="big-picture">Turned the energy-drink market upside down — no sugar, clinically studied, a cultural phenomenon with younger consumers.</p>
+              <div class="story">Celsius Holdings has turned the energy-drink market upside down. While traditional brands competed on extreme caffeine and aggressive marketing, Celsius positioned itself as the healthier choice — no sugar, no artificial preservatives, clinically studied ingredients. The bet worked spectacularly: they've gone from a niche brand to one of the top energy drinks in America, becoming a genuine cultural phenomenon among younger, health-conscious consumers.</div>
+              <p class="sound-bite">&ldquo;Red Bull for people who read labels.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="COCO">
+              <header class="card-head">
+                <span class="ticker">COCO</span>
+                <span class="company-name">Vita Coco</span>
+              </header>
+              <p class="big-picture">The coconut water brand — 42% US market share, growing 18%+, expanding internationally.</p>
+              <div class="story">The Vita Coco Company is the dominant coconut water brand in the U.S. with a 42% market share, now growing faster than almost any other beverage category. 2025 net sales grew 18% with the Vita Coco brand itself up 26% globally, and the company is guiding to $680-700M in revenue for 2026 with $122-128M of adjusted EBITDA. Growth is driven by expanding household penetration (positioning as a sports-drink alternative), international expansion (especially in Europe where category adoption is still early), and product innovation (new Vita Coco Treats line). A multi-year supply contract with Century Pacific Food secures 90 million liters of coconut water through 2029.</div>
+              <p class="sound-bite">&ldquo;Coconut water became a real beverage category. Vita Coco owns it.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="LINC">
+              <header class="card-head">
+                <span class="ticker">LINC</span>
+                <span class="company-name">Lincoln Educational Services</span>
+              </header>
+              <p class="big-picture">Lincoln Tech — career-oriented post-secondary education in skilled trades, auto, health sciences, and IT.</p>
+              <div class="story">Lincoln Educational Services operates Lincoln Tech, a group of career-oriented post-secondary vocational schools with campuses across a dozen states. They train recent high school graduates and working adults in skilled trades, automotive, health sciences, and IT — the exact same thesis as UTI, targeting the same skills gap. Lincoln Tech was founded in 1946 to retrain WWII veterans and continues that mission today, with a new campus recently opened in Houston and Lincoln's Melrose Park and South Plainfield sites named to USA Today's Top Vocational Schools list.</div>
+              <p class="sound-bite">&ldquo;America has a trades gap. Lincoln Tech has been closing it since 1946.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="LTH">
+              <header class="card-head">
+                <span class="ticker">LTH</span>
+                <span class="company-name">Life Time Holdings</span>
+              </header>
+              <p class="big-picture">Resort-style wellness campuses — pools, tennis, coworking, childcare — for people building their life around fitness.</p>
+              <div class="story">Life Time Holdings operates large, resort-style wellness campuses with pools, tennis courts, coworking spaces, and children's programs under one roof, designed for people who want to build their entire daily routine around health and community.</div>
+              <p class="sound-bite">&ldquo;Not a gym. A campus where your whole day can happen.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="SAIA">
+              <header class="card-head">
+                <span class="ticker">SAIA</span>
+                <span class="company-name">Saia Inc.</span>
+              </header>
+              <p class="big-picture">One of the country's largest freight carriers — the quiet arteries of American commerce.</p>
+              <div class="story">Saia is one of the largest freight carriers in the country, moving shipments for thousands of businesses that need to get products from factories to stores to doorsteps. They've been steadily opening new terminals to improve speed and coverage — the quiet arteries of American commerce that most people never think about until a package doesn't arrive.</div>
+              <p class="sound-bite">&ldquo;The arteries of American commerce. Invisible until something stops.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="SPHR">
+              <header class="card-head">
+                <span class="ticker">SPHR</span>
+                <span class="company-name">Sphere Entertainment</span>
+              </header>
+              <p class="big-picture">Operator of the Las Vegas Sphere — 17,600-seat immersive venue with a 16K wraparound screen, the top-grossing venue in the world.</p>
+              <div class="story">Sphere Entertainment operates the Las Vegas Sphere, a 17,600-seat immersive entertainment venue with a 16K resolution wraparound interior LED screen, speaker arrays using beamforming and wave-field synthesis, and 4D physical effects. The exterior is 580,000 sq ft of LED displays — the largest in the world — and pulls in separate advertising revenue. The venue was ranked #1 on Billboard's and Pollstar's 2025 lists of top-grossing venues worldwide, and the 'Wizard of Oz' immersive experience plus concert residencies are expanding utilization. A second U.S. Sphere is planned for National Harbor outside Washington, D.C., and a venue in Abu Dhabi is also in development. The company also owns MSG Networks, a legacy regional sports network in structural decline — one of the main investor debates around the stock.</div>
+              <p class="sound-bite">&ldquo;The most talked-about venue in the world. And there are more coming.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="UTI">
+              <header class="card-head">
+                <span class="ticker">UTI</span>
+                <span class="company-name">Universal Technical Institute</span>
+              </header>
+              <p class="big-picture">Trains the HVAC techs, diesel mechanics, welders, and electricians you can't build data centers without.</p>
+              <div class="story">Universal Technical Institute addresses one of the most critical and overlooked gaps in the American economy: training skilled tradespeople. HVAC technicians, diesel mechanics, welders, electricians — you cannot build data centers, power plants, or hospitals without them. As the country embarks on the largest infrastructure buildout in a generation, UTI is one of the only companies positioned to help close the growing gap between the workers we need and the workers we have.</div>
+              <p class="sound-bite">&ldquo;You can't build data centers without welders. UTI trains the welders.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="YOU">
+              <header class="card-head">
+                <span class="ticker">YOU</span>
+                <span class="company-name">Clear Secure</span>
+              </header>
+              <p class="big-picture">Biometric identity verification at airports — 30M+ members, 'verify once, use everywhere' platform expanding beyond travel.</p>
+              <div class="story">Clear Secure provides biometric identity verification through its signature blue lanes and biometric pods at airport checkpoints, letting 30+ million subscribers bypass regular security lines. The core business is a $199/year CLEAR Plus subscription, with revenue shared with airport partners (LAX, SFO, O'Hare and Midway all receive a percentage of CLEAR revenue generated at their locations). Beyond airports, Clear is expanding its CLEAR1 B2B platform into healthcare, financial services, and hospitality using a 'verify once, use everywhere' model. Q4 CY2025 revenue grew 16.7% to $240.8M with a 33.2% adjusted EBITDA margin.</div>
+              <p class="sound-bite">&ldquo;Your face, your boarding pass. And soon your logins, your hotel check-in, and your doctor's visit.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-software_layer">
+          <div class="district-header">
+            <h2 class="district-title">The Software Layer <span class="district-count">6</span></h2>
+            <div class="district-subtitle">The code that runs quietly beneath everything else</div>
+          </div>
+          <div class="district-intro">
+            <p>Not every software company belongs in a futuristic city. These six do, because they build the scaffolding that lets everything else work — the cloud, the edge, the insurance backbone, the trades management system, and the business travel platform. Unsexy, essential, and increasingly AI-powered.</p><p>JFrog (FROG) manages what you might call the supply chain of software — moving code from a developer's laptop through testing and security checks to the servers that run it in production, making sure no malicious code slips in along the way. DigitalOcean (DOCN) is the developer-friendly cloud for startups and small businesses that can't afford the complexity of AWS; its AI-native revenue has been doubling for five straight quarters as AI startups look for a simpler home. Fastly (FSLY) runs a programmable edge network that speeds up the internet and stops attacks, concentrating servers in the most network-dense hubs rather than spreading them everywhere.</p><p>Guidewire (GWRE) is the operating system of the property and casualty insurance industry — more than 570 insurers in 42 countries, including Allianz, AXA, and Liberty Mutual, run their core claims, policy, and billing systems on it. The shift from on-premise to Guidewire Cloud is a multi-year migration that is now hitting full stride. ServiceTitan (TTAN) is doing for the skilled trades what Guidewire did for insurance — plumbers, electricians, HVAC contractors, landscapers — a full business management suite that lets a family-owned contractor compete with a national chain. And Navan (NAVN) is rebuilding corporate travel and expense management around a traveler-first experience, with $7.6B in annual gross bookings across 10,000+ business customers.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="DOCN">
+              <header class="card-head">
+                <span class="ticker">DOCN</span>
+                <span class="company-name">DigitalOcean</span>
+              </header>
+              <p class="big-picture">Developer-friendly cloud for startups and SMBs — AI revenue doubling for five straight quarters.</p>
+              <div class="story">DigitalOcean democratizes cloud and AI technology for developers, startups, and small businesses that can't afford the complexity of AWS, Azure, or GCP. The business is largely self-service — sign up on the website, deploy in minutes — which is exactly what smaller developers want. The AI pivot is working: AI-native revenue has doubled year-over-year for five straight quarters, customers with $100K+ ARR jumped 41% in a recent quarter, and customers with $1M+ ARR jumped 72%. The company is targeting a $251 billion addressable market of small-business infrastructure spend by 2028.</div>
+              <p class="sound-bite">&ldquo;AWS for everyone who doesn't want to read an AWS manual.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="FROG">
+              <header class="card-head">
+                <span class="ticker">FROG</span>
+                <span class="company-name">JFrog</span>
+              </header>
+              <p class="big-picture">Manages the supply chain of software — makes sure no malicious code slips in between dev and production.</p>
+              <div class="story">JFrog manages what you might call the supply chain of software. Just as a physical product moves from factory to warehouse to store shelf, software moves from a developer's computer through a series of testing and security stages before reaching the servers that run it in production. JFrog makes sure that pipeline runs smoothly and that no malicious code slips in along the way.</div>
+              <p class="sound-bite">&ldquo;The factory floor for software. Inspection included.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="FSLY">
+              <header class="card-head">
+                <span class="ticker">FSLY</span>
+                <span class="company-name">Fastly</span>
+              </header>
+              <p class="big-picture">Programmable edge cloud platform — CDN + security + compute, concentrated in the most network-dense hubs.</p>
+              <div class="story">Fastly runs a programmable edge cloud platform combining content delivery, security, and compute. Unlike traditional CDNs that race to put servers in as many locations as possible, Fastly concentrates its servers in the most network-dense data centers and lets customers program on its platform, which delivers better performance on dynamic content and edge compute workloads. The growth strategy centers on three pillars: platform innovation, security expansion (higher-margin services that diversify revenue), and international growth in Asia-Pacific and Europe.</div>
+              <p class="sound-bite">&ldquo;Fewer, faster, smarter edge locations. Programmable end to end.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="GWRE">
+              <header class="card-head">
+                <span class="ticker">GWRE</span>
+                <span class="company-name">Guidewire Software</span>
+              </header>
+              <p class="big-picture">The core operating system of the property &amp; casualty insurance industry — 570+ insurers in 42 countries.</p>
+              <div class="story">Guidewire Software is the leading provider of cloud-based core systems for property and casualty (P&amp;C) insurance. Their InsuranceSuite — ClaimCenter, PolicyCenter, and BillingCenter — is used by more than 570 insurers in 42 countries, from new ventures to giants like Allianz, AXA, and Liberty Mutual. The big story is the migration from on-premise to the Guidewire Cloud Platform, which lets insurers reduce infrastructure costs, improve disaster recovery, and integrate with AI and other digital tools. That multi-year transition is now hitting full stride, which is why Guidewire's growth has been reaccelerating.</div>
+              <p class="sound-bite">&ldquo;If you've ever filed an insurance claim, Guidewire was probably in the background.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="NAVN">
+              <header class="card-head">
+                <span class="ticker">NAVN</span>
+                <span class="company-name">Navan</span>
+              </header>
+              <p class="big-picture">All-in-one business travel, payments, and expense management — 10,000+ customers, $7.6B annual gross bookings.</p>
+              <div class="story">Navan is an all-in-one business travel, payments, and expense management platform that competes with both niche players like Expensify and enterprise heavyweights like Oracle and SAP. The pitch is traveler-first: make booking flights and hotels feel like a consumer app, then automate expense reconciliation on the back end with 24/7 support. Trailing 12-month revenue of $613M is growing 32%, across 10,000+ customers, with $7.6B in annual gross bookings (up 34%). Navan IPO'd on Nasdaq in October 2025 at $25/share and a $6.2B valuation, though shares dropped 20% on the first day of trading.</div>
+              <p class="sound-bite">&ldquo;Consumer-app business travel. Enterprise-scale expense automation.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="TTAN">
+              <header class="card-head">
+                <span class="ticker">TTAN</span>
+                <span class="company-name">ServiceTitan</span>
+              </header>
+              <p class="big-picture">Cloud business management platform for skilled trades — plumbers, electricians, HVAC, landscapers.</p>
+              <div class="story">ServiceTitan provides a cloud-based business management platform for the skilled trades: plumbers, electricians, HVAC contractors, garage door installers, pest control, landscaping, and more. The software handles CRM, sales, customer service, marketing automation, e-commerce, and analytics — everything a tradesperson needs to run a business at scale, giving a family-owned contractor the same operational sophistication as a national chain. ServiceTitan booked $685 million in revenue for the 12 months ending July 2024 and went public on Nasdaq in December 2024 at $71 per share, well above the upwardly revised range.</div>
+              <p class="sound-bite">&ldquo;What Guidewire did for insurance, ServiceTitan is doing for the trades.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+        <section class="district" id="district-financial_district">
+          <div class="district-header">
+            <h2 class="district-title">The Financial District <span class="district-count">5</span></h2>
+            <div class="district-subtitle">Where the money moves and the deals get done</div>
+          </div>
+          <div class="district-intro">
+            <p>None of this gets built without capital. The Financial District is where the money for the rest of the city flows — the investment banks, the exchanges, and a few specialists where finance meets the physical world in interesting ways.</p><p>Evercore (EVR) is one of the most respected independent investment banks in the world — the financial architect behind some of the most consequential M&amp;A deals and IPOs in the economy. Piper Sandler (PIPR) does similar work with particular depth in healthcare and technology, helping innovative smaller companies raise the capital they need to grow from promising startup to established player. MIAX runs electronic options exchanges — the marketplaces where a farmer locks in next year's crop price and a money manager buys insurance against a market drop.</p><p>FTAI Aviation (FTAI) occupies a fascinating niche where finance meets aerospace — leasing commercial jet engines to airlines and, crucially, rebuilding them in-house through a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate. And Mirion Technologies (MIR) makes the instruments that detect and measure radiation — the monitors worn by nuclear-plant workers, the calibration devices inside hospital imaging equipment, the environmental sensors around radioactive materials. As interest in nuclear energy surges to power AI data centers, Mirion's safety technology only becomes more critical.</p>
+          </div>
+          <div class="card-grid">
+            
+            <article class="card" id="EVR">
+              <header class="card-head">
+                <span class="ticker">EVR</span>
+                <span class="company-name">Evercore</span>
+              </header>
+              <p class="big-picture">Independent investment bank — the financial architects behind the economy's biggest M&amp;A deals and IPOs.</p>
+              <div class="story">Evercore is one of the most respected independent investment banks in the world. When two large companies are considering merging, or a fast-growing private company is ready to sell shares to the public for the first time, Evercore advises on how to structure the deal, what price is fair, and how to navigate the complex negotiations involved. They serve as the financial architects behind some of the most consequential corporate decisions in the economy.</div>
+              <p class="sound-bite">&ldquo;When billion-dollar deals happen, Evercore is usually in the room.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="FTAI">
+              <header class="card-head">
+                <span class="ticker">FTAI</span>
+                <span class="company-name">FTAI Aviation</span>
+              </header>
+              <p class="big-picture">Leases and rebuilds commercial jet engines — a finance-meets-aerospace business with a deep repair moat.</p>
+              <div class="story">FTAI Aviation occupies a fascinating niche where finance meets aerospace. Commercial jet engines are among the most expensive and complex machines ever built — a single engine can cost tens of millions of dollars and contains thousands of precision parts spinning at incredible speeds in extreme heat. FTAI leases these engines to airlines and, crucially, has built a deep expertise in overhauling and repairing them. When an engine comes in for service, their technicians disassemble it, inspect every component, replace what's worn, and return it to like-new condition — a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate.</div>
+              <p class="sound-bite">&ldquo;A jet engine rebuilder with a moat built out of decades of know-how.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MIAX">
+              <header class="card-head">
+                <span class="ticker">MIAX</span>
+                <span class="company-name">Miami International Holdings</span>
+              </header>
+              <p class="big-picture">Runs options exchanges — the marketplaces where investors buy insurance against losses or bets on price moves.</p>
+              <div class="story">MIAX runs options exchanges — the electronic marketplaces where investors buy and sell contracts that let them protect against losses or profit from price changes. Think of it like insurance for investments: a farmer might lock in a price for next year's harvest, and a money manager might protect against a market downturn, and both of those transactions happen on an exchange like MIAX.</div>
+              <p class="sound-bite">&ldquo;Every financial 'just in case' has to trade somewhere. MIAX is one of those somewheres.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="MIR">
+              <header class="card-head">
+                <span class="ticker">MIR</span>
+                <span class="company-name">Mirion Technologies</span>
+              </header>
+              <p class="big-picture">Radiation detection instruments — critical as nuclear energy comes back to power AI data centers.</p>
+              <div class="story">Mirion Technologies provides the instruments that detect and measure radiation — the monitors worn by workers in nuclear power plants, the calibration devices for hospital imaging equipment, and the environmental sensors that ensure radioactive materials are handled safely. As interest in nuclear energy surges, particularly for powering AI data centers, this kind of safety technology becomes even more critical.</div>
+              <p class="sound-bite">&ldquo;If nuclear is coming back for AI, so is Mirion.&rdquo;</p>
+            </article>
+            
+            <article class="card" id="PIPR">
+              <header class="card-head">
+                <span class="ticker">PIPR</span>
+                <span class="company-name">Piper Sandler</span>
+              </header>
+              <p class="big-picture">Investment bank with deep healthcare and tech expertise — helps innovative smaller companies raise capital.</p>
+              <div class="story">Piper Sandler does deal-advisory work with particular expertise in healthcare and technology, often helping innovative smaller companies raise the capital they need to grow from promising startup to established player.</div>
+              <p class="sound-bite">&ldquo;The boutique investment bank for the next wave of healthcare and tech.&rdquo;</p>
+            </article>
+            
+          </div>
+        </section>
+        
+</main>
+
+<footer>
+  Innovation Growth &middot; Small Cap Study Guide &middot; 2026-04-14 &middot;
+  Tip: Cmd+P to save as PDF for offline reading
+</footer>
+</body>
+</html>
