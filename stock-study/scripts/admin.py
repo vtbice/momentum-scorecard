@@ -235,6 +235,9 @@ ADMIN_JS = r"""
     'micro-cap': 'Micro Cap',
   };
 
+  // Mark the body so the read-only banner is hidden
+  document.body.classList.add('admin-mode');
+
   // Detect current page from URL
   const path = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '') || 'index';
   const currentFund = Object.keys(FUNDS_BY_SLUG).indexOf(path) !== -1 ? path : null;
@@ -288,34 +291,52 @@ ADMIN_JS = r"""
     .admin-bar button:hover, .admin-bar select:hover { background: rgba(255, 255, 255, 0.3); }
     body.admin-active { padding-top: 44px; }
 
+    .edit-mode-strip {
+      background: #10b981;
+      color: white;
+      padding: 10px 24px;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border-bottom: 3px solid #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .edit-mode-strip-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+      font-weight: 700;
+    }
     .admin-toggle {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
-      background: #10b981;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.18);
       color: white;
-      border: 2px solid #10b981;
-      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 5px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.15s;
-      margin-top: 10px;
     }
-    .admin-toggle:hover { background: #059669; border-color: #059669; }
+    .admin-toggle:hover { background: rgba(255, 255, 255, 0.3); }
     .admin-toggle.active {
-      background: #0f172a;
-      border-color: #10b981;
-      color: #10b981;
-    }
-    .admin-toggle-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-top: 2px;
+      background: white;
+      color: #059669;
+      border-color: white;
     }
 
     .card .card-delete,
@@ -428,20 +449,20 @@ ADMIN_JS = r"""
     }
   }
 
-  // ========== EDIT MODE TOGGLE ==========
-  const toggleWrap = document.createElement('div');
-  toggleWrap.className = 'admin-toggle-wrapper';
+  // ========== EDIT MODE STRIP ==========
+  // Full-width green strip at the very top — impossible to miss.
+  const strip = document.createElement('div');
+  strip.className = 'edit-mode-strip';
+  strip.innerHTML =
+    '<span class="edit-mode-strip-label">✎ Edit Mode Active</span>' +
+    '<span style="opacity:0.85;">Click the button to show in-page add/remove controls</span>';
+
   const toggle = document.createElement('button');
   toggle.className = 'admin-toggle';
-  toggle.textContent = '✎ Edit Holdings';
-  toggleWrap.appendChild(toggle);
-  // Insert the Edit button inside the site header, right after the search bar
-  const searchWrapper = document.querySelector('.site-search-wrapper');
-  if (searchWrapper && searchWrapper.parentNode) {
-    searchWrapper.parentNode.insertBefore(toggleWrap, searchWrapper.nextSibling);
-  } else {
-    document.body.appendChild(toggleWrap);
-  }
+  toggle.textContent = '✎ Show Edit Controls';
+  strip.appendChild(toggle);
+
+  document.body.prepend(strip);
 
   let editMode = localStorage.getItem('cityEditMode') === '1';
   applyEditMode();
@@ -456,12 +477,12 @@ ADMIN_JS = r"""
     if (editMode) {
       document.body.classList.add('admin-active');
       toggle.classList.add('active');
-      toggle.textContent = '✕ Exit Edit';
+      toggle.textContent = '✕ Hide Edit Controls';
       showAdminBar();
     } else {
       document.body.classList.remove('admin-active');
       toggle.classList.remove('active');
-      toggle.textContent = '✎ Edit';
+      toggle.textContent = '✎ Show Edit Controls';
       hideAdminBar();
     }
   }

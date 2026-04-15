@@ -191,6 +191,39 @@ def css() -> str:
   .stat-value.accent { color: #10b981; }
   .stat-value.small { font-size: 20px; padding-top: 8px; }
 
+  /* READ-ONLY MODE BANNER — auto-shown unless served by the admin server */
+  .readonly-banner {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-bottom: 2px solid #f59e0b;
+    color: #78350f;
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .readonly-banner strong {
+    font-weight: 700;
+    color: #92400e;
+    letter-spacing: 0.02em;
+  }
+  .readonly-banner kbd {
+    background: white;
+    border: 1px solid #92400e;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    color: #92400e;
+    font-size: 13px;
+  }
+  /* Banner is hidden whenever the admin.js client script runs */
+  body.admin-mode .readonly-banner { display: none; }
+
   /* ACT HEADINGS — visible super-category groupings */
   .act-heading {
     margin: 56px 0 24px;
@@ -927,6 +960,15 @@ def css() -> str:
 """
 
 
+READONLY_BANNER = (
+    '<div class="readonly-banner">'
+    '<strong>READ-ONLY MODE</strong> · To add or remove tickers, '
+    'double-click <kbd>Edit Holdings.command</kbd> in the <kbd>stock-study</kbd> folder. '
+    'Your browser will reopen in edit mode.'
+    '</div>'
+)
+
+
 def render_nav(active: str) -> str:
     """active is the page name without .html (e.g. 'small-cap', 'index', 'watchlist')."""
     items = [("index", "Overview")]
@@ -1393,6 +1435,7 @@ def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fu
 <style>{css()}</style>
 </head>
 <body>
+{READONLY_BANNER}
 {render_header(fund_slug, f"{fund_label} Fund · as of {as_of}")}
 <main>
   {render_fund_intro(fund_intro)}
@@ -1534,6 +1577,7 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
 <style>{css()}</style>
 </head>
 <body>
+{READONLY_BANNER}
 {render_header("index", f"5 funds · {total_unique} unique companies · as of {as_of}")}
 <main>
   <section class="fund-intro">
@@ -1660,6 +1704,7 @@ def build_watchlist_page(study: dict, holdings_by_fund: dict, watchlist: list, a
 <style>{css()}</style>
 </head>
 <body>
+{READONLY_BANNER}
 {render_header("watchlist", f"Watchlist · {total} names · {held_count} held · {watchlist_only} monitored · as of {as_of}")}
 <main>
   <section class="fund-intro">
