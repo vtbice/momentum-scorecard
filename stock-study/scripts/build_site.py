@@ -70,6 +70,36 @@ def load_watchlist():
         return [r["Symbol"].strip() for r in reader if r["Symbol"].strip()]
 
 
+def reconcile_watchlist(holdings_by_fund: dict) -> list:
+    """Ensure every held ticker (across all funds) exists in tickers.csv.
+
+    Returns the list of tickers that were added to the watchlist (empty if none).
+    Maintains the invariant: any name in a fund is also on the watchlist.
+    """
+    if not TICKERS_CSV.exists():
+        return []
+
+    # Collect every unique ticker held across all funds
+    all_held = set()
+    for tickers in holdings_by_fund.values():
+        all_held.update(tickers)
+
+    # Load current watchlist
+    existing = set(load_watchlist())
+    missing = sorted(all_held - existing)
+    if not missing:
+        return []
+
+    # Append missing tickers, sort alphabetically, write back with LF endings
+    merged = sorted(existing | set(missing))
+    with TICKERS_CSV.open("w", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["Symbol"])
+        for t in merged:
+            w.writerow([t])
+    return missing
+
+
 # ============ SHARED CSS ============
 def css() -> str:
     return """
@@ -1898,6 +1928,14 @@ def main():
 
     study = load_study()
     holdings_by_fund = {slug: load_holdings(slug) for slug, _ in FUNDS}
+
+    # Make sure every held ticker is also in the watchlist (tickers.csv).
+    # This enforces the invariant that any fund holding is automatically
+    # a watchlist name too — no manual bookkeeping needed.
+    added_to_wl = reconcile_watchlist(holdings_by_fund)
+    if added_to_wl:
+        print(f"Reconciled watchlist: added {len(added_to_wl)} missing ticker(s) → {added_to_wl}")
+
     search_index = build_search_index(study, holdings_by_fund)
     watchlist = load_watchlist()
 
