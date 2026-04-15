@@ -1630,6 +1630,97 @@
       "big_picture": "Specialty flood insurance — using technology and analytics to underwrite a market most insurers fled.",
       "story": "Neptune Insurance Holdings is a specialty flood insurance carrier that has used technology and analytics to underwrite flood risk more accurately than the federal NFIP program. As climate risk becomes harder to ignore and the federal flood program prices change, private flood insurers like Neptune have a structural growth opportunity in a market most large insurers have stayed away from.",
       "sound_bite": "Flood insurance, but underwritten with technology instead of bureaucracy."
+    },
+    "MRVL": {
+      "name": "Marvell Technology",
+      "district": "chip_works",
+      "big_picture": "Custom AI silicon and data infrastructure chips — the other non-NVIDIA hyperscaler supplier.",
+      "story": "Marvell designs custom ASICs, DPUs, networking, and storage silicon that sit at the heart of the modern data center. Like Broadcom, Marvell is a key supplier of custom AI accelerators to hyperscalers and has emerged as one of the few alternatives to NVIDIA for purpose-built AI silicon. The company also dominates in high-speed optical interconnect chips (coherent optics, PAM4 DSPs) that move data between AI racks and between data centers.",
+      "sound_bite": "If NVIDIA is the brain, Marvell is increasingly the nervous system of the AI buildout."
+    },
+    "NVTS": {
+      "name": "Navitas Semiconductor",
+      "district": "chip_works",
+      "big_picture": "Next-gen GaN and silicon carbide power chips — the key to 800V AI data center power architecture.",
+      "story": "Navitas Semiconductor is a leader in gallium nitride (GaN) and silicon carbide (SiC) power chips — a new generation of semiconductors that deliver dramatically higher efficiency than traditional silicon in high-voltage, high-current applications. The company's 'Navitas 2.0' pivot is to focus squarely on the AI data center market, where their GaN and SiC parts enable NVIDIA's next-generation 800VDC power architecture for AI factories, cutting power losses by 50%+ and copper usage by up to 45%. Navitas has a direct partnership with NVIDIA on the 800VDC standard.",
+      "sound_bite": "When an AI factory runs on 800 volts instead of 48, it does so because of chips like Navitas's."
+    },
+    "CRWV": {
+      "name": "CoreWeave",
+      "district": "chip_works",
+      "big_picture": "AI cloud hyperscaler built entirely around NVIDIA GPUs — $66B backlog, OpenAI and Anthropic as anchor customers.",
+      "story": "CoreWeave is the cloud provider purpose-built for AI. Unlike AWS, Azure, and Google Cloud (which offer AI as one of many services), CoreWeave built its entire infrastructure around NVIDIA GPUs and AI workloads from the start. The company went public in March 2025 at a $23B valuation and has since grown its revenue backlog to $66.8 billion in remaining performance obligations as of end of 2025, anchored by a landmark $11.9 billion multi-year deal with OpenAI and a new Anthropic agreement for Claude inference. NVIDIA itself took a $2B strategic stake in January 2026. CoreWeave operates 32 data centers with 250,000 GPUs and was the first provider to deploy NVIDIA's Blackwell Ultra (GB300 NVL72) commercially.",
+      "sound_bite": "The cloud that skipped the old internet era and went straight to being built for AI."
+    },
+    "CIEN": {
+      "name": "Ciena Corporation",
+      "district": "wires",
+      "big_picture": "Optical networking equipment that carries internet traffic across continents — critical for AI data center interconnect.",
+      "story": "Ciena designs the optical networking systems that carry internet traffic at high speeds between cities, countries, and across oceans. Their WaveLogic coherent optics are the backbone of long-haul fiber networks for telecom carriers, hyperscalers, and cable operators. As AI data centers multiply and need to be interconnected into massive distributed training networks, Ciena has become a key beneficiary — every new data center that gets wired into the AI backbone creates demand for more coherent optical equipment.",
+      "sound_bite": "The long-haul fiber that connects every data center in the world, at scale."
+    },
+    "CGNX": {
+      "name": "Cognex Corporation",
+      "district": "wires",
+      "big_picture": "The global leader in machine vision — cameras, AI software, and barcode readers for factory automation.",
+      "story": "Cognex is the world leader in machine vision — the cameras, sensors, and AI software that let factories see what they're doing. Their systems detect defects on assembly lines, read barcodes off products moving at high speed, guide industrial robots, and identify parts and packages. Cognex has shipped over 4.5 million image-based products since founding in 1981, with over 30,000 customers worldwide. Recently, the company has been applying deep-learning AI to its barcode and inspection systems to handle challenges that traditional computer vision couldn't solve.",
+      "sound_bite": "Every factory robot needs eyes. Cognex makes the eyes."
+    },
+    "MOGA": {
+      "name": "Moog Inc.",
+      "district": "machine_shop",
+      "big_picture": "Precision motion control actuators for aircraft, missiles, naval vessels, and launch vehicles — sole-source on many critical systems.",
+      "story": "Moog designs and manufactures the precision electrohydraulic actuators, servovalves, and motion-control systems that enable aircraft flight controls, missile steering, launch vehicle propulsion, submarine depth control, and industrial robotics. The company is the sole-source supplier for many critical US military systems, including hydraulic and electromechanical actuators on submarines, aircraft carriers, and surface ships. Moog actuators are also on the International Space Station. Founded in 1951 by Bill Moog, the company has grown into the quiet specialist whose parts make precision motion possible in the most demanding applications on Earth and in orbit.",
+      "sound_bite": "When a missile steers or a submarine dives, there's a Moog part making the motion happen."
+    },
+    "MAIR": {
+      "name": "Madison Air Solutions",
+      "district": "construction_yards",
+      "big_picture": "Mission-critical indoor air quality and cooling for data centers, semi fabs, and workplaces — Nortek, AprilAire, and Big Ass Fans.",
+      "story": "Madison Air Solutions manufactures the indoor air quality, cooling, filtration, and ventilation systems that keep demanding environments running. Their portfolio includes Nortek Air Solutions, Nortek Data Center Cooling, AprilAire, and Big Ass Fans — brands used across data centers, semiconductor fabs, commercial buildings, and residential environments. The company IPO'd on the NYSE in April 2026 at a ~$12.9B market cap ($2.2B raised), targeting the biggest IPO of 2026 so far. Roughly half of 2025 net sales came from replacement and upgrade demand on the large installed base, providing recurring revenue stability alongside the AI data center growth story.",
+      "sound_bite": "Data centers need air the way cars need tires. Madison Air supplies it."
+    },
+    "AVEX": {
+      "name": "AEVEX Aerospace",
+      "district": "arsenal",
+      "big_picture": "Defense-tech IPO — uncrewed systems, navigation and autonomy, and mission solutions for US special operations and intelligence.",
+      "story": "AEVEX Aerospace is a defense-tech company focused on uncrewed aerial systems, navigation and autonomy software, and adaptable mission solutions. The US government accounted for 78% of 2025 revenue, with AEVEX serving the Department of War, Special Operations Forces, the intelligence community, and allied international partners. Founded in 2007 and backed by Madison Dearborn Partners, AEVEX IPO'd on the NYSE in April 2026 at a ~$2.35B valuation with $433M in trailing revenue. The thesis is clean: defense autonomy is exploding, and AEVEX is a pure-play focused on it.",
+      "sound_bite": "Autonomy, drones, and special-ops software — a defense-tech pure play you can now own."
+    },
+    "ALMR": {
+      "name": "Alamar Biosciences",
+      "district": "clinic",
+      "big_picture": "Ultra-sensitive proteomics platform — the NULISA technology detects rare protein biomarkers in blood at unprecedented sensitivity.",
+      "story": "Alamar Biosciences is a commercial-stage proteomics company that makes instruments, assays, and software for detecting low-abundance protein biomarkers in blood and other biofluids. Their NULISA (Nucleic acid-Linked Immuno-Sandwich Assay) technology pushes immunoassay sensitivity to levels needed for biomarker-driven early disease detection in areas like neurodegeneration, immunology, and oncology. Revenue grew 195% to $74.2 million in 2025. The company IPO'd on Nasdaq in April 2026, raising about $150 million.",
+      "sound_bite": "Ultra-sensitive protein detection — reading biology at a level traditional assays can't touch."
+    },
+    "RLAY": {
+      "name": "Relay Therapeutics",
+      "district": "research_labs",
+      "big_picture": "Drug discovery powered by protein motion simulation — highly selective FGFR2 inhibitor for bile duct cancer leading the pipeline.",
+      "story": "Relay Therapeutics uses its Dynamo computational platform — which simulates the physical motion of proteins in unprecedented detail — to design drugs against targets previously considered undruggable. Their lead drug lirafugratinib (RLY-4008) is an exquisitely selective FGFR2 inhibitor for bile duct cancer and other FGFR2-altered solid tumors. In Phase 1 trials, 88% of bile duct cancer patients responded at the selected dose — more than twice the response rate of existing FGFR inhibitors — with much lower hyperphosphatemia side effects because the drug leaves FGFR1 alone.",
+      "sound_bite": "Drugging proteins by watching them move — computational drug design at a new resolution."
+    },
+    "ELVN": {
+      "name": "Enliven Therapeutics",
+      "district": "research_labs",
+      "big_picture": "Highly selective kinase inhibitors for cancer — lead drug ELVN-001 targets BCR-ABL in chronic myeloid leukemia.",
+      "story": "Enliven Therapeutics develops highly selective small-molecule kinase inhibitors for cancer. Their lead program, ELVN-001, is a selective ATP-competitive ABL1 tyrosine kinase inhibitor for chronic myeloid leukemia (CML) — it binds to a unique P-loop folded-in conformation of ABL1 that gives it better selectivity than existing BCR-ABL inhibitors. Recent Phase 1b data showed cumulative major molecular response rates up to 53% in heavily pretreated patients, with deep molecular response up to 35% and a favorable safety profile. A pivotal Phase 3 ENABLE-2 trial is planned for 2H 2026.",
+      "sound_bite": "A better-selected BCR-ABL inhibitor for CML, with Phase 1 data that looks like it could matter."
+    },
+    "CBOE": {
+      "name": "Cboe Global Markets",
+      "district": "financial_district",
+      "big_picture": "Operator of the Cboe options exchanges and the VIX — the venue where volatility itself is priced and traded.",
+      "story": "Cboe Global Markets runs the Cboe options exchanges — one of the largest options trading venues in the world — plus equities exchanges, FX trading, and data and analytics products. Cboe is the home of the VIX (the 'fear gauge') and the options contracts that trade on it, which means Cboe effectively runs the market where volatility itself is priced and traded. Options volumes have been growing faster than equities as more retail and institutional investors use them for hedging and speculation, and Cboe is the primary beneficiary of that secular trend.",
+      "sound_bite": "Options volume grows; Cboe collects a fee on every trade. Repeat annually."
+    },
+    "WT": {
+      "name": "WisdomTree Investments",
+      "district": "financial_district",
+      "big_picture": "Smart-beta ETF issuer — pioneer of dividend-weighted and fundamentally-weighted indexing, plus a growing tokenization platform.",
+      "story": "WisdomTree Investments is an asset manager best known for pioneering smart-beta and fundamentally-weighted ETFs (where holdings are weighted by dividends, earnings, or other fundamentals rather than market cap). The company runs over $100 billion in AUM across its ETF lineup and is one of the few independent ETF sponsors in a category dominated by giants like BlackRock and Vanguard. More recently, WisdomTree has been pushing into tokenized assets — digital representations of funds on blockchain rails — which could open a new distribution channel entirely.",
+      "sound_bite": "Smart-beta ETFs as the core business, tokenized funds as the call option."
     }
   },
   "acts": [
