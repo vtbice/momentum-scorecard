@@ -1319,16 +1319,14 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     sp_ma150 = sp.get("ma150", 0)
     b_pct = breadth.get("pctAbove", 58)
     vix_val = market.get("vix", {}).get("price", 15)
-    pct_uptrend = breadth.get("trends", {}).get("Uptrend", 0)
 
     add(sp_price > sp_ma4yr and sp_ma4yr > 0, "Technical",
         f"Long-Term Trend · S&P {sp_price:,.0f} vs 4-Year MA {sp_ma4yr:,.0f}")
     add(sp_price > sp_ma150 and sp_ma150 > 0, "Technical",
         f"Medium-Term Trend · S&P {sp_price:,.0f} vs 150-Day MA {sp_ma150:,.0f}")
-    add(b_pct > 60, "Technical",
-        f"Market Breadth · Now: {round(b_pct)}% · Healthy: above 60%")
-    add(pct_uptrend > 50, "Technical",
-        f"Stocks in Uptrend · Now: {pct_uptrend:.0f}% · Healthy: above 50%")
+    # Market Breadth: tailwind when broadly healthy (>60%) OR deeply oversold (<20% — contrarian)
+    add(b_pct > 60 or b_pct < 20, "Technical",
+        f"Market Breadth · Now: {round(b_pct)}% · Healthy: above 60% or below 20% (oversold)")
     add(vix_val < 20, "Technical",
         f"Volatility · VIX Now: {vix_val:.1f} · Healthy: below 20")
     pc_auto = auto_data.get("putCall")

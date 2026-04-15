@@ -1374,7 +1374,6 @@ var INDICATOR_WHY = {
     'US Dollar': 'The dollar\\'s value against a basket of major currencies. A strong dollar hurts U.S. multinationals (their foreign earnings translate to fewer dollars) and emerging markets (their dollar-denominated debt gets more expensive). Above 105 is a meaningful headwind.',
     'Initial Jobless Claims': 'Weekly count of people filing for unemployment for the first time. This is one of the earliest warning signs of economic trouble — rising claims show up in the data before they show up in the unemployment rate. Below 250K signals a healthy labor market.',
     'Sales Growth': 'Year-over-year revenue growth for S&P 500 companies. Revenue is the top line — it shows actual demand. Companies can fake earnings growth through cost cuts or buybacks, but they cannot fake sales growth. Above 4% signals genuine business expansion.',
-    'Stocks in Uptrend': 'The percentage of stocks in our ~1,200 tracked universe currently in an Uptrend (price above a rising 150-day moving average). This is a direct measure of breadth that goes beyond just "above the MA" — it requires the MA itself to be rising.',
     'AAII Bull Sentiment': 'The AAII weekly survey asks individual investors if they are bullish, bearish, or neutral about the next 6 months. This is used as a contrarian indicator — extreme bullishness (above 45%) often precedes pullbacks, extreme bearishness (below 25%) often precedes rallies. The sweet spot is 25-45% where sentiment is neither euphoric nor panicked.',
     'Earnings Growth': 'Companies making more money than last year — the fundamental driver of stock prices.',
     'Profit Margins': 'How much companies keep from each dollar of revenue — a sign of pricing power and efficiency.',
@@ -1383,7 +1382,7 @@ var INDICATOR_WHY = {
     'Free Cash Flow': 'Real cash generated after expenses — fuel for dividends, buybacks, and future growth.',
     'Long-Term Trend': 'The S&P 500 vs its 4-year moving average — the big-picture direction of the market.',
     'Medium-Term Trend': 'The S&P 500 vs its 150-day moving average — the intermediate trend direction.',
-    'Market Breadth': 'How many stocks are participating in the move — broad is healthy, narrow is fragile.',
+    'Market Breadth': 'The percentage of stocks trading above their 150-day moving average. Tailwind when above 60% (broad participation, healthy rally) OR below 20% (oversold / capitulation — historically a contrarian buy signal with strong forward returns). The neutral zone between 20-60% is the danger zone where the market is narrow but not yet washed out.',
     'Volatility': 'The VIX fear gauge — low means calm markets, high means uncertainty and hedging activity.',
     'Sentiment': 'Options market positioning — shows whether traders are confident or fearfully hedging.'
 };
