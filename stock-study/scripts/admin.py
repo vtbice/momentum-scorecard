@@ -32,7 +32,10 @@ from socketserver import ThreadingMixIn
 PORT = 8765
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-SITE = ROOT / "site"
+# Site lives at /city/ at the repo root now — same folder that's
+# published to GitHub Pages. Admin server serves from the same folder
+# so local and published versions are always in sync.
+SITE = ROOT.parent / "city"
 TICKERS_CSV = ROOT.parent / "tickers.csv"
 STUDY_JSON = DATA / "study.json"
 BUILD_SCRIPT = ROOT / "scripts" / "build_site.py"

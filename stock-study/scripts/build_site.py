@@ -23,7 +23,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-SITE = ROOT / "site"
+# Build output goes to /city/ at the repo root — so the published URL is
+# clean (https://vtbice.github.io/momentum-scorecard/city/) instead of
+# the long stock-study/site/ path. The /city/ folder IS the site.
+SITE = ROOT.parent / "city"
 TICKERS_CSV = ROOT.parent / "tickers.csv"  # shared with the Momentum Scorecard repo
 
 FUNDS = [
@@ -1945,18 +1948,18 @@ def main():
     for slug, label in FUNDS:
         html_out = build_fund_page(slug, label, study, holdings_by_fund, args.date, search_index)
         (SITE / f"{slug}.html").write_text(html_out)
-        print(f"Wrote site/{slug}.html")
+        print(f"Wrote {SITE.name}/{slug}.html")
 
     # Build overview
     overview = build_overview_page(study, holdings_by_fund, args.date, search_index)
     (SITE / "index.html").write_text(overview)
-    print(f"Wrote site/index.html")
+    print(f"Wrote {SITE.name}/index.html")
 
     # Build watchlist
     if watchlist:
         wl = build_watchlist_page(study, holdings_by_fund, watchlist, args.date, search_index)
         (SITE / "watchlist.html").write_text(wl)
-        print(f"Wrote site/watchlist.html ({len(watchlist)} tickers)")
+        print(f"Wrote {SITE.name}/watchlist.html ({len(watchlist)} tickers)")
     else:
         print(f"Skipped watchlist: tickers.csv not found at {TICKERS_CSV}")
 

@@ -3,16 +3,19 @@
 A narrative-driven, multi-page guide to all holdings across the five Innovation
 Growth funds — plus a searchable directory of the ~1,200-name watchlist.
 
-## Live URLs
+## Live URL
 
-| URL | What it is |
-|---|---|
-| **https://vtbice.github.io/momentum-scorecard/city/** | Short, shareable team link. Redirects to the overview page. |
-| https://vtbice.github.io/momentum-scorecard/stock-study/site/index.html | Full canonical URL of the overview page |
+**https://vtbice.github.io/momentum-scorecard/city/**
 
-Every push to `main` auto-rebuilds the site via GitHub Pages (typically 30-90 seconds).
-The admin server and edit controls never get published — they only exist when you run
-`Edit Holdings.command` locally, so the public URL is always safely read-only.
+That's the overview. Every fund page and the watchlist are accessible
+from the top nav: `/city/focused-large-cap.html`, `/city/large-cap.html`,
+`/city/mid-cap.html`, `/city/small-cap.html`, `/city/micro-cap.html`,
+`/city/watchlist.html`.
+
+Every push to `main` auto-rebuilds the site via GitHub Pages (typically
+30-90 seconds). The admin server and edit controls never get published —
+they only exist when you run `Edit Holdings.command` locally, so the
+public URL is always safely read-only.
 
 ## What this is
 
@@ -38,16 +41,27 @@ StockCharts for users who have that account.
 ## Layout
 
 ```
-stock-study/
-├── data/
-│   ├── holdings/           # one CSV per fund (ticker list)
-│   ├── study.json          # single source of truth: districts, acts, narratives, fund intros
-│   └── source/             # original raw input docs (preserved for reference)
-├── scripts/
-│   ├── build_site.py       # generates the static site from data/
-│   └── admin.py            # local admin server for editing holdings
-├── site/                   # the generated static site (index.html, 5 fund pages, watchlist)
-└── README.md               # this file
+momentum-scorecard/
+├── city/                   # the generated static site (published to GitHub Pages)
+│   ├── index.html          #   → overview
+│   ├── focused-large-cap.html
+│   ├── large-cap.html
+│   ├── mid-cap.html
+│   ├── small-cap.html
+│   ├── micro-cap.html
+│   └── watchlist.html
+├── tickers.csv             # shared watchlist — same file the Momentum Scorecard uses
+└── stock-study/
+    ├── Edit Holdings.command  # double-click to start admin server
+    ├── Stop Edit Mode.command # double-click to stop admin server
+    ├── README.md              # this file
+    ├── data/
+    │   ├── holdings/          # one CSV per fund (ticker list)
+    │   ├── study.json         # narratives, districts, acts, fund intros
+    │   └── source/            # raw input docs (preserved for reference)
+    └── scripts/
+        ├── build_site.py      # generates /city/ from data/
+        └── admin.py           # local admin server (serves /city/ with edit mode)
 ```
 
 The watchlist reads `../tickers.csv` (shared with the Momentum Scorecard repo,
