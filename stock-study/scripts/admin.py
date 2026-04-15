@@ -499,7 +499,7 @@ ADMIN_JS = r"""
   }
 
   function removeCardButtons() {
-    document.querySelectorAll('.card-delete, .card-demote, .wl-delete').forEach(function(b) {
+    document.querySelectorAll('.card-delete, .card-demote, .wl-delete, .toc-delete').forEach(function(b) {
       b.remove();
     });
   }
@@ -632,6 +632,51 @@ ADMIN_JS = r"""
         actionsCell.appendChild(btn);
       });
     }
+
+    // Also inject a small red X next to every Quick Index entry —
+    // behavior matches the current page: remove from fund / demote / remove from watchlist
+    injectTocButtons();
+  }
+
+  function injectTocButtons() {
+    const tocItems = document.querySelectorAll('.toc-item[data-ticker]');
+    if (!tocItems.length) return;
+
+    let endpoint, payloadFn, confirmFn;
+    if (currentFund) {
+      endpoint = '/api/fund/remove';
+      payloadFn = function(ticker) { return {ticker: ticker, fund: currentFund}; };
+      confirmFn = function(ticker) { return 'Remove ' + ticker + ' from ' + FUNDS_BY_SLUG[currentFund] + '?'; };
+    } else if (isOverview) {
+      endpoint = '/api/fund/demote';
+      payloadFn = function(ticker) { return {ticker: ticker}; };
+      confirmFn = function(ticker) { return 'Remove ' + ticker + ' from ALL funds? It will stay on the watchlist.'; };
+    } else if (isWatchlist) {
+      endpoint = '/api/watchlist/remove';
+      payloadFn = function(ticker) { return {ticker: ticker}; };
+      confirmFn = function(ticker) { return 'Remove ' + ticker + ' from the watchlist?'; };
+    } else {
+      return;
+    }
+
+    tocItems.forEach(function(link) {
+      if (link.querySelector('.toc-delete')) return;
+      const ticker = link.dataset.ticker;
+      if (!ticker) return;
+      const btn = document.createElement('button');
+      btn.className = 'toc-delete';
+      btn.type = 'button';
+      btn.textContent = '✕';
+      btn.title = confirmFn(ticker);
+      btn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!confirm(confirmFn(ticker))) return;
+        const result = await api(endpoint, payloadFn(ticker));
+        await afterChange(result);
+      });
+      link.appendChild(btn);
+    });
   }
 })();
 """

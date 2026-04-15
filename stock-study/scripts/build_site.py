@@ -277,23 +277,62 @@ def css() -> str:
     margin-bottom: 18px;
     color: #0f172a;
   }
-  .toc-district { margin-bottom: 18px; }
+  /* Act groupings in TOC */
+  .toc-act {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .toc-act:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .toc-act-header {
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #10b981;
+  }
+  .toc-act-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #10b981;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .toc-act-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+  .toc-act-subtitle {
+    font-size: 13px;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  .toc-district { margin-bottom: 16px; }
   .toc-district:last-child { margin-bottom: 0; }
   .toc-district-title {
     display: block;
     font-family: 'Fraunces', serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #10b981;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
   }
   .toc-district-title:hover { color: #059669; }
+  .toc-district-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 6px;
+  }
   .toc-district-items {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 2px 16px;
   }
   .toc-item {
@@ -303,10 +342,30 @@ def css() -> str:
     padding: 3px 0;
     display: flex;
     gap: 8px;
+    align-items: center;
   }
   .toc-item:hover .toc-ticker { color: #059669; }
   .toc-ticker { font-weight: 600; color: #10b981; min-width: 52px; }
-  .toc-name { color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .toc-name { color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  /* .toc-delete is injected by admin.js in edit mode */
+  .toc-delete {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 1.5px solid #dc2626;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .toc-delete:hover { background: #dc2626; color: white; }
 
   /* DISTRICT SECTIONS */
   .district { margin-bottom: 64px; }
@@ -1331,15 +1390,65 @@ function cityEsc(s) {
 """
 
 
+ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
+
+
+def roman_numeral(i: int) -> str:
+    return ROMAN[i] if 0 <= i < len(ROMAN) else str(i + 1)
+
+
 def render_act_heading(act: dict, index: int) -> str:
-    roman = ["I", "II", "III", "IV", "V", "VI", "VII"][index] if index < 7 else str(index + 1)
     return f"""
     <div class="act-heading">
-      <div class="act-label">Act {roman}</div>
+      <div class="act-label">Act {roman_numeral(index)}</div>
       <h2 class="act-title">{esc(act.get('title', ''))}</h2>
       <div class="act-subtitle">{esc(act.get('subtitle', ''))}</div>
     </div>
     """
+
+
+def render_toc_by_acts(by_district: dict, districts: dict, acts: list, district_order: list) -> str:
+    """Render a Quick Index grouped by acts with one-line subtitles.
+
+    by_district: dict of district_key → list of (ticker, entry) tuples for the current page.
+    Only acts/districts with at least one visible ticker are rendered.
+    """
+    parts = []
+    for act_idx, act in enumerate(acts):
+        act_district_keys = [d for d in act.get("districts", []) if by_district.get(d)]
+        if not act_district_keys:
+            continue
+
+        district_blocks = []
+        for d in act_district_keys:
+            bucket = sorted(by_district[d], key=lambda x: x[0])
+            dmeta = districts[d]
+            items = "".join(
+                f'<a href="#{esc(t)}" class="toc-item" data-ticker="{esc(t)}">'
+                f'<span class="toc-ticker">{esc(t)}</span>'
+                f'<span class="toc-name">{esc(e.get("name", ""))}</span>'
+                f'</a>'
+                for t, e in bucket
+            )
+            district_blocks.append(f"""
+            <div class="toc-district">
+              <a href="#district-{d}" class="toc-district-title">{esc(dmeta.get('title', ''))}</a>
+              <div class="toc-district-subtitle">{esc(dmeta.get('subtitle', ''))}</div>
+              <div class="toc-district-items">{items}</div>
+            </div>
+            """)
+
+        parts.append(f"""
+        <div class="toc-act">
+          <div class="toc-act-header">
+            <div class="toc-act-label">Act {roman_numeral(act_idx)}</div>
+            <div class="toc-act-title">{esc(act.get('title', ''))}</div>
+            <div class="toc-act-subtitle">{esc(act.get('subtitle', ''))}</div>
+          </div>
+          {''.join(district_blocks)}
+        </div>
+        """)
+    return "".join(parts)
 
 
 def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fund: dict, as_of: str, search_index: list) -> str:
@@ -1402,22 +1511,8 @@ def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fu
         </section>
         """)
 
-    # TOC grouped by district
-    toc_sections = []
-    for d in district_order:
-        bucket = by_district[d]
-        if not bucket:
-            continue
-        items = "".join(
-            f'<a href="#{esc(t)}" class="toc-item"><span class="toc-ticker">{esc(t)}</span><span class="toc-name">{esc(e.get("name", ""))}</span></a>'
-            for t, e in sorted(bucket, key=lambda x: x[0])
-        )
-        toc_sections.append(f"""
-        <div class="toc-district">
-          <a href="#district-{d}" class="toc-district-title">{esc(districts[d]['title'])}</a>
-          <div class="toc-district-items">{items}</div>
-        </div>
-        """)
+    # Quick Index — grouped by acts with one-line subtitles
+    toc_html = render_toc_by_acts(by_district, districts, acts, district_order)
 
     unassigned_html = ""
     if unassigned:
@@ -1448,7 +1543,7 @@ def build_fund_page(fund_slug: str, fund_label: str, study: dict, holdings_by_fu
   {unassigned_html}
   <nav class="toc">
     <h3>Quick Index</h3>
-    {''.join(toc_sections)}
+    {toc_html}
   </nav>
   {''.join(sections)}
 </main>
@@ -1549,22 +1644,8 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
         </section>
         """)
 
-    # Universe TOC
-    toc_sections = []
-    for d in district_order:
-        bucket = by_district[d]
-        if not bucket:
-            continue
-        items = "".join(
-            f'<a href="#{esc(t)}" class="toc-item"><span class="toc-ticker">{esc(t)}</span><span class="toc-name">{esc(e.get("name", ""))}</span></a>'
-            for t, e in bucket
-        )
-        toc_sections.append(f"""
-        <div class="toc-district">
-          <a href="#district-{d}" class="toc-district-title">{esc(districts[d]['title'])}</a>
-          <div class="toc-district-items">{items}</div>
-        </div>
-        """)
+    # Universe TOC — grouped by acts
+    toc_html = render_toc_by_acts(by_district, districts, acts, district_order)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1599,7 +1680,7 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
 
   <nav class="toc">
     <h3>Quick Index</h3>
-    {''.join(toc_sections)}
+    {toc_html}
   </nav>
 
   {''.join(universe_sections)}

@@ -441,7 +441,9 @@
       "district": "financial_district",
       "big_picture": "Radiation detection instruments — critical as nuclear energy comes back to power AI data centers.",
       "story": "Mirion Technologies provides the instruments that detect and measure radiation — the monitors worn by workers in nuclear power plants, the calibration devices for hospital imaging equipment, and the environmental sensors that ensure radioactive materials are handled safely. As interest in nuclear energy surges, particularly for powering AI data centers, this kind of safety technology becomes even more critical.",
-      "sound_bite": "If nuclear is coming back for AI, so is Mirion."
+      "sound_bite": "If nuclear is coming back for AI, so is Mirion.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "KTOS": {
       "name": "Kratos Defense",
@@ -602,7 +604,9 @@
       "district": "research_labs",
       "big_picture": "Attacks the same liver disease as Madrigal but through a different mechanism — combination potential.",
       "story": "Terns Pharmaceuticals attacks the same serious liver disease as Madrigal but through a different scientific mechanism, which matters because different patients respond to different approaches and combining treatments may prove more powerful than any single drug.",
-      "sound_bite": "Different mechanism, same disease. Potential combination partner to Madrigal."
+      "sound_bite": "Different mechanism, same disease. Potential combination partner to Madrigal.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "CGON": {
       "name": "CG Oncology",
@@ -868,7 +872,9 @@
       "district": "chip_works",
       "big_picture": "Computer-vision and AI inference chips for cameras, drones, and self-driving systems.",
       "story": "Ambarella designs low-power AI vision processors — chips that can run computer-vision and machine-learning models inside cameras, drones, security systems, and increasingly automotive ADAS and robotics. Their CV-series chips are designed specifically to do AI inference at the edge with tiny power budgets, which is exactly what self-driving and embedded AI applications need.",
-      "sound_bite": "AI inference inside the camera, not the cloud."
+      "sound_bite": "AI inference inside the camera, not the cloud.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "ANET": {
       "name": "Arista Networks",
@@ -987,7 +993,9 @@
       "district": "power_plant",
       "big_picture": "The only U.S. producer of high-assay low-enriched uranium (HALEU) — the fuel for next-gen reactors.",
       "story": "Centrus operates the only U.S. facility licensed by the Nuclear Regulatory Commission to produce high-assay low-enriched uranium (HALEU) — the fuel that next-generation small modular reactors and microreactors will need to run. As of 2026, only Russia and China have HALEU production at scale. With the U.S. ban on Russian uranium imports and the resurgence of nuclear power for AI, Centrus is the only domestic supplier with a working facility, expanding under DOE contract.",
-      "sound_bite": "Next-gen nuclear runs on HALEU. Centrus is the only American company making it."
+      "sound_bite": "Next-gen nuclear runs on HALEU. Centrus is the only American company making it.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "LNG": {
       "name": "Cheniere Energy",
@@ -1239,7 +1247,9 @@
       "district": "research_labs",
       "big_picture": "Developed the first approved TCR therapy — Kimmtrak for a rare eye cancer — and is expanding the platform.",
       "story": "Immunocore built the first approved T cell receptor (TCR) therapy, Kimmtrak (tebentafusp), for a rare metastatic eye cancer (uveal melanoma). The TCR platform engages a patient's T cells and redirects them against cancer in a way conventional immunotherapy cannot. Beyond Kimmtrak, Immunocore is advancing TCR therapies in skin cancer, lung cancer, and HIV.",
-      "sound_bite": "The first commercial TCR therapy. The platform behind it might do much more."
+      "sound_bite": "The first commercial TCR therapy. The platform behind it might do much more.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "FBRX": {
       "name": "Forte Biosciences",
@@ -1533,7 +1543,9 @@
       "district": "software_layer",
       "big_picture": "AI-powered marketing cloud and customer data platform serving 40% of the Fortune 100.",
       "story": "Zeta Global runs an AI-powered customer data platform and marketing cloud that helps brands acquire, grow, and retain customers across email, social media, connected TV, mobile, and the open web. The platform processes data from 12.7 billion identifiers and serves over 1,000 customers, including 40% of the Fortune 100.",
-      "sound_bite": "The AI marketing cloud. With actual AI inside it, not just the buzzword."
+      "sound_bite": "The AI marketing cloud. With actual AI inside it, not just the buzzword.",
+      "status": "former_holding",
+      "last_held": "2026-04-15"
     },
     "PTRN": {
       "name": "Pattern Group",
