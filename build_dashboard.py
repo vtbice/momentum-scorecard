@@ -1369,6 +1369,12 @@ var INDICATOR_WHY = {
     'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
     'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
     'ISM Manufacturing': 'The single best leading indicator of economic turns. Above 50 means factories are expanding; below 50 signals contraction.',
+    'Oil Price': 'WTI crude oil price per barrel. High oil prices raise production costs across the economy and push inflation higher, squeezing corporate margins and consumer wallets. Above $90 starts to bite.',
+    'Gas Price': 'Average price for a gallon of regular gas. High gas prices hit consumer sentiment hard — people feel it every week at the pump, leaving less money for everything else. Above $4 becomes a real drag on spending.',
+    'US Dollar': 'The dollar\\'s value against a basket of major currencies. A strong dollar hurts U.S. multinationals (their foreign earnings translate to fewer dollars) and emerging markets (their dollar-denominated debt gets more expensive). Above 105 is a meaningful headwind.',
+    'Initial Jobless Claims': 'Weekly count of people filing for unemployment for the first time. This is one of the earliest warning signs of economic trouble — rising claims show up in the data before they show up in the unemployment rate. Below 250K signals a healthy labor market.',
+    'Sales Growth': 'Year-over-year revenue growth for S&P 500 companies. Revenue is the top line — it shows actual demand. Companies can fake earnings growth through cost cuts or buybacks, but they cannot fake sales growth. Above 4% signals genuine business expansion.',
+    'AAII Bull Sentiment': 'The AAII weekly survey asks individual investors if they are bullish, bearish, or neutral about the next 6 months. This is used as a contrarian indicator — extreme bullishness (above 45%) often precedes pullbacks, extreme bearishness (below 25%) often precedes rallies. The sweet spot is 25-45% where sentiment is neither euphoric nor panicked.',
     'Earnings Growth': 'Companies making more money than last year — the fundamental driver of stock prices.',
     'Profit Margins': 'How much companies keep from each dollar of revenue — a sign of pricing power and efficiency.',
     'Earnings Revisions': 'Whether analysts are raising or cutting estimates — tracks where the trend is heading.',
@@ -1376,7 +1382,7 @@ var INDICATOR_WHY = {
     'Free Cash Flow': 'Real cash generated after expenses — fuel for dividends, buybacks, and future growth.',
     'Long-Term Trend': 'The S&P 500 vs its 4-year moving average — the big-picture direction of the market.',
     'Medium-Term Trend': 'The S&P 500 vs its 150-day moving average — the intermediate trend direction.',
-    'Market Breadth': 'How many stocks are participating in the move — broad is healthy, narrow is fragile.',
+    'Market Breadth': 'The percentage of stocks trading above their 150-day moving average. Tailwind when above 60% (broad participation, healthy rally) OR below 20% (oversold / capitulation — historically a contrarian buy signal with strong forward returns). The neutral zone between 20-60% is the danger zone where the market is narrow but not yet washed out.',
     'Volatility': 'The VIX fear gauge — low means calm markets, high means uncertainty and hedging activity.',
     'Sentiment': 'Options market positioning — shows whether traders are confident or fearfully hedging.'
 };
@@ -1475,7 +1481,7 @@ function renderHeader() {
         var why = getIndicatorWhy(win.label);
         var sinceStr = win.sinceDate ? fmtAsOf(win.sinceDate) : '';
         tailwinds += '<div class="health-item"><div class="health-item-icon">✓</div><div class="health-item-text"><span class="health-item-label">' + win.label + '</span>';
-        tailwinds += '<span class="health-item-weight">' + win.weight + 'pts';
+        tailwinds += '<span class="health-item-weight">' + (typeof win.weight === 'number' ? win.weight.toFixed(1) : win.weight) + 'pts';
         if (sinceStr) tailwinds += ' · <span style="color:#10b981;">since ' + sinceStr + '</span>';
         tailwinds += '</span>';
         if (why) tailwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
@@ -1488,7 +1494,7 @@ function renderHeader() {
         var why = getIndicatorWhy(miss.label);
         var sinceStr = miss.sinceDate ? fmtAsOf(miss.sinceDate) : '';
         headwinds += '<div class="health-item"><div class="health-item-icon">✗</div><div class="health-item-text"><span class="health-item-label">' + miss.label + ' — NOT MET</span>';
-        headwinds += '<span class="health-item-weight">' + miss.weight + 'pts';
+        headwinds += '<span class="health-item-weight">' + (typeof miss.weight === 'number' ? miss.weight.toFixed(1) : miss.weight) + 'pts';
         if (sinceStr) headwinds += ' · <span style="color:#ef4444;">since ' + sinceStr + '</span>';
         headwinds += '</span>';
         if (why) headwinds += '<div style="font-size: 13px; color: #64748b; margin-top: 2px; line-height: 1.4;">' + why + '</div>';
