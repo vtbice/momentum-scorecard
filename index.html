@@ -1806,8 +1806,80 @@ function renderHistoricalContext() {
 
     var html = '<div class="card"><div class="card-title">Market Trend Analysis</div>';
 
-    // ═══ SECTION 1: WHERE ARE WE NOW ═══
+    // ═══ SECULAR TREND — THE BIG PICTURE ═══
+    var secularGain = Math.round((t.sp500 / 1810 - 1) * 100);
+    var secularYears = new Date().getFullYear() - 2016;
+
+    // Banner
+    html += '<div style="background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">';
+    html += '<div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #10b981; font-weight: 700; margin-bottom: 8px;">Secular Trend</div>';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; margin-bottom: 10px;">3rd Generational Bull Market Since 1957</div>';
+    html += '<p style="font-size: 14px; color: #cbd5e1; line-height: 1.7; margin-bottom: 16px;">The S&P 500 has moved through generational cycles of expansion and contraction lasting roughly 16-18 years each. We are currently in the third secular bull market since 1957 — a period where the long-term trend favors being invested and cyclical pullbacks are buying opportunities, not the beginning of the end.</p>';
+
+    // Secular stats
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Started</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">2016</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500 Then</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">1,810</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500 Now</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">+' + secularGain + '%</div></div>';
+    html += '</div>';
+
+    html += '<p style="font-size: 14px; color: #94a3b8; line-height: 1.7;">If history rhymes, this cycle could last into the <strong style="color:white;">early-mid 2030s</strong> and take the S&P towards <strong style="color:#10b981;">15,000</strong>. The 4-year moving average (currently ' + t.sp500MA4yr.toLocaleString(undefined, {maximumFractionDigits:0}) + ') serves as the structural dividing line — a sustained break below it would signal the secular trend is turning negative.</p>';
+    html += '</div>';
+
+    // Secular history table
+    html += '<div style="margin-bottom: 24px;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Secular Cycles Since 1957</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">The market has alternated between generational bull and bear markets, each lasting roughly 16-18 years and driven by major economic forces.</p>';
+
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:left;">Type</th><th style="text-align:right;">S&P Start</th><th style="text-align:right;">S&P End</th><th style="text-align:right;">Return</th><th style="text-align:left;">What Drove It</th></tr></thead><tbody>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1957 – 1966</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">44</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;font-weight:600;">+114%</td><td style="font-size:12px;color:#475569;">Post-war industrial boom, baby boom consumer spending, space race, rising middle class</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">1966 – 1982</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">94</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;font-weight:600;">+9%</td><td style="font-size:12px;color:#475569;">Runaway inflation, oil shocks, Vietnam, Watergate, Volcker raising rates to 20% to kill inflation</td></tr>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1982 – 2000</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">102</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;font-weight:600;">+1,397%</td><td style="font-size:12px;color:#475569;">Inflation conquered, Reagan tax reform, tech revolution, internet boom, globalization</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">2000 – 2016</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">1,527</td><td style="text-align:right;">1,810</td><td style="text-align:right;color:#ef4444;font-weight:600;">+19%</td><td style="font-size:12px;color:#475569;">Dot-com bust, 9/11, financial crisis, slow recovery, two 50%+ crashes in a decade</td></tr>';
+    html += '<tr style="background:#f0fdf4;border-left:3px solid #10b981;"><td style="font-weight:700;">2016 – Present</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">1,810</td><td style="text-align:right;font-weight:700;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</td><td style="text-align:right;color:#10b981;font-weight:700;">+' + secularGain + '%</td><td style="font-size:12px;color:#475569;">AI revolution, cloud computing, fiscal stimulus, post-COVID rebound, Mag 7 tech leadership</td></tr>';
+    html += '</tbody></table>';
+
+    html += '<div style="margin-top: 12px; padding: 12px 16px; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #10b981;">';
+    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6;"><strong>Key takeaway:</strong> During secular bull markets, corrections are buying opportunities. During secular bear markets, rallies are selling opportunities. Knowing which regime you are in changes everything about how you invest. The 4-year moving average is the line in the sand.</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // ═══ 4-YEAR CYCLE TABLE ═══
     html += '<div style="margin-bottom: 28px;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">The 4-Year Cycle</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">Within secular bull markets, a predictable 3-4 year cycle develops — driven by central bank liquidity and economic growth. A cycle low forms roughly every 4 years near the 4-year moving average, followed by a rally averaging +111%. This table shows every cycle during secular bull markets since 1957.</p>';
+
+    // Current cycle stats (auto-calculated)
+    var cycleStartPrice = 3577; // Oct 2022 low
+    var cycleGain = Math.round((t.sp500 / cycleStartPrice - 1) * 100);
+    var cycleMonths = Math.round((new Date() - new Date('2022-10-12')) / (1000 * 60 * 60 * 24 * 30));
+
+    html += '<table class="stock-table" style="font-size: 13px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">4-Year Cycle</th><th style="text-align:left;">Secular Period</th><th style="text-align:right;">% Rally</th><th style="text-align:right;">% Correction</th><th style="text-align:right;">Duration</th></tr></thead><tbody>';
+    // Secular Bull #1 (1957-1966)
+    html += '<tr><td>1957 – 1962</td><td style="color:#10b981;">Bull #1</td><td style="text-align:right;color:#10b981;font-weight:600;">+86%</td><td style="text-align:right;color:#ef4444;">-28%</td><td style="text-align:right;">5 yrs</td></tr>';
+    html += '<tr><td>1962 – 1966</td><td style="color:#10b981;">Bull #1</td><td style="text-align:right;color:#10b981;font-weight:600;">+80%</td><td style="text-align:right;color:#ef4444;">-22%</td><td style="text-align:right;">4 yrs</td></tr>';
+    // Secular Bull #2 (1982-2000)
+    html += '<tr><td>1982 – 1987</td><td style="color:#10b981;">Bull #2</td><td style="text-align:right;color:#10b981;font-weight:600;">+231%</td><td style="text-align:right;color:#ef4444;">-36%</td><td style="text-align:right;">5 yrs</td></tr>';
+    html += '<tr><td>1987 – 1990</td><td style="color:#10b981;">Bull #2</td><td style="text-align:right;color:#10b981;font-weight:600;">+71%</td><td style="text-align:right;color:#ef4444;">-20%</td><td style="text-align:right;">3 yrs</td></tr>';
+    html += '<tr><td>1990 – 1994</td><td style="color:#10b981;">Bull #2</td><td style="text-align:right;color:#10b981;font-weight:600;">+64%</td><td style="text-align:right;color:#ef4444;">-10%</td><td style="text-align:right;">4 yrs</td></tr>';
+    html += '<tr><td>1994 – 1998</td><td style="color:#10b981;">Bull #2</td><td style="text-align:right;color:#10b981;font-weight:600;">+173%</td><td style="text-align:right;color:#ef4444;">-22%</td><td style="text-align:right;">4 yrs</td></tr>';
+    // Secular Bull #3 (2016-Present)
+    html += '<tr><td>2016 – 2020</td><td style="color:#10b981;">Bull #3</td><td style="text-align:right;color:#10b981;font-weight:600;">+87%</td><td style="text-align:right;color:#ef4444;">-38%</td><td style="text-align:right;">4 yrs</td></tr>';
+    html += '<tr><td>2020 – 2022</td><td style="color:#10b981;">Bull #3</td><td style="text-align:right;color:#10b981;font-weight:600;">+120%</td><td style="text-align:right;color:#ef4444;">-27%</td><td style="text-align:right;">2 yrs</td></tr>';
+    // Current cycle (auto-updating)
+    html += '<tr style="background:#f0fdf4;border-left:3px solid #10b981;"><td style="font-weight:700;">2022 – Present</td><td style="color:#10b981;font-weight:600;">Bull #3</td><td style="text-align:right;color:#10b981;font-weight:700;">+' + cycleGain + '%</td><td style="text-align:right;color:#64748b;">?</td><td style="text-align:right;font-weight:600;">' + cycleMonths + ' mo</td></tr>';
+    // Averages
+    html += '<tr style="background:#f8fafc;font-weight:700;"><td>Average</td><td></td><td style="text-align:right;color:#10b981;">+111%</td><td style="text-align:right;color:#ef4444;">-23%</td><td style="text-align:right;">~4 yrs</td></tr>';
+    html += '</tbody></table>';
+
+    html += '<div style="padding: 12px 16px; background: #fffbeb; border-radius: 8px; border-left: 3px solid #f59e0b;">';
+    html += '<div style="font-size: 14px; color: #92400e; line-height: 1.6;"><strong>Where are we in the cycle?</strong> The current 4-year cycle is up <strong>+' + cycleGain + '%</strong> over <strong>' + cycleMonths + ' months</strong> from the October 2022 low. The historical average cycle rally is +111% before a correction averaging -23% develops. With the cycle 3+ years old and gains near the historical average, the risk of a cyclical pullback is elevated — but within a secular bull market, pullbacks are opportunities, not exits.</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // ═══ SECTION 1: WHERE ARE WE NOW ═══
+    html += '<div style="margin-bottom: 28px; padding-top: 24px; border-top: 2px solid #e2e8f0;">';
     html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now</div>';
 
     // Current bull market highlight
@@ -2986,6 +3058,41 @@ function renderSourcesTab() {
     html += '</div>';
 
     // Card 7: Bull & Bear Market History
+    // Card: Secular & Cyclical Market Definitions
+    html += '<div class="card"><div class="card-title">Market Cycle Definitions</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-18 year period where the broad market trends structurally higher. Cyclical bear markets (20%+ declines) still happen during secular bulls, but they are buying opportunities — the market recovers and makes new highs. Defined by the S&P 500 maintaining a long-term uptrend above its multi-year moving averages. Three since 1957: <strong>1957-1966</strong> (post-war boom), <strong>1982-2000</strong> (tech revolution), <strong>2016-present</strong> (AI and digital transformation).</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-18 year period where the broad market moves sideways to down. Cyclical rallies happen but fail to sustain new highs — the market churns in a wide range. Returns over the full period are minimal (often single digits total over 16+ years). Two since 1957: <strong>1966-1982</strong> (inflation and oil shocks, S&P gained only 9% over 16 years) and <strong>2000-2016</strong> (dot-com bust and financial crisis, S&P gained only 19% over 16 years).</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Cyclical Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 3-4 year uptrend within a larger secular cycle. During secular bull markets, cyclical bulls develop from lows near the 4-year moving average with an average rally of +111% and an average correction of -23%. The current cyclical bull began in October 2022.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A decline of 20% or more from a peak to a trough. This scorecard tracks bear markets using the traditional peak-to-trough measurement — a new bear market is not counted until the prior high has been recovered. There have been 11 bear markets since 1957 with a median decline of -33% and a median duration of 14 months.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">4-Year Moving Average (200-Week MA)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">The average closing price of the S&P 500 over the last ~1,000 trading days (4 years or 200 weeks). This serves as the structural dividing line between secular bull and bear markets. When the S&P is above this line, the long-term cycle favors being invested. When it breaks below, caution is warranted. A sustained break below the 4-year MA has historically signaled that the secular trend is turning negative.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Why This Matters for Investors</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Knowing whether you are in a secular bull or bear market is arguably the single most important thing an investor can know. In a secular bull, the default action is to stay invested and use pullbacks to add exposure. In a secular bear, the default action is to be more tactical — sell rallies and wait for better prices. We are currently in a <strong>secular bull market</strong> that began in 2016, and until the S&P sustains a break below the 4-year moving average, the long-term trend favors being invested.</div>';
+    html += '</div>';
+
+    html += '</div>';
+
     html += '<div class="card"><div class="card-title">Bull &amp; Bear Market History (S&amp;P 500, 1957–Present)</div>';
     html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">All statistics use median values (less skewed by outliers). A bear market is a 20%+ decline from peak. A bull market is the recovery from a bear market trough to the next peak.</p>';
 
