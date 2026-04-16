@@ -1040,26 +1040,6 @@ html_content = '''<!DOCTYPE html>
 
         <!-- Overview Sub-tab -->
         <div id="pulse-overview" class="subtab-content active">
-            <!-- 4 Indicator Summary Cards -->
-            <div class="grid-4" style="margin-bottom: 24px;">
-                <div class="indicator-card" id="trendCard" onclick="showExplain('trend')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Market Trend <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="trendScore"></div>
-                </div>
-                <div class="indicator-card" id="breadthCard" onclick="showExplain('breadth')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Market Breadth <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="breadthValue"></div>
-                </div>
-                <div class="indicator-card" id="earningsCard" onclick="showExplain('earnings')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Earnings <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="earningsValue"></div>
-                </div>
-                <div class="indicator-card" id="valuationCard" onclick="showExplain('valuation')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Valuation <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="valuationValue"></div>
-                </div>
-            </div>
-
             <!-- S&P 500 Trend Chart (full width, V1 style) -->
             <div class="card" style="margin-bottom: 24px;">
                 <div class="card-title">S&P 500 Trend</div>
@@ -1515,28 +1495,6 @@ function renderMarketPulse() {
     // Overview indicators
     const trend_score = MARKET.trend.score || 'Neutral';
     const breadth_pct = Math.round(MARKET.breadth.pctAbove);
-    const earnings_growth = MARKET.fundamental.earningsGrowth.toFixed(1);
-    const forward_pe = MARKET.fundamental.forwardPE.toFixed(1);
-
-    document.getElementById('trendScore').textContent = trend_score;
-    document.getElementById('breadthValue').textContent = breadth_pct + '%';
-    document.getElementById('earningsValue').textContent = earnings_growth + '%';
-    document.getElementById('valuationValue').textContent = 'P/E ' + forward_pe;
-
-    // Dynamic card colors based on actual data
-    function colorCard(id, isGood, isWarn) {
-        var card = document.getElementById(id);
-        if (!card) return;
-        if (isGood) { card.style.borderLeftColor = '#10b981'; card.style.background = '#f0fdf4'; }
-        else if (isWarn) { card.style.borderLeftColor = '#f59e0b'; card.style.background = '#fffbeb'; }
-        else { card.style.borderLeftColor = '#ef4444'; card.style.background = '#fef2f2'; }
-    }
-    var trendPos = trend_score === 'Positive';
-    var trendWarn = trend_score === 'Neutral';
-    colorCard('trendCard', trendPos, trendWarn);
-    colorCard('breadthCard', breadth_pct >= 60, breadth_pct >= 40 && breadth_pct < 60);
-    colorCard('earningsCard', parseFloat(earnings_growth) > 5, parseFloat(earnings_growth) > 0 && parseFloat(earnings_growth) <= 5);
-    colorCard('valuationCard', parseFloat(forward_pe) < 18, parseFloat(forward_pe) >= 18 && parseFloat(forward_pe) < 22);
 
     // Helper: color a metric value based on bullish/bearish
     function cv(val, isGood) {

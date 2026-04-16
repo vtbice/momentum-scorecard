@@ -1377,15 +1377,24 @@ def calculate_signals(market, breadth, macro, auto_data=None):
 
     # ── Fundamental checks ──
     f = MANUAL_INPUTS["fundamental"]
-    add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
-    add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
-    add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
-    # Monitored but not scored:
+    # Monitored but not scored (manual data, goes stale between quarterly updates):
+    # add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
+    # add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
+    # add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
     # add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
-    add(f["forwardPE"] < 20.0, "Fundamental", f"Valuation · Now: P/E {f['forwardPE']} · Healthy: below 20")
-    fcf_ok = f["fcfYield"]
-    # Monitored but not scored:
     # add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
+
+    # Trailing P/E — auto-pulled from SPY (replaces manual forward P/E)
+    spy_pe = market.get("spy_etf", {}).get("price", 0)
+    # Calculate trailing P/E from SPY info if available, otherwise use estimate
+    trailing_pe = 27.8  # fallback
+    try:
+        import yfinance as _yf
+        _spy_info = _yf.Ticker("SPY").info
+        trailing_pe = _spy_info.get("trailingPE", 27.8) or 27.8
+    except Exception:
+        pass
+    add(trailing_pe < 25.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 25x")
 
     # ── Technical checks ──
     sp = market.get("sp500", {})
