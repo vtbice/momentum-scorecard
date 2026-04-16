@@ -1394,7 +1394,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         trailing_pe = _spy_info.get("trailingPE", 27.8) or 27.8
     except Exception:
         pass
-    add(trailing_pe < 25.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 25x")
+    add(trailing_pe < 22.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 22x")
 
     # ── Technical checks ──
     sp = market.get("sp500", {})
