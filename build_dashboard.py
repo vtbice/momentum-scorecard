@@ -193,6 +193,8 @@ html_content = '''<!DOCTYPE html>
             gap: 8px;
             margin-bottom: 24px;
             border-bottom: 2px solid #e2e8f0;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -1947,16 +1949,21 @@ function renderHistoricalContext() {
     html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Secular Cycles Since 1957</div>';
     html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">The market has alternated between generational bull and bear markets, each lasting roughly 16-18 years and driven by major economic forces.</p>';
 
-    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:left;">Type</th><th style="text-align:right;">S&P Start</th><th style="text-align:right;">S&P End</th><th style="text-align:right;">Return</th><th style="text-align:left;">What Drove It</th></tr></thead><tbody>';
-    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1957 – 1966</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">44</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;font-weight:600;">+114%</td><td style="font-size:12px;color:#475569;">Post-war industrial boom, baby boom consumer spending, space race, rising middle class</td></tr>';
-    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">1966 – 1982</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">94</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;font-weight:600;">+9%</td><td style="font-size:12px;color:#475569;">Runaway inflation, oil shocks, Vietnam, Watergate, Volcker raising rates to 20% to kill inflation</td></tr>';
-    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1982 – 2000</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">102</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;font-weight:600;">+1,397%</td><td style="font-size:12px;color:#475569;">Inflation conquered, Reagan tax reform, tech revolution, internet boom, globalization</td></tr>';
-    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">2000 – 2016</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">1,527</td><td style="text-align:right;">1,810</td><td style="text-align:right;color:#ef4444;font-weight:600;">+19%</td><td style="font-size:12px;color:#475569;">Dot-com bust, 9/11, financial crisis, slow recovery, two 50%+ crashes in a decade</td></tr>';
-    html += '<tr style="background:#f0fdf4;border-left:3px solid #10b981;"><td style="font-weight:700;">2016 – Present</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">1,810</td><td style="text-align:right;font-weight:700;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</td><td style="text-align:right;color:#10b981;font-weight:700;">+' + secularGain + '%</td><td style="font-size:12px;color:#475569;">AI revolution, cloud computing, fiscal stimulus, post-COVID rebound, Mag 7 tech leadership</td></tr>';
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:left;">Type</th><th style="text-align:right;">S&P Start</th><th style="text-align:right;">S&P End</th><th style="text-align:right;">Return</th><th style="text-align:right;">Duration</th><th style="text-align:left;">What Drove It</th></tr></thead><tbody>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1957 – 1966</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">44</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;font-weight:600;">+114%</td><td style="text-align:right;">9 yrs</td><td style="font-size:12px;color:#475569;">Post-war industrial boom, baby boom consumer spending, space race, rising middle class</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">1966 – 1982</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">94</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;font-weight:600;">+9%</td><td style="text-align:right;">16 yrs</td><td style="font-size:12px;color:#475569;">Runaway inflation, oil shocks, Vietnam, Watergate, Volcker raising rates to 20% to kill inflation</td></tr>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1982 – 2000</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">102</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;font-weight:600;">+1,397%</td><td style="text-align:right;">18 yrs</td><td style="font-size:12px;color:#475569;">Inflation conquered, Reagan tax reform, tech revolution, internet boom, globalization</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">2000 – 2016</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">1,527</td><td style="text-align:right;">1,810</td><td style="text-align:right;color:#ef4444;font-weight:600;">+19%</td><td style="text-align:right;">16 yrs</td><td style="font-size:12px;color:#475569;">Dot-com bust, 9/11, financial crisis, slow recovery, two 50%+ crashes in a decade</td></tr>';
+    var currentBullYears = ((new Date() - new Date('2016-02-11')) / (1000 * 60 * 60 * 24 * 365.25)).toFixed(0);
+    html += '<tr style="background:#f0fdf4;border-left:3px solid #10b981;"><td style="font-weight:700;">2016 – Present</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">1,810</td><td style="text-align:right;font-weight:700;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</td><td style="text-align:right;color:#10b981;font-weight:700;">+' + secularGain + '%</td><td style="text-align:right;font-weight:700;">' + currentBullYears + ' yrs</td><td style="font-size:12px;color:#475569;">AI revolution, cloud computing, fiscal stimulus, post-COVID rebound, Mag 7 tech leadership</td></tr>';
+    // Averages rows
+    html += '<tr style="background:#f8fafc;font-weight:700;border-top:2px solid #cbd5e1;"><td>Avg Secular Bull (completed)</td><td><span style="color:#10b981;">↑</span></td><td colspan="2"></td><td style="text-align:right;color:#10b981;">+756%</td><td style="text-align:right;">13.5 yrs</td><td style="font-size:12px;color:#475569;font-weight:400;font-style:italic;">Range: 9–18 years, returns from +114% to +1,397%</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:700;"><td>Avg Secular Bear (completed)</td><td><span style="color:#ef4444;">↓</span></td><td colspan="2"></td><td style="text-align:right;color:#ef4444;">+14%</td><td style="text-align:right;">16 yrs</td><td style="font-size:12px;color:#475569;font-weight:400;font-style:italic;">Both lasted exactly 16 years with minimal returns</td></tr>';
     html += '</tbody></table>';
 
+    var yearsRemaining = Math.max(0, 13.5 - parseFloat(currentBullYears));
     html += '<div style="margin-top: 12px; padding: 12px 16px; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #10b981;">';
-    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6;"><strong>Key takeaway:</strong> During secular bull markets, corrections are buying opportunities. During secular bear markets, rallies are selling opportunities. Knowing which regime you are in changes everything about how you invest. The 4-year moving average is the line in the sand.</div>';
+    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6;"><strong>How much room is left?</strong> The current secular bull is ' + currentBullYears + ' years old. The average completed secular bull lasted 13.5 years (range: 9–18). If history rhymes, this cycle could have <strong>roughly ' + yearsRemaining.toFixed(0) + '–' + Math.round(18 - parseFloat(currentBullYears)) + ' more years to run</strong>. The 4-year moving average is the line in the sand — a sustained break below it would signal the cycle is turning.</div>';
     html += '</div>';
     html += '</div>';
 
@@ -2064,18 +2071,29 @@ function renderHistoricalContext() {
     html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
     var frequency = PULLBACK_STATS.frequency || 0.9;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
+    var medianDurDays = PULLBACK_STATS.median_duration_days || 31;
+    var medianDurLabel;
+    var medianDurMonths = Math.round(medianDurDays / 21);
+    if (medianDurMonths < 1) {
+        medianDurLabel = Math.round(medianDurDays / 5) + ' wks';
+    } else {
+        medianDurLabel = medianDurMonths + ' mo';
+    }
     var routinePctStat = routineTier.pct || 63;
     var bearPctStat = bearTier.pct || 18;
-    var neverReach20 = Math.round(100 - bearPctStat);
+    var reach10pct = Math.round(100 - routinePctStat); // % that reach -10% or worse
     var freqLabel = frequency >= 1.5 ? Math.round(frequency) + 'x per year' : frequency >= 0.75 ? '~1 per year' : 'Every ' + Math.round(1 / frequency) + ' years';
 
-    html += '<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px;">';
-    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
-    html += '<div style="text-align: center; padding: 18px 12px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
-    html += '<div style="text-align: center; padding: 18px 12px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
-    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + Math.round(routinePctStat) + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -10%</div></div>';
-    html += '<div style="text-align: center; padding: 18px 12px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 28px; font-weight: 700; color: #10b981;">' + neverReach20 + '%</div><div style="font-size: 12px; font-weight: 600; color: #475569; margin-top: 4px;">Never Reach -20%</div></div>';
+    html += '<div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px;">';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #f0fdf4; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #10b981;">' + totalPullbacks + '</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">5%+ Pullbacks</div></div>';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #f59e0b;">' + freqLabel + '</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">Frequency</div></div>';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianMag + '%</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">Median Decline</div></div>';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #f0f9ff; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #3b82f6;">' + medianDurLabel + '</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">Median Duration</div></div>';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #fffbeb; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #f59e0b;">' + reach10pct + '%</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">Reach -10%</div></div>';
+    html += '<div style="text-align: center; padding: 18px 10px; background: #fef2f2; border-radius: 10px;"><div style="font-family: JetBrains Mono, monospace; font-size: 26px; font-weight: 700; color: #ef4444;">' + Math.round(bearPctStat) + '%</div><div style="font-size: 11px; font-weight: 600; color: #475569; margin-top: 4px;">Reach -20%</div></div>';
     html += '</div>';
+
+    html += '<p style="font-size: 14px; color: #475569; line-height: 1.6;">Of the ' + totalPullbacks + ' pullbacks since 1957, only <strong>' + reach10pct + '%</strong> deepen past -10% and only <strong>' + Math.round(bearPctStat) + '%</strong> become full bear markets reaching -20%. The median pullback declines just <strong>' + medianMag + '%</strong> over <strong>' + medianDurLabel + '</strong> — most are over before the headlines catch up.</p>';
     html += '</div>';
 
     // ═══ SECTION 4: NOT EVERY SLIP IS THE SAME ═══
