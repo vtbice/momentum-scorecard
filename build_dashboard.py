@@ -1040,40 +1040,6 @@ html_content = '''<!DOCTYPE html>
 
         <!-- Overview Sub-tab -->
         <div id="pulse-overview" class="subtab-content active">
-            <!-- Tailwinds / Headwinds detail (inside Overview so it swaps when tabs change) -->
-            <div class="health-banner" style="margin-bottom: 24px;">
-                <div id="healthDetail" class="health-detail-panel">
-                    <div class="health-column health-wins">
-                        <h3>Tailwinds</h3>
-                        <div id="tailwindsList"></div>
-                    </div>
-                    <div class="health-column health-misses">
-                        <h3>Headwinds</h3>
-                        <div id="headwindsList"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4 Indicator Summary Cards -->
-            <div class="grid-4" style="margin-bottom: 24px;">
-                <div class="indicator-card" id="trendCard" onclick="showExplain('trend')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Market Trend <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="trendScore"></div>
-                </div>
-                <div class="indicator-card" id="breadthCard" onclick="showExplain('breadth')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Market Breadth <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="breadthValue"></div>
-                </div>
-                <div class="indicator-card" id="earningsCard" onclick="showExplain('earnings')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Earnings <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="earningsValue"></div>
-                </div>
-                <div class="indicator-card" id="valuationCard" onclick="showExplain('valuation')" style="cursor:pointer;" title="Click to learn more">
-                    <div class="indicator-label">Valuation <span style="font-size:11px;color:#10b981;">ⓘ</span></div>
-                    <div class="indicator-value" id="valuationValue"></div>
-                </div>
-            </div>
-
             <!-- S&P 500 Trend Chart (full width, V1 style) -->
             <div class="card" style="margin-bottom: 24px;">
                 <div class="card-title">S&P 500 Trend</div>
@@ -1095,6 +1061,21 @@ html_content = '''<!DOCTYPE html>
 
             <!-- Historical Context -->
             <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
+
+            <!-- Tailwinds / Headwinds detail (at bottom for those who want to dig in) -->
+            <div class="health-banner" style="margin-bottom: 24px;">
+                <div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: white; text-align: center; margin-bottom: 16px;">Health Score Breakdown</div>
+                <div id="healthDetail" class="health-detail-panel">
+                    <div class="health-column health-wins">
+                        <h3>Tailwinds</h3>
+                        <div id="tailwindsList"></div>
+                    </div>
+                    <div class="health-column health-misses">
+                        <h3>Headwinds</h3>
+                        <div id="headwindsList"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Macro Sub-tab -->
@@ -1364,7 +1345,7 @@ var INDICATOR_WHY = {
     'Labor Market': 'Low unemployment means people have jobs and spending power — the engine of economic growth.',
     'GDP Growth': 'A growing economy supports corporate profits and stock prices. Below 2% signals a slowdown.',
     'Inflation': 'Stable prices mean the Fed is less likely to raise rates and slow things down.',
-    'Credit Spreads': 'Tight spreads mean lenders are confident — companies can borrow cheaply to invest and grow.',
+    'Credit Spreads': 'The High Yield Option-Adjusted Spread (HY OAS) measures the extra interest rate that riskier companies pay to borrow compared to safe Treasury bonds. When spreads are tight (below 4%), lenders are confident and credit is flowing freely — that is good for business. When spreads blow out (above 4-5%), lenders are scared and demanding higher rates — credit is tightening, which often precedes economic trouble. The bond market usually smells trouble before the stock market does.',
     'Consumer Confidence': 'When people feel good about the economy, they spend more — and spending drives growth.',
     'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
     'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
@@ -1375,10 +1356,17 @@ var INDICATOR_WHY = {
     'Initial Jobless Claims': 'Weekly count of people filing for unemployment for the first time. This is one of the earliest warning signs of economic trouble — rising claims show up in the data before they show up in the unemployment rate. Below 250K signals a healthy labor market.',
     'Sales Growth': 'Year-over-year revenue growth for S&P 500 companies. Revenue is the top line — it shows actual demand. Companies can fake earnings growth through cost cuts or buybacks, but they cannot fake sales growth. Above 4% signals genuine business expansion.',
     'AAII Bull Sentiment': 'The AAII weekly survey asks individual investors if they are bullish, bearish, or neutral about the next 6 months. This is used as a contrarian indicator — extreme bullishness (above 45%) often precedes pullbacks, extreme bearishness (below 25%) often precedes rallies. The sweet spot is 25-45% where sentiment is neither euphoric nor panicked.',
+    'Real Interest Rate': 'The Fed Funds rate minus inflation. This tells you whether the Fed is actually tightening or not. A real rate above 2% means monetary policy is meaningfully restrictive — it costs real money to borrow, which slows the economy. Below 2% means conditions are more accommodative.',
+    'MOVE Index': 'The bond market version of the VIX. It measures expected volatility in Treasury bonds. Below 100 means the bond market is calm and predictable. Above 100 means bond traders are nervous, which often spills into stocks because bonds set the cost of money for everything.',
+    'HYG/IEF Ratio': 'High yield bonds (HYG) vs safe Treasury bonds (IEF). When this ratio is rising (above its 150-day average), investors are willing to take on more credit risk for higher returns — that is a risk-on signal. When it is falling, investors are fleeing to safety.',
+    'Small Cap / Large Cap': 'Small cap stocks (IWM) vs large cap stocks (SPY). When small caps outperform (ratio above its 150-day average), it signals broad risk appetite — investors are willing to bet on smaller, riskier companies. When large caps dominate, money is hiding in safety.',
+    'Discretionary / Staples': 'Consumer discretionary stocks (XLY — things people want) vs consumer staples (XLP — things people need). When discretionary outperforms (ratio above its 150-day average), consumers are confident and spending freely. When staples outperform, consumers are cutting back to essentials.',
+    'IPO ETF': 'The Renaissance IPO ETF tracks recently public companies. These are the most speculative, highest-risk stocks in the market. When this ETF is above its 150-day moving average, it tells you investors have a healthy appetite for risk. When it falls below, speculative appetite has dried up.',
+    'Bitcoin': 'Bitcoin as a risk appetite indicator. When Bitcoin is above its 150-day moving average, it signals that investors are willing to take on speculative risk across all asset classes. When it drops below, risk appetite is shrinking — money is moving toward safety.',
     'Earnings Growth': 'Companies making more money than last year — the fundamental driver of stock prices.',
     'Profit Margins': 'How much companies keep from each dollar of revenue — a sign of pricing power and efficiency.',
     'Earnings Revisions': 'Whether analysts are raising or cutting estimates — tracks where the trend is heading.',
-    'Valuation': 'How expensive stocks are relative to earnings. High P/E means less room for error.',
+    'Valuation': 'Trailing P/E ratio for the S&P 500 (via SPY). This compares the current price to actual reported earnings over the last 12 months. The 10-year average trailing P/E is roughly 22x, so we use that as the threshold. Below 22x means valuations are near or below the historical norm — a tailwind. Above 22x means investors are paying a premium, which leaves less room for error if earnings disappoint. At extreme levels (30x+), forward returns have historically been weak.',
     'Free Cash Flow': 'Real cash generated after expenses — fuel for dividends, buybacks, and future growth.',
     'Long-Term Trend': 'The S&P 500 vs its 4-year moving average — the big-picture direction of the market.',
     'Medium-Term Trend': 'The S&P 500 vs its 150-day moving average — the intermediate trend direction.',
@@ -1507,28 +1495,6 @@ function renderMarketPulse() {
     // Overview indicators
     const trend_score = MARKET.trend.score || 'Neutral';
     const breadth_pct = Math.round(MARKET.breadth.pctAbove);
-    const earnings_growth = MARKET.fundamental.earningsGrowth.toFixed(1);
-    const forward_pe = MARKET.fundamental.forwardPE.toFixed(1);
-
-    document.getElementById('trendScore').textContent = trend_score;
-    document.getElementById('breadthValue').textContent = breadth_pct + '%';
-    document.getElementById('earningsValue').textContent = earnings_growth + '%';
-    document.getElementById('valuationValue').textContent = 'P/E ' + forward_pe;
-
-    // Dynamic card colors based on actual data
-    function colorCard(id, isGood, isWarn) {
-        var card = document.getElementById(id);
-        if (!card) return;
-        if (isGood) { card.style.borderLeftColor = '#10b981'; card.style.background = '#f0fdf4'; }
-        else if (isWarn) { card.style.borderLeftColor = '#f59e0b'; card.style.background = '#fffbeb'; }
-        else { card.style.borderLeftColor = '#ef4444'; card.style.background = '#fef2f2'; }
-    }
-    var trendPos = trend_score === 'Positive';
-    var trendWarn = trend_score === 'Neutral';
-    colorCard('trendCard', trendPos, trendWarn);
-    colorCard('breadthCard', breadth_pct >= 60, breadth_pct >= 40 && breadth_pct < 60);
-    colorCard('earningsCard', parseFloat(earnings_growth) > 5, parseFloat(earnings_growth) > 0 && parseFloat(earnings_growth) <= 5);
-    colorCard('valuationCard', parseFloat(forward_pe) < 18, parseFloat(forward_pe) >= 18 && parseFloat(forward_pe) < 22);
 
     // Helper: color a metric value based on bullish/bearish
     function cv(val, isGood) {
@@ -1930,23 +1896,64 @@ function renderHistoricalContext() {
 
     var html = '<div class="card"><div class="card-title">Market Trend Analysis</div>';
 
+    // ═══ SECULAR TREND — THE BIG PICTURE ═══
+    var secularGain = Math.round((t.sp500 / 1810 - 1) * 100);
+    var secularYears = new Date().getFullYear() - 2016;
+
+    // Banner
+    html += '<div style="background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">';
+    html += '<div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: #10b981; font-weight: 700; margin-bottom: 8px;">Secular Trend</div>';
+    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; margin-bottom: 10px;">3rd Generational Bull Market Since 1957</div>';
+    html += '<p style="font-size: 14px; color: #cbd5e1; line-height: 1.7; margin-bottom: 16px;">The S&P 500 has moved through generational cycles of expansion and contraction lasting roughly 16-18 years each. We are currently in the third secular bull market since 1957 — a period where the long-term trend favors being invested and cyclical pullbacks are buying opportunities, not the beginning of the end.</p>';
+
+    // Secular stats
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Started</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">2016</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500 Then</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">1,810</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500 Now</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</div></div>';
+    html += '<div style="text-align:center;"><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">+' + secularGain + '%</div></div>';
+    html += '</div>';
+
+    html += '<p style="font-size: 14px; color: #94a3b8; line-height: 1.7;">If history rhymes, this cycle could last into the <strong style="color:white;">early-mid 2030s</strong> and take the S&P towards <strong style="color:#10b981;">15,000</strong>. The 4-year moving average (currently ' + t.sp500MA4yr.toLocaleString(undefined, {maximumFractionDigits:0}) + ') serves as the structural dividing line — a sustained break below it would signal the secular trend is turning negative.</p>';
+    html += '</div>';
+
+    // Secular history table
+    html += '<div style="margin-bottom: 24px;">';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Secular Cycles Since 1957</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">The market has alternated between generational bull and bear markets, each lasting roughly 16-18 years and driven by major economic forces.</p>';
+
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:left;">Type</th><th style="text-align:right;">S&P Start</th><th style="text-align:right;">S&P End</th><th style="text-align:right;">Return</th><th style="text-align:left;">What Drove It</th></tr></thead><tbody>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1957 – 1966</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">44</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;font-weight:600;">+114%</td><td style="font-size:12px;color:#475569;">Post-war industrial boom, baby boom consumer spending, space race, rising middle class</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">1966 – 1982</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">94</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;font-weight:600;">+9%</td><td style="font-size:12px;color:#475569;">Runaway inflation, oil shocks, Vietnam, Watergate, Volcker raising rates to 20% to kill inflation</td></tr>';
+    html += '<tr style="background:#f0fdf4;"><td style="font-weight:600;">1982 – 2000</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">102</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;font-weight:600;">+1,397%</td><td style="font-size:12px;color:#475569;">Inflation conquered, Reagan tax reform, tech revolution, internet boom, globalization</td></tr>';
+    html += '<tr style="background:#fef2f2;"><td style="font-weight:600;">2000 – 2016</td><td><span class="badge badge-red">Secular Bear</span></td><td style="text-align:right;">1,527</td><td style="text-align:right;">1,810</td><td style="text-align:right;color:#ef4444;font-weight:600;">+19%</td><td style="font-size:12px;color:#475569;">Dot-com bust, 9/11, financial crisis, slow recovery, two 50%+ crashes in a decade</td></tr>';
+    html += '<tr style="background:#f0fdf4;border-left:3px solid #10b981;"><td style="font-weight:700;">2016 – Present</td><td><span class="badge badge-green">Secular Bull</span></td><td style="text-align:right;">1,810</td><td style="text-align:right;font-weight:700;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</td><td style="text-align:right;color:#10b981;font-weight:700;">+' + secularGain + '%</td><td style="font-size:12px;color:#475569;">AI revolution, cloud computing, fiscal stimulus, post-COVID rebound, Mag 7 tech leadership</td></tr>';
+    html += '</tbody></table>';
+
+    html += '<div style="margin-top: 12px; padding: 12px 16px; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #10b981;">';
+    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6;"><strong>Key takeaway:</strong> During secular bull markets, corrections are buying opportunities. During secular bear markets, rallies are selling opportunities. Knowing which regime you are in changes everything about how you invest. The 4-year moving average is the line in the sand.</div>';
+    html += '</div>';
+    html += '</div>';
+
     // ═══ SECTION 1: WHERE ARE WE NOW ═══
-    html += '<div style="margin-bottom: 28px;">';
+    html += '<div style="margin-bottom: 28px; padding-top: 24px; border-top: 2px solid #e2e8f0;">';
     html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now</div>';
 
-    // Current bull market highlight
+    // Current cyclical bull market highlight
     var bullGain = Math.round((t.sp500 / 3577 - 1) * 100);
     var bullStartDate = 'October 2022';
     var bullMonths = Math.round((new Date() - new Date('2022-10-12')) / (1000 * 60 * 60 * 24 * 30));
 
     html += '<div style="padding: 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 12px; margin-bottom: 20px; color: white;">';
-    html += '<div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #10b981; font-weight: 600; margin-bottom: 8px;">Current Bull Market</div>';
+    html += '<div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #10b981; font-weight: 600; margin-bottom: 8px;">Current Cyclical Bull Market · Within Secular Bull #3</div>';
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px;">';
     html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Since</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">' + bullStartDate + '</div></div>';
     html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">S&P 500</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">' + t.sp500.toLocaleString(undefined, {maximumFractionDigits:0}) + '</div></div>';
     html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: #10b981;">+' + bullGain + '%</div></div>';
     html += '<div><div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 20px; font-weight: 700; color: white;">' + bullMonths + ' months</div></div>';
-    html += '</div></div>';
+    html += '</div>';
+    html += '<p style="font-size: 13px; color: #94a3b8; margin-top: 14px; line-height: 1.6;">We are in a <strong style="color:white;">cyclical bull market</strong> (the 11th since 1957) within a larger <strong style="color:#10b981;">secular bull market</strong> (the 3rd since 1957). Cyclical bear markets can happen within secular bulls — like the -27% COVID crash in 2020 and the -25% inflation selloff in 2022 — but within a secular bull, they are buying opportunities because the generational trend is still working in your favor. The 4-year MA at ' + t.sp500MA4yr.toLocaleString(undefined, {maximumFractionDigits:0}) + ' is the line that separates the two regimes. Historically, the median cyclical bull gains +108% over 55 months. The current cycle is +' + bullGain + '% over ' + bullMonths + ' months.</p>';
+    html += '</div>';
 
     // Current position narrative
     var cp = PULLBACK_STATS.current_pullback || null;
@@ -2010,21 +2017,21 @@ function renderHistoricalContext() {
 
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
     html += '<div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 12px; border-left: 4px solid #10b981;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #10b981; margin-bottom: 12px;">11 Bull Markets</div>';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #10b981; margin-bottom: 12px;">11 Cyclical Bull Markets</div>';
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #10b981;">+107%</div></div>';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">50 mo</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Gain</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #10b981;">+108%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">55 mo</div></div>';
     html += '</div></div>';
 
     html += '<div style="padding: 20px; background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; border-left: 4px solid #ef4444;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 12px;">' + (bearTier.count || 11) + ' Bear Markets</div>';
+    html += '<div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 12px;">11 Cyclical Bear Markets</div>';
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Decline</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #ef4444;">-33%</div></div>';
-    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">' + formatDuration(bearDur) + '</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Decline</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #ef4444;">-34%</div></div>';
+    html += '<div><div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Median Duration</div><div style="font-family: JetBrains Mono, monospace; font-size: 24px; font-weight: 700; color: #0f172a;">10 mo</div></div>';
     html += '</div></div>';
     html += '</div>';
 
-    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6;">Bull markets are roughly 4x longer and deliver 3x the magnitude of bear markets. The math overwhelmingly favors staying invested. See Sources &amp; Definitions for the full list.</p>';
+    html += '<p style="font-size: 15px; color: #475569; line-height: 1.6;">Cyclical bull markets are roughly 5x longer and deliver 3x the magnitude of cyclical bear markets. Within a secular bull market, cyclical bears are buying opportunities — not exits. See Sources &amp; Definitions for the full list of all 11 bull and bear markets.</p>';
     html += '</div>';
 
     // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
@@ -2783,7 +2790,7 @@ function renderResearchTab() {
     // Search box
     html += '<div class="card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">';
     html += '<div class="card-title" style="text-align: left; border-bottom: none; padding-bottom: 0;">Company Research</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-top: 8px; margin-bottom: 12px;">Type any ticker to see detailed financials, valuation, and momentum data.</p>';
+    html += '<div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; margin-bottom: 12px;"><span style="background: #f59e0b; color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Under Construction</span><span style="font-size: 14px; color: #64748b;">Type any ticker to see available data. More features coming soon.</span></div>';
     html += '<div style="display: flex; gap: 12px; max-width: 600px;">';
     html += '<input type="text" id="researchTickerInput" placeholder="Enter ticker (e.g., NVDA, AAPL, TSLA...)" style="flex:1; padding: 12px 16px; font-size: 15px; font-family: JetBrains Mono, monospace; border: 2px solid #e2e8f0; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;" onkeydown="if(event.key===&quot;Enter&quot;)doResearchSearch();">';
     html += '<button onclick="doResearchSearch()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: DM Sans, sans-serif;">Research</button>';
@@ -3110,6 +3117,41 @@ function renderSourcesTab() {
     html += '</div>';
 
     // Card 7: Bull & Bear Market History
+    // Card: Secular & Cyclical Market Definitions
+    html += '<div class="card"><div class="card-title">Market Cycle Definitions</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-18 year period where the broad market trends structurally higher. Cyclical bear markets (20%+ declines) still happen during secular bulls, but they are buying opportunities — the market recovers and makes new highs. Defined by the S&P 500 maintaining a long-term uptrend above its multi-year moving averages. Three since 1957: <strong>1957-1966</strong> (post-war boom), <strong>1982-2000</strong> (tech revolution), <strong>2016-present</strong> (AI and digital transformation).</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-18 year period where the broad market moves sideways to down. Cyclical rallies happen but fail to sustain new highs — the market churns in a wide range. Returns over the full period are minimal (often single digits total over 16+ years). Two since 1957: <strong>1966-1982</strong> (inflation and oil shocks, S&P gained only 9% over 16 years) and <strong>2000-2016</strong> (dot-com bust and financial crisis, S&P gained only 19% over 16 years).</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Cyclical Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 3-4 year uptrend within a larger secular cycle. During secular bull markets, cyclical bulls develop from lows near the 4-year moving average with an average rally of +111% and an average correction of -23%. The current cyclical bull began in October 2022.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A decline of 20% or more from a peak to a trough. This scorecard tracks bear markets using the traditional peak-to-trough measurement — a new bear market is not counted until the prior high has been recovered. There have been 11 bear markets since 1957 with a median decline of -33% and a median duration of 14 months.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">4-Year Moving Average (200-Week MA)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">The average closing price of the S&P 500 over the last ~1,000 trading days (4 years or 200 weeks). This serves as the structural dividing line between secular bull and bear markets. When the S&P is above this line, the long-term cycle favors being invested. When it breaks below, caution is warranted. A sustained break below the 4-year MA has historically signaled that the secular trend is turning negative.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Why This Matters for Investors</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Knowing whether you are in a secular bull or bear market is arguably the single most important thing an investor can know. In a secular bull, the default action is to stay invested and use pullbacks to add exposure. In a secular bear, the default action is to be more tactical — sell rallies and wait for better prices. We are currently in a <strong>secular bull market</strong> that began in 2016, and until the S&P sustains a break below the 4-year moving average, the long-term trend favors being invested.</div>';
+    html += '</div>';
+
+    html += '</div>';
+
     html += '<div class="card"><div class="card-title">Bull &amp; Bear Market History (S&amp;P 500, 1957–Present)</div>';
     html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">All statistics use median values (less skewed by outliers). A bear market is a 20%+ decline from peak. A bull market is the recovery from a bear market trough to the next peak.</p>';
 

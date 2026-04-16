@@ -960,6 +960,79 @@ def pull_market_data():
         except Exception as e:
             print(f"  ❌ {label}: {e}")
     
+    # ── Risk appetite & sentiment indicators (price vs 150d MA) ──
+    risk_tickers = {
+        "^MOVE": ("move", "MOVE Index"),
+        "HYG":   ("hyg", "High Yield Bond ETF"),
+        "IEF":   ("ief", "Treasury Bond ETF"),
+        "IWM":   ("iwm", "Small Cap ETF"),
+        "SPY":   ("spy_etf", "S&P 500 ETF"),
+        "XLY":   ("xly", "Consumer Discretionary"),
+        "XLP":   ("xlp", "Consumer Staples"),
+        "IPO":   ("ipo", "IPO ETF"),
+        "BTC-USD": ("btc", "Bitcoin"),
+    }
+
+    for symbol, (key, label) in risk_tickers.items():
+        try:
+            hist = yf.Ticker(symbol).history(period="1y")
+            if not hist.empty:
+                px = hist['Close']
+                price = float(px.iloc[-1])
+                ma150 = float(px.rolling(150).mean().iloc[-1]) if len(px) >= 150 else None
+                market[key] = {
+                    "price": round(price, 2),
+                    "ma150": round(ma150, 2) if ma150 else None,
+                    "aboveMa": price > ma150 if ma150 else None,
+                }
+                status = "above MA" if (ma150 and price > ma150) else "below MA" if ma150 else "no MA"
+                print(f"  ✅ {label}: {price:.2f} ({status})")
+            else:
+                print(f"  ❌ {label}: No data")
+        except Exception as e:
+            print(f"  ❌ {label}: {e}")
+
+    # Calculate ratios
+    if "hyg" in market and "ief" in market:
+        hyg_p = market["hyg"]["price"]
+        ief_p = market["ief"]["price"]
+        market["hygIefRatio"] = round(hyg_p / ief_p, 4) if ief_p > 0 else None
+        # Check if ratio is above its own 150d MA
+        try:
+            hyg_hist = yf.Ticker("HYG").history(period="1y")['Close']
+            ief_hist = yf.Ticker("IEF").history(period="1y")['Close']
+            ratio_series = hyg_hist / ief_hist
+            ratio_ma = ratio_series.rolling(150).mean().iloc[-1] if len(ratio_series) >= 150 else None
+            market["hygIefAboveMa"] = float(ratio_series.iloc[-1]) > float(ratio_ma) if ratio_ma else None
+        except Exception:
+            market["hygIefAboveMa"] = None
+
+    if "iwm" in market and "spy_etf" in market:
+        iwm_p = market["iwm"]["price"]
+        spy_p = market["spy_etf"]["price"]
+        market["iwmSpyRatio"] = round(iwm_p / spy_p, 4) if spy_p > 0 else None
+        try:
+            iwm_hist = yf.Ticker("IWM").history(period="1y")['Close']
+            spy_hist = yf.Ticker("SPY").history(period="1y")['Close']
+            ratio_series = iwm_hist / spy_hist
+            ratio_ma = ratio_series.rolling(150).mean().iloc[-1] if len(ratio_series) >= 150 else None
+            market["iwmSpyAboveMa"] = float(ratio_series.iloc[-1]) > float(ratio_ma) if ratio_ma else None
+        except Exception:
+            market["iwmSpyAboveMa"] = None
+
+    if "xly" in market and "xlp" in market:
+        xly_p = market["xly"]["price"]
+        xlp_p = market["xlp"]["price"]
+        market["xlyXlpRatio"] = round(xly_p / xlp_p, 4) if xlp_p > 0 else None
+        try:
+            xly_hist = yf.Ticker("XLY").history(period="1y")['Close']
+            xlp_hist = yf.Ticker("XLP").history(period="1y")['Close']
+            ratio_series = xly_hist / xlp_hist
+            ratio_ma = ratio_series.rolling(150).mean().iloc[-1] if len(ratio_series) >= 150 else None
+            market["xlyXlpAboveMa"] = float(ratio_series.iloc[-1]) > float(ratio_ma) if ratio_ma else None
+        except Exception:
+            market["xlyXlpAboveMa"] = None
+
     return market
 
 
@@ -1291,7 +1364,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
     add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
     add(inf < 3.0, "Macro", f"Inflation · Now: {inf}% · Healthy: below 3%")
-    add(hy < 4.0, "Macro", f"Credit Spreads · Now: {hy}% · Healthy: below 4%")
+    add(hy < 4.0, "Macro", f"Credit Spreads (HY OAS) · Now: {hy}% · Healthy: below 4%")
     add(sent > 70, "Macro", f"Consumer Confidence · Now: {sent} · Healthy: above 70")
     add(mtg < 6.0, "Macro", f"Mortgage Rates · Now: {mtg}% · Healthy: below 6%")
     yc_val = round(ten_yr - two_yr, 2) if isinstance(ten_yr, (int, float)) and isinstance(two_yr, (int, float)) else 0
@@ -1304,13 +1377,24 @@ def calculate_signals(market, breadth, macro, auto_data=None):
 
     # ── Fundamental checks ──
     f = MANUAL_INPUTS["fundamental"]
-    add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
-    add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
-    add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
-    add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
-    add(f["forwardPE"] < 20.0, "Fundamental", f"Valuation · Now: P/E {f['forwardPE']} · Healthy: below 20")
-    fcf_ok = f["fcfYield"]
-    add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
+    # Monitored but not scored (manual data, goes stale between quarterly updates):
+    # add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
+    # add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
+    # add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
+    # add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
+    # add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
+
+    # Trailing P/E — auto-pulled from SPY (replaces manual forward P/E)
+    spy_pe = market.get("spy_etf", {}).get("price", 0)
+    # Calculate trailing P/E from SPY info if available, otherwise use estimate
+    trailing_pe = 27.8  # fallback
+    try:
+        import yfinance as _yf
+        _spy_info = _yf.Ticker("SPY").info
+        trailing_pe = _spy_info.get("trailingPE", 27.8) or 27.8
+    except Exception:
+        pass
+    add(trailing_pe < 22.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 22x")
 
     # ── Technical checks ──
     sp = market.get("sp500", {})
@@ -1338,6 +1422,32 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     aaii_val = aaii_auto["value"] if aaii_auto else MANUAL_INPUTS["sentiment"]["aaii"]
     add(25 <= aaii_val <= 45, "Technical",
         f"AAII Bull Sentiment · Now: {aaii_val:.0f}% · Healthy: 25-45% (extremes are contrarian)")
+
+    # ── Risk appetite & cross-asset signals ──
+    # Real interest rate (Fed Funds - Inflation)
+    ff = macro.get("fedFunds", {}).get("value", 3.64)
+    real_rate = round(ff - inf, 2)
+    add(real_rate <= 2.0, "Macro",
+        f"Real Interest Rate · Now: {real_rate:+.2f}% · Healthy: at or below 2%")
+
+    # MOVE Index (bond volatility) — lower = calmer, like VIX for bonds
+    move_price = market.get("move", {}).get("price", 0)
+    if move_price > 0:
+        add(move_price < 100, "Technical",
+            f"MOVE Index · Now: {move_price:.1f} · Healthy: below 100 (calm bond market)")
+
+    # ── Monitored but not scored (data still pulled, just not in health score) ──
+    # HYG/IEF ratio, Small Cap / Large Cap, Discretionary / Staples
+
+    # IPO ETF vs 150d MA — speculative appetite
+    ipo_above = market.get("ipo", {}).get("aboveMa")
+    if ipo_above is not None:
+        ipo_price = market.get("ipo", {}).get("price", 0)
+        add(ipo_above, "Technical",
+            f"IPO ETF · Now: ${ipo_price:.2f} · Healthy: above 150d MA (risk-on)")
+
+    # Monitored but not scored:
+    # Bitcoin vs 150d MA
     
     # Auto-balance: every indicator gets equal weight so total always = 100
     # Each indicator is worth 100/N points where N = number of indicators
