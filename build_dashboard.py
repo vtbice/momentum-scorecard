@@ -1040,20 +1040,6 @@ html_content = '''<!DOCTYPE html>
 
         <!-- Overview Sub-tab -->
         <div id="pulse-overview" class="subtab-content active">
-            <!-- Tailwinds / Headwinds detail (inside Overview so it swaps when tabs change) -->
-            <div class="health-banner" style="margin-bottom: 24px;">
-                <div id="healthDetail" class="health-detail-panel">
-                    <div class="health-column health-wins">
-                        <h3>Tailwinds</h3>
-                        <div id="tailwindsList"></div>
-                    </div>
-                    <div class="health-column health-misses">
-                        <h3>Headwinds</h3>
-                        <div id="headwindsList"></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 4 Indicator Summary Cards -->
             <div class="grid-4" style="margin-bottom: 24px;">
                 <div class="indicator-card" id="trendCard" onclick="showExplain('trend')" style="cursor:pointer;" title="Click to learn more">
@@ -1095,6 +1081,21 @@ html_content = '''<!DOCTYPE html>
 
             <!-- Historical Context -->
             <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
+
+            <!-- Tailwinds / Headwinds detail (at bottom for those who want to dig in) -->
+            <div class="health-banner" style="margin-bottom: 24px;">
+                <div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: white; text-align: center; margin-bottom: 16px;">Health Score Breakdown</div>
+                <div id="healthDetail" class="health-detail-panel">
+                    <div class="health-column health-wins">
+                        <h3>Tailwinds</h3>
+                        <div id="tailwindsList"></div>
+                    </div>
+                    <div class="health-column health-misses">
+                        <h3>Headwinds</h3>
+                        <div id="headwindsList"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Macro Sub-tab -->

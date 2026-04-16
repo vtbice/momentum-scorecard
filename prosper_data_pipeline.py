@@ -1380,10 +1380,12 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(f["salesGrowth"] > 4.0, "Fundamental", f"Sales Growth · Now: {f['salesGrowth']}% · Healthy: above 4%")
     add(f["earningsGrowth"] > 5.0, "Fundamental", f"Earnings Growth · Now: {f['earningsGrowth']}% · Healthy: above 5%")
     add(f["netMargin"] > 11.0, "Fundamental", f"Profit Margins · Now: {f['netMargin']}% · Healthy: above 11%")
-    add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
+    # Monitored but not scored:
+    # add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
     add(f["forwardPE"] < 20.0, "Fundamental", f"Valuation · Now: P/E {f['forwardPE']} · Healthy: below 20")
     fcf_ok = f["fcfYield"]
-    add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
+    # Monitored but not scored:
+    # add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
 
     # ── Technical checks ──
     sp = market.get("sp500", {})
@@ -1425,26 +1427,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         add(move_price < 100, "Technical",
             f"MOVE Index · Now: {move_price:.1f} · Healthy: below 100 (calm bond market)")
 
-    # HYG/IEF ratio — high yield vs treasuries (risk appetite)
-    hyg_ief_above = market.get("hygIefAboveMa")
-    if hyg_ief_above is not None:
-        ratio_val = market.get("hygIefRatio", 0)
-        add(hyg_ief_above, "Technical",
-            f"HYG/IEF Ratio · Now: {ratio_val:.3f} · Healthy: above 150d MA (risk-on)")
-
-    # Small cap vs large cap — broad risk appetite
-    iwm_spy_above = market.get("iwmSpyAboveMa")
-    if iwm_spy_above is not None:
-        ratio_val = market.get("iwmSpyRatio", 0)
-        add(iwm_spy_above, "Technical",
-            f"Small Cap / Large Cap · Now: {ratio_val:.3f} · Healthy: above 150d MA (risk-on)")
-
-    # Consumer Discretionary vs Staples — consumer strength
-    xly_xlp_above = market.get("xlyXlpAboveMa")
-    if xly_xlp_above is not None:
-        ratio_val = market.get("xlyXlpRatio", 0)
-        add(xly_xlp_above, "Technical",
-            f"Discretionary / Staples · Now: {ratio_val:.3f} · Healthy: above 150d MA (consumer strength)")
+    # ── Monitored but not scored (data still pulled, just not in health score) ──
+    # HYG/IEF ratio, Small Cap / Large Cap, Discretionary / Staples
 
     # IPO ETF vs 150d MA — speculative appetite
     ipo_above = market.get("ipo", {}).get("aboveMa")
@@ -1453,12 +1437,8 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         add(ipo_above, "Technical",
             f"IPO ETF · Now: ${ipo_price:.2f} · Healthy: above 150d MA (risk-on)")
 
-    # Bitcoin vs 150d MA — speculative appetite / digital risk-on
-    btc_above = market.get("btc", {}).get("aboveMa")
-    if btc_above is not None:
-        btc_price = market.get("btc", {}).get("price", 0)
-        add(btc_above, "Technical",
-            f"Bitcoin · Now: ${btc_price:,.0f} · Healthy: above 150d MA (risk-on)")
+    # Monitored but not scored:
+    # Bitcoin vs 150d MA
     
     # Auto-balance: every indicator gets equal weight so total always = 100
     # Each indicator is worth 100/N points where N = number of indicators
