@@ -1963,8 +1963,43 @@ function renderHistoricalContext() {
 
     var yearsRemainingMin = Math.max(0, 18 - parseFloat(currentBullYears));
     var yearsRemainingMax = Math.max(0, 21 - parseFloat(currentBullYears));
-    html += '<div style="margin-top: 12px; padding: 12px 16px; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #10b981;">';
-    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6;"><strong>How much room is left?</strong> The current secular bull is ' + currentBullYears + ' years old. Prior secular bulls lasted 18–21 years (averaging 19.5). If history rhymes, this cycle could have <strong>roughly ' + Math.round(yearsRemainingMin) + '–' + Math.round(yearsRemainingMax) + ' more years to run</strong> — and prior bulls returned anywhere from +571% to +1,397% from start to peak. The 4-year moving average is the line in the sand — a sustained break below it would signal the cycle is turning.</div>';
+    // Projections: current bull started 2016 at S&P 1,810
+    var startYear = 2016;
+    var startPrice = 1810;
+    var lowEndYear = startYear + 18;
+    var avgEndYear = startYear + 20; // round average of 19.5
+    var highEndYear = startYear + 21;
+    var lowEndTarget = Math.round(startPrice * (1 + 5.71));   // +571%
+    var avgEndTarget = Math.round(startPrice * (1 + 9.84));   // +984%
+    var highEndTarget = Math.round(startPrice * (1 + 13.97)); // +1,397%
+
+    html += '<div style="margin-top: 12px; padding: 16px 18px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 10px; border-left: 4px solid #10b981;">';
+    html += '<div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">How much room is left?</div>';
+    html += '<div style="font-size: 14px; color: #166534; line-height: 1.6; margin-bottom: 14px;">The current secular bull is ' + currentBullYears + ' years old. Prior secular bulls lasted 18–21 years (averaging 19.5). If history rhymes, this cycle could have <strong>roughly ' + Math.round(yearsRemainingMin) + '–' + Math.round(yearsRemainingMax) + ' more years to run</strong>.</div>';
+
+    // Projection grid
+    html += '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px;">';
+    // Low case
+    html += '<div style="background: white; padding: 14px; border-radius: 8px; border: 1px solid #fde68a;">';
+    html += '<div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #92400e; font-weight: 700;">Low Case (1945-66 like)</div>';
+    html += '<div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #f59e0b; margin-top: 6px;">S&P ' + lowEndTarget.toLocaleString() + '</div>';
+    html += '<div style="font-size: 12px; color: #475569; margin-top: 2px;">by ' + lowEndYear + ' · +571% total</div>';
+    html += '</div>';
+    // Average case
+    html += '<div style="background: white; padding: 14px; border-radius: 8px; border: 2px solid #10b981;">';
+    html += '<div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #166534; font-weight: 700;">Average Case</div>';
+    html += '<div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #10b981; margin-top: 6px;">S&P ' + avgEndTarget.toLocaleString() + '</div>';
+    html += '<div style="font-size: 12px; color: #475569; margin-top: 2px;">by ' + avgEndYear + ' · +984% total</div>';
+    html += '</div>';
+    // High case
+    html += '<div style="background: white; padding: 14px; border-radius: 8px; border: 1px solid #a7f3d0;">';
+    html += '<div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #166534; font-weight: 700;">High Case (1982-00 like)</div>';
+    html += '<div style="font-family: JetBrains Mono, monospace; font-size: 22px; font-weight: 700; color: #059669; margin-top: 6px;">S&P ' + highEndTarget.toLocaleString() + '</div>';
+    html += '<div style="font-size: 12px; color: #475569; margin-top: 2px;">by ' + highEndYear + ' · +1,397% total</div>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div style="font-size: 12px; color: #64748b; margin-top: 12px; font-style: italic;">Projections assume the current bull (started 2016 at S&P 1,810) follows the path of prior secular bulls. The 4-year moving average is the line in the sand — a sustained break below it would signal the cycle is turning.</div>';
     html += '</div>';
     html += '</div>';
 
