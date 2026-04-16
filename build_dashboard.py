@@ -91,16 +91,6 @@ def health_status_label(score, total):
 # Generate HTML
 # ============================================================================
 
-# Load research index (if any companies have been researched)
-RESEARCH_INDEX_FILE = SCRIPT_DIR / 'research' / 'research_index.json'
-research_index = {"companies": []}
-if RESEARCH_INDEX_FILE.exists():
-    try:
-        with open(RESEARCH_INDEX_FILE) as f:
-            research_index = json.load(f)
-    except Exception:
-        pass
-
 # Prepare data for JavaScript embedding
 js_data = {
     'market': data['market'],
@@ -1012,7 +1002,6 @@ html_content = '''<!DOCTYPE html>
         <button class="tab-btn" onclick="switchTab('sectors')">Sectors</button>
         <button class="tab-btn" onclick="switchTab('industries')">Industries</button>
         <button class="tab-btn" onclick="switchTab('screener')">Stock Screener</button>
-        <button class="tab-btn" onclick="switchTab('research')">Company Research</button>
         <button class="tab-btn" onclick="switchTab('sources')">Sources &amp; Definitions</button>
     </div>
 
@@ -1249,12 +1238,7 @@ html_content = '''<!DOCTYPE html>
         </div>
     </div>
 
-    <!-- TAB 4: RESEARCH -->
-    <div id="research" class="tab-content">
-        <div id="researchContent"></div>
-    </div>
-
-    <!-- TAB 5: SOURCES & METHODOLOGY -->
+    <!-- TAB 4: SOURCES & METHODOLOGY -->
     <div id="sources" class="tab-content">
         <div id="sourcesContent"></div>
     </div>
@@ -1294,7 +1278,6 @@ const PULLBACK_STATS = DATA.pullbackStats || {};
 
 const BREADTH_HISTORY = ''' + json.dumps(breadth_history) + ''';
 
-const RESEARCH_INDEX = ''' + json.dumps(research_index.get("companies", [])) + ''';
 
 // Colors
 const C = {
@@ -1325,19 +1308,47 @@ const ITEMS_PER_PAGE = 25;
 // INIT
 // ============================================================================
 
+// Sanity check critical fields before rendering — show a clear error banner if data is broken
+function checkDataIntegrity() {
+    var problems = [];
+    if (!MARKET) problems.push('MARKET data is missing');
+    if (!MARKET.technical || !MARKET.technical.sp500 || MARKET.technical.sp500 <= 0) problems.push('S&P 500 price is missing or invalid');
+    if (!MARKET.technical || !MARKET.technical.sp500MA150) problems.push('S&P 500 150-day MA is missing');
+    if (!MARKET.healthScore && MARKET.healthScore !== 0) problems.push('Health score is missing');
+    if (!STOCKS || STOCKS.length === 0) problems.push('Stock universe is empty');
+    if (!SP500_PRICES || SP500_PRICES.length === 0) problems.push('S&P 500 chart data is empty');
+    return problems;
+}
+
 window.addEventListener('DOMContentLoaded', function() {
-    renderHeader();
-    renderMarketPulse();
-    renderSectors();
-    renderStockScreener();
-    // Populate industry sector filter and render industries
-    var indSectors = [...new Set(INDUSTRIES.map(function(i) { return i.sector; }))].sort();
-    var indFilterHtml = '<option value="">All Sectors</option>';
-    indSectors.forEach(function(s) { indFilterHtml += '<option value="' + s + '">' + s + '</option>'; });
-    if (document.getElementById('industrySectorFilter')) {
-        document.getElementById('industrySectorFilter').innerHTML = indFilterHtml;
+    var problems = checkDataIntegrity();
+    if (problems.length > 0) {
+        // Show a prominent error banner instead of a blank/broken dashboard
+        var errorHtml = '<div style="background:#fef2f2; border:2px solid #ef4444; border-radius:12px; padding:24px; margin:24px;">';
+        errorHtml += '<div style="font-family:Fraunces,serif; font-size:20px; font-weight:700; color:#991b1b; margin-bottom:12px;">⚠ Data Integrity Issue</div>';
+        errorHtml += '<div style="font-size:14px; color:#991b1b; margin-bottom:12px;">The dashboard data is incomplete or broken. The nightly refresh may have failed. Please check <code>logs/refresh_latest.log</code>.</div>';
+        errorHtml += '<ul style="margin-left:20px; font-size:13px; color:#7f1d1d;">';
+        problems.forEach(function(p) { errorHtml += '<li>' + p + '</li>'; });
+        errorHtml += '</ul></div>';
+        document.querySelector('main').insertAdjacentHTML('afterbegin', errorHtml);
+        // Still try to render what we can
     }
-    renderIndustries();
+
+    try { renderHeader(); } catch(e) { console.error('renderHeader failed:', e); }
+    try { renderMarketPulse(); } catch(e) { console.error('renderMarketPulse failed:', e); }
+    try { renderSectors(); } catch(e) { console.error('renderSectors failed:', e); }
+    try { renderStockScreener(); } catch(e) { console.error('renderStockScreener failed:', e); }
+
+    try {
+        // Populate industry sector filter and render industries
+        var indSectors = [...new Set(INDUSTRIES.map(function(i) { return i.sector; }))].sort();
+        var indFilterHtml = '<option value="">All Sectors</option>';
+        indSectors.forEach(function(s) { indFilterHtml += '<option value="' + s + '">' + s + '</option>'; });
+        if (document.getElementById('industrySectorFilter')) {
+            document.getElementById('industrySectorFilter').innerHTML = indFilterHtml;
+        }
+        renderIndustries();
+    } catch(e) { console.error('renderIndustries failed:', e); }
 });
 
 // Plain-English explanations for each health indicator
@@ -1431,7 +1442,21 @@ function renderHeader() {
     const health_color = health_pct >= 80 ? C.emerald : health_pct >= 60 ? '#f59e0b' : health_pct >= 40 ? '#f97316' : C.red;
     const totalIndicators = MARKET.healthWins.length + MARKET.healthMisses.length;
 
-    document.getElementById('headerDate').innerHTML = todayFormatted + (closingDateFormatted ? ' <span style="color:#94a3b8;">(price data as of ' + closingDateFormatted + ' close)</span>' : '');
+    // Data freshness badge
+    var freshnessBadge = '';
+    try {
+        var generatedTime = new Date(DATA.generated);
+        var hoursSinceGen = (new Date() - generatedTime) / (1000 * 60 * 60);
+        if (hoursSinceGen < 36) {
+            freshnessBadge = ' <span style="background:#10b981; color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; margin-left:8px;">Fresh</span>';
+        } else if (hoursSinceGen < 72) {
+            freshnessBadge = ' <span style="background:#f59e0b; color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; margin-left:8px;" title="Data is ' + Math.round(hoursSinceGen) + ' hours old">' + Math.round(hoursSinceGen / 24) + 'd Old</span>';
+        } else {
+            freshnessBadge = ' <span style="background:#ef4444; color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; margin-left:8px;" title="Data is ' + Math.round(hoursSinceGen / 24) + ' days old — nightly refresh may be broken">⚠ ' + Math.round(hoursSinceGen / 24) + 'd Old</span>';
+        }
+    } catch(e) {}
+
+    document.getElementById('headerDate').innerHTML = todayFormatted + (closingDateFormatted ? ' <span style="color:#94a3b8;">(price data as of ' + closingDateFormatted + ' close)</span>' : '') + freshnessBadge;
 
     // Health banner
     document.getElementById('healthScore').textContent = 'Market Health Indicators';
@@ -2784,188 +2809,6 @@ function closeStockModal(e) {
     document.getElementById('stockModal').classList.remove('active');
 }
 
-function renderResearchTab() {
-    var html = '';
-
-    // Search box
-    html += '<div class="card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">';
-    html += '<div class="card-title" style="text-align: left; border-bottom: none; padding-bottom: 0;">Company Research</div>';
-    html += '<div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; margin-bottom: 12px;"><span style="background: #f59e0b; color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Under Construction</span><span style="font-size: 14px; color: #64748b;">Type any ticker to see available data. More features coming soon.</span></div>';
-    html += '<div style="display: flex; gap: 12px; max-width: 600px;">';
-    html += '<input type="text" id="researchTickerInput" placeholder="Enter ticker (e.g., NVDA, AAPL, TSLA...)" style="flex:1; padding: 12px 16px; font-size: 15px; font-family: JetBrains Mono, monospace; border: 2px solid #e2e8f0; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;" onkeydown="if(event.key===&quot;Enter&quot;)doResearchSearch();">';
-    html += '<button onclick="doResearchSearch()" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: DM Sans, sans-serif;">Research</button>';
-    html += '</div>';
-    html += '<div id="researchStatus" style="margin-top: 10px; font-size: 13px; color: #94a3b8;"></div>';
-    html += '<div id="researchResult" style="margin-top: 12px;"></div>';
-    html += '</div>';
-
-    return html;
-}
-
-function doResearchSearch() {
-    var input = document.getElementById('researchTickerInput');
-    var query = input.value.trim().toUpperCase();
-    if (!query) return;
-
-    var status = document.getElementById('researchStatus');
-    var result = document.getElementById('researchResult');
-
-    // Search embedded stock data
-    var stock = STOCKS.find(function(s) { return s.t === query; });
-    if (!stock) {
-        // Try partial match on ticker or company name
-        var matches = STOCKS.filter(function(s) {
-            return s.t.indexOf(query) === 0 || s.co.toUpperCase().indexOf(query) >= 0;
-        }).slice(0, 5);
-        if (matches.length > 0) {
-            status.innerHTML = 'No exact match for "' + query + '". Did you mean:';
-            status.style.color = '#64748b';
-            var suggestions = '';
-            matches.forEach(function(m) {
-                suggestions += '<span style="display:inline-block; margin:4px; padding:6px 12px; background:#f0fdf4; border:1px solid #10b981; border-radius:6px; cursor:pointer; font-family:JetBrains Mono,monospace; font-weight:600; font-size:13px;" onclick="document.getElementById(&quot;researchTickerInput&quot;).value=&quot;' + m.t + '&quot;;doResearchSearch();">' + m.t + ' <span style="font-family:DM Sans,sans-serif;font-weight:400;color:#64748b;">(' + m.co + ')</span></span>';
-            });
-            result.innerHTML = suggestions;
-        } else {
-            status.innerHTML = 'No stock found for "' + query + '". Try a different ticker.';
-            status.style.color = '#dc2626';
-            result.innerHTML = '';
-        }
-        return;
-    }
-
-    status.innerHTML = '';
-    input.value = '';
-
-    // Build inline research view
-    var s = stock;
-    var mc_str = (s.mc || 0) >= 1000 ? ((s.mc / 1000).toFixed(1) + 'T') : (s.mc || 0) >= 1 ? ((s.mc).toFixed(0) + 'B') : ((s.mc * 1000).toFixed(0) + 'M');
-    var ret12m = s.p12 ? ((s.px - s.p12) / s.p12 * 100) : null;
-    var r12str = ret12m !== null ? ((ret12m >= 0 ? '+' : '') + ret12m.toFixed(1) + '%') : '—';
-    var r12color = ret12m !== null && ret12m >= 0 ? '#10b981' : '#ef4444';
-    var ret1m = s.p1 ? ((s.px - s.p1) / s.p1 * 100) : null;
-    var r1str = ret1m !== null ? ((ret1m >= 0 ? '+' : '') + ret1m.toFixed(1) + '%') : '—';
-    var r1color = ret1m !== null && ret1m >= 0 ? '#10b981' : '#ef4444';
-    var trendClass = 'badge-' + (s.tr === 'Uptrend' ? 'green' : s.tr === 'Pullback' ? 'amber' : s.tr === 'Downtrend' ? 'red' : s.tr === 'Snapback' ? 'blue' : 'gray');
-    var upside = s.tgt && s.px ? ((s.tgt / s.px - 1) * 100) : null;
-    var upsideStr = upside !== null ? ((upside >= 0 ? '+' : '') + upside.toFixed(1) + '%') : '';
-
-    // Helper for section headers
-    function secTitle(title) { return '<div style="font-family:Fraunces,serif;font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px;border-left:3px solid #10b981;padding-left:12px;">' + title + '</div>'; }
-    function valRow(label, value) { return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:13px;"><span style="color:#64748b;">' + label + '</span><span style="font-family:JetBrains Mono,monospace;font-weight:600;">' + value + '</span></div>'; }
-    function placeholder(text) { return '<div style="background:#f8fafc;border:2px dashed #e2e8f0;border-radius:10px;padding:16px;color:#94a3b8;font-style:italic;font-size:13px;line-height:1.6;">' + text + '</div>'; }
-
-    var html = '';
-
-    // ── HEADER ──
-    html += '<div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:12px;padding:20px 24px;color:white;margin-bottom:20px;">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">';
-    html += '<div><div style="font-family:Fraunces,serif;font-size:24px;font-weight:700;">' + s.t + ' <span style="color:#10b981;">·</span> ' + s.co + '</div>';
-    html += '<div style="font-size:12px;color:#94a3b8;margin-top:4px;">' + s.sec + ' · ' + (s.ind || '') + '</div>';
-    html += '<div style="margin-top:8px;"><span class="badge ' + trendClass + '">' + s.tr + '</span> <span style="font-size:12px;color:#64748b;margin-left:8px;">Rel. Momentum: ' + (s.rm || 0) + 'th pctl</span></div>';
-    html += '</div>';
-    html += '<div style="text-align:right;"><div style="font-family:JetBrains Mono,monospace;font-size:28px;font-weight:700;color:#10b981;">$' + s.px.toFixed(2) + '</div>';
-    html += '<div style="font-size:12px;color:#94a3b8;">Mkt Cap: $' + mc_str + '</div>';
-    if (s.hi52 && s.lo52) html += '<div style="font-size:12px;color:#94a3b8;">52-Wk: $' + s.lo52.toFixed(2) + ' – $' + s.hi52.toFixed(2) + '</div>';
-    html += '</div></div></div>';
-
-    // ── 1. COMPANY DESCRIPTION ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('Company Description');
-    html += placeholder('What does ' + s.co + ' do? Describe their core business, products/services, and how they make money.');
-    html += '</div>';
-
-    // ── 2. HOW PEOPLE USE THE PRODUCT ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('How the Average Person Uses Their Product');
-    html += placeholder('How does a typical customer interact with ' + s.co + '? What problem does it solve for them in everyday life?');
-    html += '</div>';
-
-    // ── 3. MARKET OPPORTUNITY ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('Market Opportunity');
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:12px;">';
-    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Total Addressable Market</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
-    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Market Share</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
-    html += '<div style="background:#f8fafc;border-radius:8px;padding:14px;text-align:center;border:1px solid #e2e8f0;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:6px;">Market Position</div><div style="font-family:JetBrains Mono,monospace;font-size:20px;font-weight:700;color:#0f172a;">—</div></div>';
-    html += '</div>';
-    html += placeholder('What is the total addressable market? How much share does ' + s.co + ' have? Who are the top competitors and where does ' + s.co + ' rank?');
-    html += '</div>';
-
-    // ── 4. FUNDAMENTALS ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('Fundamentals');
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;">';
-    function kpi(label, value, highlight) {
-        var border = highlight ? 'border-top:3px solid #10b981;' : 'border-top:3px solid #1e293b;';
-        return '<div style="background:white;border-radius:8px;padding:12px 14px;border:1px solid #e2e8f0;' + border + '"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px;">' + label + '</div><div style="font-family:JetBrains Mono,monospace;font-size:17px;font-weight:700;color:#0f172a;">' + value + '</div></div>';
-    }
-    html += kpi('Revenue Growth', s.rg !== null && s.rg !== undefined ? s.rg.toFixed(1) + '%' : 'N/A', s.rg > 0);
-    html += kpi('Gross Margin', s.gm !== null && s.gm !== undefined ? s.gm.toFixed(1) + '%' : 'N/A');
-    html += kpi('Op Margin', s.om !== null && s.om !== undefined ? s.om.toFixed(1) + '%' : 'N/A');
-    html += kpi('Net Margin', s.pm !== null && s.pm !== undefined ? s.pm.toFixed(1) + '%' : 'N/A');
-    html += kpi('Trailing EPS', s.eps ? '$' + s.eps.toFixed(2) : 'N/A');
-    html += kpi('Forward EPS', s.feps ? '$' + s.feps.toFixed(2) : 'N/A');
-    html += kpi('Trailing P/E', s.tpe ? s.tpe.toFixed(1) + 'x' : 'N/A');
-    html += kpi('Forward P/E', s.fpe ? s.fpe.toFixed(1) + 'x' : 'N/A');
-    html += '</div>';
-
-    // Valuation detail
-    html += '<div style="margin-top:12px;">';
-    html += valRow('Market Cap', '$' + mc_str);
-    html += valRow('Enterprise Value', s.ev ? '$' + (s.ev >= 1000 ? (s.ev/1000).toFixed(1) + 'T' : s.ev.toFixed(0) + 'B') : 'N/A');
-    html += valRow('EV / Revenue', s.evr ? s.evr.toFixed(1) + 'x' : 'N/A');
-    html += valRow('EV / EBITDA', s.eve ? s.eve.toFixed(1) + 'x' : 'N/A');
-    html += valRow('Price / Book', s.pb ? s.pb.toFixed(1) + 'x' : 'N/A');
-    html += valRow('Dividend Yield', s.dy ? s.dy.toFixed(2) + '%' : 'N/A');
-    html += valRow('Analyst Target', s.tgt ? '$' + s.tgt.toFixed(2) + ' (' + upsideStr + ')' : 'N/A');
-    html += valRow('Analyst Count', s.nAn ? s.nAn + ' analysts' : 'N/A');
-    html += '</div>';
-
-    // Forward expectations placeholder
-    html += '<div style="margin-top:16px;">';
-    html += '<div style="font-size:14px;font-weight:600;color:#0f172a;margin-bottom:8px;">Forward Expectations</div>';
-    html += placeholder('What are the consensus estimates for next year sales and earnings growth? Are estimates being revised up or down?');
-    html += '</div>';
-    html += '</div>';
-
-    // ── 5. TECHNICAL / MOMENTUM PROFILE ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('Technical / Momentum Profile');
-
-    // Price level visualization
-    var ma150val = s.ov !== null && s.ov !== undefined && s.ov !== 0 ? (s.px / (1 + s.ov / 100)) : null;
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;">';
-    html += kpi('Price', '$' + s.px.toFixed(2));
-    html += kpi('150-Day MA', ma150val ? '$' + ma150val.toFixed(2) : 'N/A');
-    html += kpi('vs 150d MA', (s.ov >= 0 ? '+' : '') + (s.ov || 0).toFixed(1) + '%', s.ov > 0);
-    html += kpi('1M Return', r1str, ret1m > 0);
-    html += kpi('12M Return', r12str, ret12m > 0);
-    html += kpi('Beta', s.beta ? s.beta.toFixed(2) : 'N/A');
-    html += '</div>';
-
-    html += valRow('Trend Stage', '<span class="badge ' + trendClass + '">' + s.tr + '</span>');
-    html += valRow('1 Week Ago', s.tr1wk || '—');
-    html += valRow('Trend Changed', s.trChg ? '<span style="color:' + (s.tr === 'Uptrend' || s.tr === 'Snapback' ? '#10b981' : '#ef4444') + ';font-weight:700;">Yes</span>' : 'No');
-    html += valRow('Rel. Momentum Rank', (s.rm || 0) + 'th percentile');
-    html += valRow('Tier', s.ti || '—');
-    if (s.hi52 && s.lo52) {
-        var rangePos = s.hi52 > s.lo52 ? Math.round((s.px - s.lo52) / (s.hi52 - s.lo52) * 100) : 50;
-        html += '<div style="margin-top:12px;"><div style="font-size:12px;color:#64748b;margin-bottom:4px;">52-Week Range Position</div>';
-        html += '<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;color:#64748b;">$' + s.lo52.toFixed(0) + '</span>';
-        html += '<div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;position:relative;"><div style="width:' + rangePos + '%;height:100%;background:#10b981;border-radius:4px;"></div></div>';
-        html += '<span style="font-size:11px;color:#64748b;">$' + s.hi52.toFixed(0) + '</span></div></div>';
-    }
-    html += '</div>';
-
-    // ── 6. INVESTMENT NOTES ──
-    html += '<div class="card" style="margin-bottom:20px;">';
-    html += secTitle('Investment Notes');
-    html += placeholder('What is your thesis for ' + s.co + '? Key catalysts, risks, what would make you buy or sell? What are you watching for?');
-    html += '</div>';
-
-    result.innerHTML = html;
-}
-
 function renderSourcesTab() {
     let html = '';
 
@@ -3378,16 +3221,13 @@ function switchTab(tab) {
     // Highlight the clicked button
     var btns = document.querySelectorAll('.tab-btn');
     btns.forEach(function(btn) {
-        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'industries' ? 'industr' : tab === 'screener' ? 'stock' : tab === 'research' ? 'company' : 'sources') >= 0) {
+        if (btn.textContent.toLowerCase().indexOf(tab === 'pulse' ? 'market' : tab === 'sectors' ? 'sector' : tab === 'industries' ? 'industr' : tab === 'screener' ? 'stock' : 'sources') >= 0) {
             btn.classList.add('active');
         }
     });
     // Render tab content on demand
     if (tab === 'sources') {
         document.getElementById('sourcesContent').innerHTML = renderSourcesTab();
-    }
-    if (tab === 'research') {
-        document.getElementById('researchContent').innerHTML = renderResearchTab();
     }
 }
 
