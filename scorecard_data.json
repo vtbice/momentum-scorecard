@@ -5,155 +5,197 @@
   "market": {
     "date": "4/15/26",
     "overallScore": "Neutral",
-    "healthScore": 63,
+    "healthScore": 65,
     "healthTotal": 100,
     "healthLabel": "Cautiously Optimistic",
     "healthWins": [
       {
         "label": "Labor Market \u00b7 Now: 4.3% \u00b7 Healthy: below 5%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Credit Spreads \u00b7 Now: 2.95% \u00b7 Healthy: below 4%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Yield Curve \u00b7 Now: +0.52% \u00b7 Healthy: positive (not inverted)",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "ISM Manufacturing \u00b7 Now: 50.0 \u00b7 Healthy: above 50",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
+        "label": "US Dollar (DXY) \u00b7 Now: 98.3 \u00b7 Healthy: below 105",
+        "weight": 3.225806451612903,
+        "cat": "Macro",
+        "sinceDate": "2026-04-15"
+      },
+      {
+        "label": "Initial Jobless Claims \u00b7 Now: 219K \u00b7 Healthy: below 250K",
+        "weight": 3.225806451612903,
+        "cat": "Macro",
+        "sinceDate": "2026-04-15"
+      },
+      {
+        "label": "Sales Growth \u00b7 Now: 8.2% \u00b7 Healthy: above 4%",
+        "weight": 3.225806451612903,
+        "cat": "Fundamental",
+        "sinceDate": "2026-04-15"
+      },
+      {
         "label": "Earnings Growth \u00b7 Now: 11.9% \u00b7 Healthy: above 5%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Fundamental",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Profit Margins \u00b7 Now: 13.2% \u00b7 Healthy: above 11%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Fundamental",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Earnings Revisions \u00b7 Now: 1.05x \u00b7 Healthy: above 1.0",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Fundamental",
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "Long-Term Trend \u00b7 S&P 6,967 vs 4-Year MA 5,172",
-        "weight": 4.166666666666667,
+        "label": "Long-Term Trend \u00b7 S&P 7,021 vs 4-Year MA 5,178",
+        "weight": 3.225806451612903,
         "cat": "Technical",
         "sinceDate": "2026-04-14"
       },
       {
-        "label": "Medium-Term Trend \u00b7 S&P 6,967 vs 150-Day MA 6,775",
-        "weight": 4.166666666666667,
+        "label": "Medium-Term Trend \u00b7 S&P 7,021 vs 150-Day MA 6,782",
+        "weight": 3.225806451612903,
         "cat": "Technical",
         "sinceDate": "2026-04-14"
       },
       {
-        "label": "Volatility \u00b7 VIX Now: 18.4 \u00b7 Healthy: below 20",
-        "weight": 4.166666666666667,
+        "label": "Volatility \u00b7 VIX Now: 18.9 \u00b7 Healthy: below 20",
+        "weight": 3.225806451612903,
         "cat": "Technical",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Sentiment \u00b7 P/C Now: 0.9 \u00b7 Healthy: below 1.0",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Technical",
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "US Dollar (DXY) \u00b7 Now: 98.2 \u00b7 Healthy: below 105",
-        "cat": "Macro",
-        "sinceDate": "2026-04-15",
-        "weight": 4.166666666666667
-      },
-      {
-        "label": "Initial Jobless Claims \u00b7 Now: 219K \u00b7 Healthy: below 250K",
-        "cat": "Macro",
-        "sinceDate": "2026-04-15",
-        "weight": 4.166666666666667
-      },
-      {
-        "label": "Sales Growth \u00b7 Now: 8.2% \u00b7 Healthy: above 4%",
-        "cat": "Fundamental",
-        "sinceDate": "2026-04-15",
-        "weight": 4.166666666666667
-      },
-      {
         "label": "AAII Bull Sentiment \u00b7 Now: 30% \u00b7 Healthy: 25-45% (extremes are contrarian)",
+        "weight": 3.225806451612903,
         "cat": "Technical",
-        "sinceDate": "2026-04-15",
-        "weight": 4.166666666666667
+        "sinceDate": "2026-04-15"
+      },
+      {
+        "label": "Real Interest Rate \u00b7 Now: +0.34% \u00b7 Healthy: at or below 2%",
+        "weight": 3.225806451612903,
+        "cat": "Macro",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "MOVE Index \u00b7 Now: 67.9 \u00b7 Healthy: below 100 (calm bond market)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "HYG/IEF Ratio \u00b7 Now: 0.840 \u00b7 Healthy: above 150d MA (risk-on)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "Small Cap / Large Cap \u00b7 Now: 0.384 \u00b7 Healthy: above 150d MA (risk-on)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "IPO ETF \u00b7 Now: $47.62 \u00b7 Healthy: above 150d MA (risk-on)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
       }
     ],
     "healthMisses": [
       {
         "label": "GDP Growth \u00b7 Now: 0.5% \u00b7 Healthy: above 2%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Inflation \u00b7 Now: 3.3% \u00b7 Healthy: below 3%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-13"
       },
       {
         "label": "Consumer Confidence \u00b7 Now: 56.6 \u00b7 Healthy: above 70",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
         "label": "Mortgage Rates \u00b7 Now: 6.37% \u00b7 Healthy: below 6%",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "Valuation \u00b7 Now: P/E 20.3 \u00b7 Healthy: below 20",
-        "weight": 4.166666666666667,
-        "cat": "Fundamental",
-        "sinceDate": "2026-04-10"
-      },
-      {
-        "label": "Free Cash Flow \u00b7 Now: 3.5% \u00b7 Healthy: above 3.5%",
-        "weight": 4.166666666666667,
-        "cat": "Fundamental",
-        "sinceDate": "2026-04-10"
-      },
-      {
-        "label": "Oil Price (WTI) \u00b7 Now: $91.45 \u00b7 Healthy: below $90",
-        "weight": 4.166666666666667,
+        "label": "Oil Price (WTI) \u00b7 Now: $90.15 \u00b7 Healthy: below $90",
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-15"
       },
       {
         "label": "Gas Price \u00b7 Now: $4.12 \u00b7 Healthy: below $4.00",
-        "weight": 4.166666666666667,
+        "weight": 3.225806451612903,
         "cat": "Macro",
         "sinceDate": "2026-04-15"
       },
       {
+        "label": "Valuation \u00b7 Now: P/E 20.3 \u00b7 Healthy: below 20",
+        "weight": 3.225806451612903,
+        "cat": "Fundamental",
+        "sinceDate": "2026-04-10"
+      },
+      {
+        "label": "Free Cash Flow \u00b7 Now: 3.5% \u00b7 Healthy: above 3.5%",
+        "weight": 3.225806451612903,
+        "cat": "Fundamental",
+        "sinceDate": "2026-04-10"
+      },
+      {
         "label": "Market Breadth \u00b7 Now: 49% \u00b7 Healthy: above 60% or below 20% (oversold)",
+        "weight": 3.225806451612903,
         "cat": "Technical",
-        "sinceDate": "2026-04-15",
-        "weight": 4.166666666666667
+        "sinceDate": "2026-04-15"
+      },
+      {
+        "label": "Discretionary / Staples \u00b7 Now: 1.442 \u00b7 Healthy: above 150d MA (consumer strength)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "Bitcoin \u00b7 Now: $73,883 \u00b7 Healthy: above 150d MA (risk-on)",
+        "weight": 3.225806451612903,
+        "cat": "Technical",
+        "sinceDate": "2026-04-16"
       }
     ],
     "trend": {
@@ -163,8 +205,14 @@
     },
     "breadth": {
       "pctAbove": 48.9,
-      "r3kPrice": 3964.89,
-      "r3kMA150": 3852.53
+      "r3kPrice": 3990.4,
+      "r3kMA150": 3856.2,
+      "trends": {
+        "Uptrend": 41.3,
+        "Pullback": 9.4,
+        "Downtrend": 41.7,
+        "Snapback": 7.6
+      }
     },
     "macro": {
       "gdp": 0.5,
@@ -176,8 +224,8 @@
       "twoYear": 3.78,
       "hySpread": 2.95,
       "igSpread": 1.04,
-      "oil": 91.45,
-      "dxy": 98.15,
+      "oil": 90.15,
+      "dxy": 98.26,
       "mortgage": 6.37,
       "gasPrice": 4.12,
       "joblessClaims": 219000.0,
@@ -205,10 +253,10 @@
       "_lastUpdated": "2026-03-25"
     },
     "technical": {
-      "sp500": 6967.38,
-      "sp500MA4yr": 5172.49,
-      "sp500MA150": 6775.42,
-      "vix": 18.36,
+      "sp500": 7020.65,
+      "sp500MA4yr": 5177.62,
+      "sp500MA150": 6782.08,
+      "vix": 18.93,
       "putCall": 0.9,
       "aaii": 30.4,
       "pctAbove20sma": 79.1,
@@ -245,8 +293,6 @@
     }
   },
   "sp500_daily_prices": [
-    4109.11,
-    4108.94,
     4091.95,
     4146.22,
     4137.64,
@@ -1000,11 +1046,11 @@
     6824.66,
     6816.89,
     6886.24,
-    6967.38
+    6967.38,
+    7022.95,
+    7020.65
   ],
   "sp500_daily_dates": [
-    "2023-04-10",
-    "2023-04-11",
     "2023-04-12",
     "2023-04-13",
     "2023-04-14",
@@ -1758,7 +1804,9 @@
     "2026-04-09",
     "2026-04-10",
     "2026-04-13",
-    "2026-04-14"
+    "2026-04-14",
+    "2026-04-15",
+    "2026-04-16"
   ],
   "sectors": [
     {
