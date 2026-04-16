@@ -1364,7 +1364,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
     add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
     add(inf < 3.0, "Macro", f"Inflation · Now: {inf}% · Healthy: below 3%")
-    add(hy < 4.0, "Macro", f"Credit Spreads · Now: {hy}% · Healthy: below 4%")
+    add(hy < 4.0, "Macro", f"Credit Spreads (HY OAS) · Now: {hy}% · Healthy: below 4%")
     add(sent > 70, "Macro", f"Consumer Confidence · Now: {sent} · Healthy: above 70")
     add(mtg < 6.0, "Macro", f"Mortgage Rates · Now: {mtg}% · Healthy: below 6%")
     yc_val = round(ten_yr - two_yr, 2) if isinstance(ten_yr, (int, float)) and isinstance(two_yr, (int, float)) else 0

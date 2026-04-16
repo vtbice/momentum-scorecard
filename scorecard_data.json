@@ -5,7 +5,7 @@
   "market": {
     "date": "4/15/26",
     "overallScore": "Neutral",
-    "healthScore": 68,
+    "healthScore": 72,
     "healthTotal": 100,
     "healthLabel": "Cautiously Optimistic",
     "healthWins": [
@@ -16,10 +16,10 @@
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "Credit Spreads \u00b7 Now: 2.95% \u00b7 Healthy: below 4%",
+        "label": "Credit Spreads (HY OAS) \u00b7 Now: 2.95% \u00b7 Healthy: below 4%",
         "weight": 4.0,
         "cat": "Macro",
-        "sinceDate": "2026-04-10"
+        "sinceDate": "2026-04-16"
       },
       {
         "label": "Yield Curve \u00b7 Now: +0.52% \u00b7 Healthy: positive (not inverted)",
@@ -34,7 +34,13 @@
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "US Dollar (DXY) \u00b7 Now: 98.3 \u00b7 Healthy: below 105",
+        "label": "Oil Price (WTI) \u00b7 Now: $89.88 \u00b7 Healthy: below $90",
+        "weight": 4.0,
+        "cat": "Macro",
+        "sinceDate": "2026-04-16"
+      },
+      {
+        "label": "US Dollar (DXY) \u00b7 Now: 98.2 \u00b7 Healthy: below 105",
         "weight": 4.0,
         "cat": "Macro",
         "sinceDate": "2026-04-15"
@@ -64,19 +70,19 @@
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "Long-Term Trend \u00b7 S&P 7,021 vs 4-Year MA 5,178",
+        "label": "Long-Term Trend \u00b7 S&P 7,041 vs 4-Year MA 5,178",
         "weight": 4.0,
         "cat": "Technical",
         "sinceDate": "2026-04-14"
       },
       {
-        "label": "Medium-Term Trend \u00b7 S&P 7,021 vs 150-Day MA 6,782",
+        "label": "Medium-Term Trend \u00b7 S&P 7,041 vs 150-Day MA 6,782",
         "weight": 4.0,
         "cat": "Technical",
         "sinceDate": "2026-04-14"
       },
       {
-        "label": "Volatility \u00b7 VIX Now: 18.9 \u00b7 Healthy: below 20",
+        "label": "Volatility \u00b7 VIX Now: 18.6 \u00b7 Healthy: below 20",
         "weight": 4.0,
         "cat": "Technical",
         "sinceDate": "2026-04-10"
@@ -106,7 +112,7 @@
         "sinceDate": "2026-04-16"
       },
       {
-        "label": "IPO ETF \u00b7 Now: $47.62 \u00b7 Healthy: above 150d MA (risk-on)",
+        "label": "IPO ETF \u00b7 Now: $48.15 \u00b7 Healthy: above 150d MA (risk-on)",
         "weight": 4.0,
         "cat": "Technical",
         "sinceDate": "2026-04-16"
@@ -138,12 +144,6 @@
         "sinceDate": "2026-04-10"
       },
       {
-        "label": "Oil Price (WTI) \u00b7 Now: $90.15 \u00b7 Healthy: below $90",
-        "weight": 4.0,
-        "cat": "Macro",
-        "sinceDate": "2026-04-15"
-      },
-      {
         "label": "Gas Price \u00b7 Now: $4.12 \u00b7 Healthy: below $4.00",
         "weight": 4.0,
         "cat": "Macro",
@@ -169,13 +169,10 @@
     },
     "breadth": {
       "pctAbove": 48.9,
-      "r3kPrice": 3990.4,
-      "r3kMA150": 3856.2,
+      "r3kPrice": 4002.45,
+      "r3kMA150": 3856.28,
       "trends": {
-        "Uptrend": 41.3,
-        "Pullback": 9.4,
-        "Downtrend": 41.7,
-        "Snapback": 7.6
+        "Uptrend": 41.3
       }
     },
     "macro": {
@@ -188,8 +185,8 @@
       "twoYear": 3.78,
       "hySpread": 2.95,
       "igSpread": 1.04,
-      "oil": 90.15,
-      "dxy": 98.26,
+      "oil": 89.88,
+      "dxy": 98.21,
       "mortgage": 6.37,
       "gasPrice": 4.12,
       "joblessClaims": 219000.0,
@@ -217,10 +214,10 @@
       "_lastUpdated": "2026-03-25"
     },
     "technical": {
-      "sp500": 7022.58,
-      "sp500MA4yr": 5177.62,
-      "sp500MA150": 6782.08,
-      "vix": 18.93,
+      "sp500": 7041.34,
+      "sp500MA4yr": 5177.64,
+      "sp500MA150": 6782.22,
+      "vix": 18.6,
       "putCall": 0.9,
       "aaii": 30.4,
       "pctAbove20sma": 79.1,
@@ -1012,7 +1009,7 @@
     6886.24,
     6967.38,
     7022.95,
-    7020.65
+    7041.34
   ],
   "sp500_daily_dates": [
     "2023-04-12",
@@ -43604,7 +43601,7 @@
     "start_year": 1957,
     "end_year": 2026,
     "start_price": 44.06,
-    "end_price": 6967.38,
+    "end_price": 7040.99,
     "tiers": {
       "routine": {
         "count": 39,
@@ -44135,13 +44132,7 @@
         ]
       }
     },
-    "current_pullback": {
-      "magnitude": -9.1,
-      "duration": 43,
-      "start_date": "2026-01-27",
-      "peak_price": 6978.6,
-      "peak_date": "2026-01-27"
-    }
+    "current_pullback": null
   },
   "pendingRemoval": []
 }

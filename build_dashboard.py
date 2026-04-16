@@ -1365,7 +1365,7 @@ var INDICATOR_WHY = {
     'Labor Market': 'Low unemployment means people have jobs and spending power — the engine of economic growth.',
     'GDP Growth': 'A growing economy supports corporate profits and stock prices. Below 2% signals a slowdown.',
     'Inflation': 'Stable prices mean the Fed is less likely to raise rates and slow things down.',
-    'Credit Spreads': 'Tight spreads mean lenders are confident — companies can borrow cheaply to invest and grow.',
+    'Credit Spreads': 'The High Yield Option-Adjusted Spread (HY OAS) measures the extra interest rate that riskier companies pay to borrow compared to safe Treasury bonds. When spreads are tight (below 4%), lenders are confident and credit is flowing freely — that is good for business. When spreads blow out (above 4-5%), lenders are scared and demanding higher rates — credit is tightening, which often precedes economic trouble. The bond market usually smells trouble before the stock market does.',
     'Consumer Confidence': 'When people feel good about the economy, they spend more — and spending drives growth.',
     'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
     'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
