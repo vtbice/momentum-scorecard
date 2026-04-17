@@ -302,6 +302,16 @@
             margin-bottom: 2px;
         }
 
+        /* Light variant: Health Score Breakdown as a normal white card */
+        .health-breakdown-light .health-detail-panel {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+        .health-breakdown-light .health-column h3 { color: #0f172a; }
+        .health-breakdown-light .health-item-label { color: #334155; }
+        .health-breakdown-light .health-item-weight { color: #94a3b8; }
+
 
         .health-item-weight {
             font-family: 'JetBrains Mono', monospace;
@@ -937,8 +947,8 @@
             <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
 
             <!-- Tailwinds / Headwinds detail (at bottom for those who want to dig in) -->
-            <div class="health-banner" style="margin-bottom: 24px;">
-                <div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: white; text-align: center; margin-bottom: 16px;">Health Score Breakdown</div>
+            <div class="card health-breakdown-light">
+                <div class="card-title">Health Score Breakdown</div>
                 <div id="healthDetail" class="health-detail-panel">
                     <div class="health-column health-wins">
                         <h3>Tailwinds</h3>
