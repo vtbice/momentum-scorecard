@@ -1452,15 +1452,50 @@ function renderMarketPulse() {
 
     const breadth_html = '<div class="metric-row"><span class="metric-label">% Above 150-Day MA</span><span class="metric-value" style="color:' + bValColor + '; font-size: 28px;">' + Math.round(parseFloat(breadth_pct)) + '%</span></div>' +
         bGauge +
-        '<div class="breadth-detail"><table class="breadth-table"><thead><tr><th>Breadth Range</th><th class="breadth-num">% of Time</th><th class="breadth-num">1yr Fwd %</th></tr></thead><tbody id="breadthHistoryTable"></tbody></table></div>';
+        '<div id="breadthHistoryViz" style="margin-top:20px;"></div>';
 
     document.getElementById('breadthCardContent').innerHTML = breadth_html;
 
-    let breadth_rows = '';
+    // Determine which bucket current breadth falls into
+    function bucketForBreadth(pct) {
+        if (pct >= 90) return 'Above 90%';
+        if (pct >= 80) return '80-90%';
+        if (pct >= 70) return '70-80%';
+        if (pct >= 60) return '60-70%';
+        if (pct >= 50) return '50-60%';
+        if (pct >= 40) return '40-50%';
+        if (pct >= 30) return '30-40%';
+        if (pct >= 20) return '20-30%';
+        if (pct >= 10) return '10-20%';
+        return 'Below 10%';
+    }
+    var currentBucket = bucketForBreadth(bPct);
+
+    // Find max forward return for scaling bars
+    var maxFwd = 0;
+    BREADTH_HISTORY.forEach(function(r) { if (r.fwd > maxFwd) maxFwd = r.fwd; });
+
+    // Build a visual list — each row is a horizontal bar showing forward return
+    var vizHtml = '<div style="font-size:13px; font-weight:600; color:#334155; margin-bottom:10px;">Historical 1-Year Forward Returns by Breadth Level</div>';
+    vizHtml += '<div style="font-size:11px; color:#94a3b8; margin-bottom:12px; font-style:italic;">Over 70 years of data, forward returns form a U-shape — they are strongest when breadth is <strong style="color:#10b981;">extremely oversold</strong> (capitulation) or <strong style="color:#10b981;">broadly healthy</strong>, and weakest in the middle "narrowing" zone.</div>';
+
     BREADTH_HISTORY.forEach(function(row) {
-        breadth_rows += '<tr><td class="breadth-range">' + row.range + '</td><td class="breadth-num">' + row.pctTime.toFixed(1) + '%</td><td class="breadth-num">' + row.fwd.toFixed(1) + '%</td></tr>';
+        var isCurrent = row.range === currentBucket;
+        var barWidth = (row.fwd / maxFwd) * 100;
+        // Color: green for strong fwd returns, amber for mediocre, red for weak
+        var barColor = row.fwd >= 15 ? '#10b981' : row.fwd >= 10 ? '#22c55e' : row.fwd >= 8 ? '#f59e0b' : '#f97316';
+        var rowBg = isCurrent ? 'background:#f0fdf4; border-left:4px solid #10b981;' : '';
+        var currentMarker = isCurrent ? ' <span style="background:#10b981; color:white; font-size:9px; font-weight:700; padding:2px 6px; border-radius:3px; letter-spacing:0.5px; vertical-align:middle;">CURRENT</span>' : '';
+
+        vizHtml += '<div style="display:grid; grid-template-columns:100px 45px 1fr 55px; gap:10px; align-items:center; padding:6px 8px; margin-bottom:3px; border-radius:6px; ' + rowBg + '">';
+        vizHtml += '<div style="font-size:12px; font-weight:' + (isCurrent ? '700' : '500') + '; color:#334155;">' + row.range + currentMarker + '</div>';
+        vizHtml += '<div style="font-size:11px; color:#64748b; text-align:right;">' + Math.round(row.pctTime) + '% of time</div>';
+        vizHtml += '<div style="position:relative; height:20px; background:#f1f5f9; border-radius:4px;"><div style="position:absolute; left:0; top:0; bottom:0; width:' + barWidth + '%; background:' + barColor + '; border-radius:4px;"></div></div>';
+        vizHtml += '<div style="font-family:JetBrains Mono,monospace; font-size:13px; font-weight:700; color:' + barColor + '; text-align:right;">+' + Math.round(row.fwd) + '%</div>';
+        vizHtml += '</div>';
     });
-    document.getElementById('breadthHistoryTable').innerHTML = breadth_rows;
+
+    document.getElementById('breadthHistoryViz').innerHTML = vizHtml;
 
 
 
