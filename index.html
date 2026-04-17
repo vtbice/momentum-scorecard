@@ -2013,7 +2013,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 1: WHERE ARE WE NOW ═══
-    html += '<div class="card">';
+    html += '<div class="card" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">';
     html += '<div class="card-title">Where Are We Now</div>';
 
     // Current cyclical bull market highlight
@@ -2085,7 +2085,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 2: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
-    html += '<div class="card">';
+    html += '<div class="card" style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5);">';
     html += '<div class="card-title">The Climb Is Always Longer Than the Slide</div>';
     html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
 
@@ -2109,7 +2109,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
-    html += '<div class="card">';
+    html += '<div class="card" style="background: linear-gradient(135deg, #fffbeb, #fef3c7);">';
     html += '<div class="card-title">Pullbacks Are Normal</div>';
     var frequency = PULLBACK_STATS.frequency || 0.9;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
@@ -2139,7 +2139,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 4: NOT EVERY SLIP IS THE SAME ═══
-    html += '<div class="card">';
+    html += '<div class="card" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe);">';
     html += '<div class="card-title">Not Every Slip Is the Same</div>';
     html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Of the ' + totalPullbacks + ' pullbacks since 1957, here is how they break down by severity:</p>';
     html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
