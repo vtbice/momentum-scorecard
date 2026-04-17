@@ -1904,7 +1904,6 @@ function renderHistoricalContext() {
 
     // Current position narrative
     var cp = PULLBACK_STATS.current_pullback || null;
-    var breadthContext = MARKET.breadth.pctAbove >= 60 ? 'Breadth is healthy with broad participation.' : MARKET.breadth.pctAbove >= 40 ? 'Breadth is narrowing — fewer stocks are participating.' : 'Breadth is weak — the market is being carried by a narrow group of leaders.';
 
     html += '<div style="font-size: 15px; color: #64748b; line-height: 1.8;">';
 
@@ -1952,8 +1951,6 @@ function renderHistoricalContext() {
         html += t.sp500 > t.sp500MA4yr ? 'The long-term trend is up — price is ' + pctFrom4yr + '% above the 4-year moving average. ' : 'The long-term trend is being tested. ';
     }
 
-    html += breadthContext + ' ';
-    html += 'VIX at ' + t.vix.toFixed(1) + ' — ' + (t.vix >= 30 ? 'extreme fear, historically a contrarian buy zone.' : t.vix > 20 ? 'elevated but not at panic levels.' : 'calm conditions.') + ' ';
     html += '</div>';
     html += '</div>';
 
