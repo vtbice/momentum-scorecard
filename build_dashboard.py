@@ -2863,56 +2863,145 @@ function closeStockModal(e) {
 function renderSourcesTab() {
     let html = '';
 
-    // Card 1: Health Score Methodology (dynamic — reads live counts from MARKET)
-    var totalIndicators = (MARKET.healthWins.length + MARKET.healthMisses.length);
-    var macroCount = (MARKET.healthWins.filter(function(w){return w.cat==='Macro';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Macro';}).length);
-    var fundamentalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Fundamental';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Fundamental';}).length);
-    var technicalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Technical';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Technical';}).length);
-    var pointsEach = (100 / totalIndicators).toFixed(1);
+    // Card 1: Bull & Bear Market History
+    // Card: Secular & Cyclical Market Definitions
+    html += '<div class="card"><div class="card-title">Market Cycle Definitions</div>';
 
-    html += '<div class="card"><div class="card-title">Health Score Methodology</div>';
-    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">The Momentum Scorecard uses a <strong>' + totalIndicators + '-indicator</strong> scoring system across three categories. Every indicator gets equal weight — one vote, one voice. No thumb on the scale. The total always equals 100 regardless of how many indicators we track, so scores are always comparable over time.</p>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">' + totalIndicators + ' Binary Indicators (equal weight):</strong><br/><span style="font-size: 14px; color: #64748b;">Macro (' + macroCount + ') + Fundamental (' + fundamentalCount + ') + Technical (' + technicalCount + ') — each worth <strong>' + pointsEach + ' points</strong></span></div>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Total Possible:</strong><br/><span style="font-size: 14px; color: #64748b;">100 points (auto-balanced — weight per indicator = 100 &divide; ' + totalIndicators + ')</span></div>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Why Equal Weight?</strong><br/><span style="font-size: 14px; color: #64748b;">Simplicity and transparency. Each indicator gets an equal say. If one area matters more, it shows up naturally by having more indicators (Macro currently has ' + macroCount + ' votes vs ' + fundamentalCount + ' for Fundamental and ' + technicalCount + ' for Technical). No hidden biases.</span></div>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Health Score Bands:</strong><br/>';
-    html += '<div style="font-size: 13px; color: #64748b; margin-top: 8px;"><span style="color: #ef4444; font-weight: 600;">0-25%</span>: Risk Off · <span style="color: #f59e0b; font-weight: 600;">25-40%</span>: Defensive · <span style="color: #ca8a04; font-weight: 600;">40-60%</span>: Cautious · <span style="color: #10b981; font-weight: 600;">60-80%</span>: Cautiously Optimistic · <span style="color: #059669; font-weight: 600;">80-100%</span>: Bullish</div>';
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-21 year period where the broad market trends structurally higher. Cyclical bear markets (20%+ declines) still happen during secular bulls, but they are buying opportunities — the market recovers and makes new highs. Defined by the S&P 500 maintaining a long-term uptrend above its multi-year moving averages. Three since WWII: <strong>1945-1966</strong> (post-war boom, +571%), <strong>1982-2000</strong> (tech revolution, +1,397%), <strong>2016-present</strong> (AI and digital transformation).</div>';
+    html += '<div style="margin-top: 10px; padding: 12px 14px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #10b981;">';
+    html += '<div style="font-size: 12px; color: #475569; line-height: 1.6;"><strong style="color:#0f172a;">Why these specific start dates?</strong> Each secular bull begins the year the S&P sustainably broke above the prior generational peak — the clearest signal that a new regime has begun and the prior sideways/down era is over.';
+    html += '<ul style="margin: 8px 0 0 20px; padding: 0;">';
+    html += '<li><strong>1945:</strong> End of WWII. Market broke out of the 1929-45 range as the post-war economy took off.</li>';
+    html += '<li><strong>1982:</strong> S&P reclaimed its 1966 high (~100) after 16 years of inflation-plagued sideways action. Volcker broke inflation\\'s back, launching the 18-year tech bull.</li>';
+    html += '<li><strong>2016:</strong> S&P sustainably broke above its 2000/2007 double-top near 1,550 after recovering through the 2011-15 chop. This was the technical end of the 2000-2016 secular bear.</li>';
+    html += '</ul>';
+    html += '<div style="margin-top: 8px;"><strong style="color:#0f172a;">Why not 2009?</strong> Some sources claim the current bull started in 2009 at the GFC low. That\\'s a <em>cyclical</em> low inside the 2000-2016 secular bear — not a regime change. The S&P didn\\'t sustainably break above its 2007 peak until 2013, and didn\\'t break above the 2000 peak until 2013-2015. By 2009, the market was still trapped in the sideways range that defined the secular bear. Only after clearing those highs did the new secular bull begin. Picking 2009 cherry-picks a cyclical low to make any current stretch look overextended — it\\'s not consistent with how the prior secular regimes are dated.</div>';
+    html += '</div></div>';
     html += '</div>';
+
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-year period where the broad market moves sideways to down. Cyclical rallies happen but fail to sustain new highs — the market churns in a wide range. Returns over the full period are minimal (often single digits total over 16+ years). Two since WWII: <strong>1966-1982</strong> (inflation and oil shocks, S&P gained only 9% over 16 years) and <strong>2000-2016</strong> (dot-com bust and financial crisis, S&P gained only 19% over 16 years).</div>';
     html += '</div>';
 
-    // Card 2: All Live Indicators (auto-generated from current tailwinds + headwinds)
-    html += '<div class="card"><div class="card-title">All ' + totalIndicators + ' Health Indicators (Live)</div>';
-    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">This table auto-updates with every refresh. It shows the exact indicators currently scored in the health score, what makes each one healthy, and whether it is currently a tailwind or headwind.</p>';
-    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Indicator</th><th style="text-align:left;">Category</th><th style="text-align:left;">Healthy When</th><th style="text-align:center;">Current Status</th></tr></thead><tbody>';
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Cyclical Bull Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 3-4 year uptrend within a larger secular cycle. During secular bull markets, cyclical bulls develop from lows near the 4-year moving average with an average rally of +111% and an average correction of -23%. The current cyclical bull began in October 2022.</div>';
+    html += '</div>';
 
-    // Combine wins and misses, sort by category then name
-    var allIndicators = [];
-    MARKET.healthWins.forEach(function(w) { allIndicators.push({label: w.label, cat: w.cat, pass: true}); });
-    MARKET.healthMisses.forEach(function(m) { allIndicators.push({label: m.label, cat: m.cat, pass: false}); });
-    var catOrder = {'Macro': 1, 'Fundamental': 2, 'Technical': 3};
-    allIndicators.sort(function(a, b) {
-        var catDiff = (catOrder[a.cat] || 99) - (catOrder[b.cat] || 99);
-        if (catDiff !== 0) return catDiff;
-        return a.label.localeCompare(b.label);
-    });
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Bear Market</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A decline of 20% or more from a peak to a trough. This scorecard tracks bear markets using the traditional peak-to-trough measurement — a new bear market is not counted until the prior high has been recovered. There have been 11 bear markets since 1957 with a median decline of -33% and a median duration of 14 months.</div>';
+    html += '</div>';
 
-    allIndicators.forEach(function(ind) {
-        // Parse "Name · Now: X · Healthy: condition"
-        var parts = ind.label.split(' · ');
-        var name = parts[0];
-        var healthy = '';
-        for (var i = 1; i < parts.length; i++) {
-            if (parts[i].toLowerCase().indexOf('healthy') >= 0) {
-                healthy = parts[i].replace(/^Healthy:\\s*/i, '');
-                break;
-            }
+    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">4-Year Moving Average (200-Week MA)</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">The average closing price of the S&P 500 over the last ~1,000 trading days (4 years or 200 weeks). This serves as the structural dividing line between secular bull and bear markets. When the S&P is above this line, the long-term cycle favors being invested. When it breaks below, caution is warranted. A sustained break below the 4-year MA has historically signaled that the secular trend is turning negative.</div>';
+    html += '</div>';
+
+    html += '<div style="padding: 12px 0;">';
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Why This Matters for Investors</div>';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Knowing whether you are in a secular bull or bear market is arguably the single most important thing an investor can know. In a secular bull, the default action is to stay invested and use pullbacks to add exposure. In a secular bear, the default action is to be more tactical — sell rallies and wait for better prices. We are currently in a <strong>secular bull market</strong> that began in 2016, and until the S&P sustains a break below the 4-year moving average, the long-term trend favors being invested.</div>';
+    html += '</div>';
+
+    html += '</div>';
+
+    html += '<div class="card"><div class="card-title">Bull &amp; Bear Market History (S&amp;P 500, 1957–Present)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">All statistics use median values (less skewed by outliers). A bear market is a 20%+ decline from peak. A bull market is the recovery from a bear market trough to the next peak.</p>';
+
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bear Markets</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
+    html += '<tr><td>1957</td><td style="text-align:right;">49</td><td style="text-align:right;">39</td><td style="text-align:right;color:#ef4444;">-21%</td><td style="text-align:right;">3 mo</td><td>Eisenhower recession</td></tr>';
+    html += '<tr><td>1961-62</td><td style="text-align:right;">72</td><td style="text-align:right;">52</td><td style="text-align:right;color:#ef4444;">-28%</td><td style="text-align:right;">6 mo</td><td>Flash crash, steel crisis</td></tr>';
+    html += '<tr><td>1966</td><td style="text-align:right;">94</td><td style="text-align:right;">73</td><td style="text-align:right;color:#ef4444;">-22%</td><td style="text-align:right;">8 mo</td><td>Credit crunch, Vietnam</td></tr>';
+    html += '<tr><td>1968-70</td><td style="text-align:right;">108</td><td style="text-align:right;">69</td><td style="text-align:right;color:#ef4444;">-36%</td><td style="text-align:right;">18 mo</td><td>Inflation, social unrest</td></tr>';
+    html += '<tr><td>1973-74</td><td style="text-align:right;">120</td><td style="text-align:right;">62</td><td style="text-align:right;color:#ef4444;">-48%</td><td style="text-align:right;">21 mo</td><td>Oil embargo, Watergate</td></tr>';
+    html += '<tr><td>1980-82</td><td style="text-align:right;">141</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;">-27%</td><td style="text-align:right;">21 mo</td><td>Volcker rate hikes</td></tr>';
+    html += '<tr><td>1987</td><td style="text-align:right;">337</td><td style="text-align:right;">224</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">3 mo</td><td>Black Monday crash</td></tr>';
+    html += '<tr><td>2000-02</td><td style="text-align:right;">1,527</td><td style="text-align:right;">777</td><td style="text-align:right;color:#ef4444;">-49%</td><td style="text-align:right;">31 mo</td><td>Dot-com bust</td></tr>';
+    html += '<tr><td>2007-09</td><td style="text-align:right;">1,565</td><td style="text-align:right;">677</td><td style="text-align:right;color:#ef4444;">-57%</td><td style="text-align:right;">17 mo</td><td>Financial crisis</td></tr>';
+    html += '<tr><td>2020</td><td style="text-align:right;">3,386</td><td style="text-align:right;">2,237</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">1 mo</td><td>COVID-19</td></tr>';
+    html += '<tr><td>2022</td><td style="text-align:right;">4,797</td><td style="text-align:right;">3,577</td><td style="text-align:right;color:#ef4444;">-25%</td><td style="text-align:right;">10 mo</td><td>Inflation, rate hikes</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#ef4444;">-33%</td><td style="text-align:right;">14 mo</td><td></td></tr>';
+    html += '</tbody></table>';
+
+    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bull Markets</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Start</th><th style="text-align:right;">End</th><th style="text-align:right;">Gain</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Driver</th></tr></thead><tbody>';
+    html += '<tr><td>1957-61</td><td style="text-align:right;">39</td><td style="text-align:right;">72</td><td style="text-align:right;color:#10b981;">+86%</td><td style="text-align:right;">50 mo</td><td>Post-recession recovery, space race spending</td></tr>';
+    html += '<tr><td>1962-66</td><td style="text-align:right;">52</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;">+80%</td><td style="text-align:right;">44 mo</td><td>Kennedy tax cuts, economic expansion</td></tr>';
+    html += '<tr><td>1966-68</td><td style="text-align:right;">73</td><td style="text-align:right;">108</td><td style="text-align:right;color:#10b981;">+48%</td><td style="text-align:right;">26 mo</td><td>Great Society spending, consumer boom</td></tr>';
+    html += '<tr><td>1970-73</td><td style="text-align:right;">69</td><td style="text-align:right;">120</td><td style="text-align:right;color:#10b981;">+74%</td><td style="text-align:right;">32 mo</td><td>Nifty Fifty rally, Nixon price controls</td></tr>';
+    html += '<tr><td>1974-80</td><td style="text-align:right;">62</td><td style="text-align:right;">141</td><td style="text-align:right;color:#10b981;">+126%</td><td style="text-align:right;">74 mo</td><td>Post-Watergate recovery, energy boom</td></tr>';
+    html += '<tr><td>1982-87</td><td style="text-align:right;">102</td><td style="text-align:right;">337</td><td style="text-align:right;color:#10b981;">+229%</td><td style="text-align:right;">60 mo</td><td>Volcker inflation victory, Reagan tax reform</td></tr>';
+    html += '<tr><td>1987-00</td><td style="text-align:right;">224</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;">+582%</td><td style="text-align:right;">148 mo</td><td>Tech revolution, globalization, dot-com boom</td></tr>';
+    html += '<tr><td>2002-07</td><td style="text-align:right;">777</td><td style="text-align:right;">1,565</td><td style="text-align:right;color:#10b981;">+101%</td><td style="text-align:right;">60 mo</td><td>Housing boom, easy credit, global growth</td></tr>';
+    html += '<tr><td>2009-20</td><td style="text-align:right;">677</td><td style="text-align:right;">3,386</td><td style="text-align:right;color:#10b981;">+401%</td><td style="text-align:right;">131 mo</td><td>QE, zero rates, FAANG-led tech boom</td></tr>';
+    html += '<tr><td>2020-22</td><td style="text-align:right;">2,237</td><td style="text-align:right;">4,797</td><td style="text-align:right;color:#10b981;">+114%</td><td style="text-align:right;">21 mo</td><td>Stimulus, reopening, meme stocks</td></tr>';
+    html += '<tr><td>2022-Present</td><td style="text-align:right;">3,577</td><td style="text-align:right;">' + Math.round(MARKET.technical.sp500).toLocaleString() + '</td><td style="text-align:right;color:#10b981;">+' + Math.round((MARKET.technical.sp500 / 3577 - 1) * 100) + '%</td><td style="text-align:right;">Ongoing</td><td>AI revolution, Mag 7, rate cut hopes</td></tr>';
+    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#10b981;">+107%</td><td style="text-align:right;">50 mo</td><td></td></tr>';
+    html += '</tbody></table>';
+
+    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
+    html += '</div>';
+
+    // Card 2: Pullback Detail Tables (auto-generated from pullback engine)
+    html += '<div class="card"><div class="card-title">Correction History — Meaningful &amp; Beyond Normal (S&amp;P 500, 1957–Present)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">These tables are auto-generated from the pullback engine and update with each nightly refresh. Bear markets (20%+) are listed in the table above.</p>';
+
+    // Helper to format pullback duration
+    function fmtPbDur(days) {
+        if (!days) return '—';
+        var months = Math.round(days / 21);
+        if (months < 1) return Math.round(days / 5) + ' wks';
+        return months + ' mo';
+    }
+
+    // Trigger lookup for meaningful and beyond normal corrections
+    var correctionTriggers = {
+        '1959': 'Steel strike, recession fears',
+        '1967': 'Vietnam War costs, rising interest rates',
+        '1983': 'Debt crisis in Latin America, Fed raising rates',
+        '1989': 'Failed airline buyout triggered a sell-off',
+        '1997': 'Currency crisis in Asia spread to U.S. markets',
+        '1999': 'Fed raising rates, worries about Y2K computer bug',
+        '2015': 'China economy slowing, oil prices crashing, Fed starting to raise rates',
+        '2018-01': 'Inflation scare, bets against volatility blew up causing a chain reaction',
+        '1990-07': 'Iraq invaded Kuwait, oil prices spiked, savings & loan bank failures',
+        '1998': 'Russia defaulted on its debt, a giant hedge fund nearly collapsed',
+        '2018-09': 'Fed kept raising rates, U.S.-China trade war escalating',
+        '2025': 'Tariff escalation, concerns about AI stock valuations',
+    };
+    function getTrigger(dateStr) {
+        for (var key in correctionTriggers) {
+            if (dateStr.indexOf(key) >= 0) return correctionTriggers[key];
         }
-        var statusBadge = ind.pass
-            ? '<span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✓ TAILWIND</span>'
-            : '<span style="background:#fee2e2; color:#991b1b; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✗ HEADWIND</span>';
-        html += '<tr><td style="font-weight:500;">' + name + '</td><td style="font-size:12px; color:#64748b;">' + ind.cat + '</td><td style="font-size:12px; color:#64748b;">' + healthy + '</td><td style="text-align:center;">' + statusBadge + '</td></tr>';
+        return '';
+    }
+
+    // Meaningful (10-15%)
+    var meaningfulDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.meaningful && PULLBACK_STATS.tiers.meaningful.details) || [];
+    html += '<div style="font-weight: 700; color: #f59e0b; margin-bottom: 8px; margin-top: 16px;">Meaningful Corrections (10-15%) — ' + meaningfulDetails.length + ' since 1957</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
+    meaningfulDetails.forEach(function(pb) {
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f59e0b;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
     });
     html += '</tbody></table>';
+
+    // Beyond Normal (15-20%)
+    var beyondDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.beyond_normal && PULLBACK_STATS.tiers.beyond_normal.details) || [];
+    html += '<div style="font-weight: 700; color: #f97316; margin-bottom: 8px;">Beyond Normal Corrections (15-20%) — ' + beyondDetails.length + ' since 1957</div>';
+    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
+    beyondDetails.forEach(function(pb) {
+        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f97316;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+
+    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 daily price data, 1957-present. These tables auto-update with each nightly pipeline refresh.</p>';
+    html += '<div style="margin-top: 12px; padding: 14px 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">';
+    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;"><strong style="color: #475569;">How we count pullbacks:</strong> This scorecard counts one pullback per peak-to-trough cycle — a new pullback is not counted until the market fully recovers above its prior high. This gives ' + (PULLBACK_STATS.total || 62) + ' distinct 5%+ pullbacks since ' + (PULLBACK_STATS.start_year || 1957) + '. Some studies use a broader method that counts every distinct 5%+ slide, including intermediate dips within larger declines where the market bounces and slides repeatedly. That approach produces 130+ episodes because a single bear market can contain multiple 5%+ drops (for example, the 2022 bear market alone had 7 separate 5%+ slides). Both methods are valid — we use the traditional method here because it produces cleaner per-tier statistics and avoids double-counting declines that are part of the same larger move.</div>';
+    html += '</div>';
     html += '</div>';
 
     // Card 3: Key Definitions & Formulas
@@ -2999,144 +3088,55 @@ function renderSourcesTab() {
 
     html += '</div>';
 
-    // Card 4: Bull & Bear Market History
-    // Card: Secular & Cyclical Market Definitions
-    html += '<div class="card"><div class="card-title">Market Cycle Definitions</div>';
+    // Card 4: All Live Indicators (auto-generated from current tailwinds + headwinds)
+    html += '<div class="card"><div class="card-title">All ' + totalIndicators + ' Health Indicators (Live)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">This table auto-updates with every refresh. It shows the exact indicators currently scored in the health score, what makes each one healthy, and whether it is currently a tailwind or headwind.</p>';
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Indicator</th><th style="text-align:left;">Category</th><th style="text-align:left;">Healthy When</th><th style="text-align:center;">Current Status</th></tr></thead><tbody>';
 
-    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bull Market</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-21 year period where the broad market trends structurally higher. Cyclical bear markets (20%+ declines) still happen during secular bulls, but they are buying opportunities — the market recovers and makes new highs. Defined by the S&P 500 maintaining a long-term uptrend above its multi-year moving averages. Three since WWII: <strong>1945-1966</strong> (post-war boom, +571%), <strong>1982-2000</strong> (tech revolution, +1,397%), <strong>2016-present</strong> (AI and digital transformation).</div>';
-    html += '<div style="margin-top: 10px; padding: 12px 14px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #10b981;">';
-    html += '<div style="font-size: 12px; color: #475569; line-height: 1.6;"><strong style="color:#0f172a;">Why these specific start dates?</strong> Each secular bull begins the year the S&P sustainably broke above the prior generational peak — the clearest signal that a new regime has begun and the prior sideways/down era is over.';
-    html += '<ul style="margin: 8px 0 0 20px; padding: 0;">';
-    html += '<li><strong>1945:</strong> End of WWII. Market broke out of the 1929-45 range as the post-war economy took off.</li>';
-    html += '<li><strong>1982:</strong> S&P reclaimed its 1966 high (~100) after 16 years of inflation-plagued sideways action. Volcker broke inflation\\'s back, launching the 18-year tech bull.</li>';
-    html += '<li><strong>2016:</strong> S&P sustainably broke above its 2000/2007 double-top near 1,550 after recovering through the 2011-15 chop. This was the technical end of the 2000-2016 secular bear.</li>';
-    html += '</ul>';
-    html += '<div style="margin-top: 8px;"><strong style="color:#0f172a;">Why not 2009?</strong> Some sources claim the current bull started in 2009 at the GFC low. That\\'s a <em>cyclical</em> low inside the 2000-2016 secular bear — not a regime change. The S&P didn\\'t sustainably break above its 2007 peak until 2013, and didn\\'t break above the 2000 peak until 2013-2015. By 2009, the market was still trapped in the sideways range that defined the secular bear. Only after clearing those highs did the new secular bull begin. Picking 2009 cherry-picks a cyclical low to make any current stretch look overextended — it\\'s not consistent with how the prior secular regimes are dated.</div>';
-    html += '</div></div>';
-    html += '</div>';
+    // Combine wins and misses, sort by category then name
+    var allIndicators = [];
+    MARKET.healthWins.forEach(function(w) { allIndicators.push({label: w.label, cat: w.cat, pass: true}); });
+    MARKET.healthMisses.forEach(function(m) { allIndicators.push({label: m.label, cat: m.cat, pass: false}); });
+    var catOrder = {'Macro': 1, 'Fundamental': 2, 'Technical': 3};
+    allIndicators.sort(function(a, b) {
+        var catDiff = (catOrder[a.cat] || 99) - (catOrder[b.cat] || 99);
+        if (catDiff !== 0) return catDiff;
+        return a.label.localeCompare(b.label);
+    });
 
-    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bear Market</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-year period where the broad market moves sideways to down. Cyclical rallies happen but fail to sustain new highs — the market churns in a wide range. Returns over the full period are minimal (often single digits total over 16+ years). Two since WWII: <strong>1966-1982</strong> (inflation and oil shocks, S&P gained only 9% over 16 years) and <strong>2000-2016</strong> (dot-com bust and financial crisis, S&P gained only 19% over 16 years).</div>';
-    html += '</div>';
-
-    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Cyclical Bull Market</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 3-4 year uptrend within a larger secular cycle. During secular bull markets, cyclical bulls develop from lows near the 4-year moving average with an average rally of +111% and an average correction of -23%. The current cyclical bull began in October 2022.</div>';
-    html += '</div>';
-
-    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Bear Market</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A decline of 20% or more from a peak to a trough. This scorecard tracks bear markets using the traditional peak-to-trough measurement — a new bear market is not counted until the prior high has been recovered. There have been 11 bear markets since 1957 with a median decline of -33% and a median duration of 14 months.</div>';
-    html += '</div>';
-
-    html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">4-Year Moving Average (200-Week MA)</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">The average closing price of the S&P 500 over the last ~1,000 trading days (4 years or 200 weeks). This serves as the structural dividing line between secular bull and bear markets. When the S&P is above this line, the long-term cycle favors being invested. When it breaks below, caution is warranted. A sustained break below the 4-year MA has historically signaled that the secular trend is turning negative.</div>';
-    html += '</div>';
-
-    html += '<div style="padding: 12px 0;">';
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Why This Matters for Investors</div>';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">Knowing whether you are in a secular bull or bear market is arguably the single most important thing an investor can know. In a secular bull, the default action is to stay invested and use pullbacks to add exposure. In a secular bear, the default action is to be more tactical — sell rallies and wait for better prices. We are currently in a <strong>secular bull market</strong> that began in 2016, and until the S&P sustains a break below the 4-year moving average, the long-term trend favors being invested.</div>';
-    html += '</div>';
-
-    html += '</div>';
-
-    html += '<div class="card"><div class="card-title">Bull &amp; Bear Market History (S&amp;P 500, 1957–Present)</div>';
-    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">All statistics use median values (less skewed by outliers). A bear market is a 20%+ decline from peak. A bull market is the recovery from a bear market trough to the next peak.</p>';
-
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bear Markets</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
-    html += '<tr><td>1957</td><td style="text-align:right;">49</td><td style="text-align:right;">39</td><td style="text-align:right;color:#ef4444;">-21%</td><td style="text-align:right;">3 mo</td><td>Eisenhower recession</td></tr>';
-    html += '<tr><td>1961-62</td><td style="text-align:right;">72</td><td style="text-align:right;">52</td><td style="text-align:right;color:#ef4444;">-28%</td><td style="text-align:right;">6 mo</td><td>Flash crash, steel crisis</td></tr>';
-    html += '<tr><td>1966</td><td style="text-align:right;">94</td><td style="text-align:right;">73</td><td style="text-align:right;color:#ef4444;">-22%</td><td style="text-align:right;">8 mo</td><td>Credit crunch, Vietnam</td></tr>';
-    html += '<tr><td>1968-70</td><td style="text-align:right;">108</td><td style="text-align:right;">69</td><td style="text-align:right;color:#ef4444;">-36%</td><td style="text-align:right;">18 mo</td><td>Inflation, social unrest</td></tr>';
-    html += '<tr><td>1973-74</td><td style="text-align:right;">120</td><td style="text-align:right;">62</td><td style="text-align:right;color:#ef4444;">-48%</td><td style="text-align:right;">21 mo</td><td>Oil embargo, Watergate</td></tr>';
-    html += '<tr><td>1980-82</td><td style="text-align:right;">141</td><td style="text-align:right;">102</td><td style="text-align:right;color:#ef4444;">-27%</td><td style="text-align:right;">21 mo</td><td>Volcker rate hikes</td></tr>';
-    html += '<tr><td>1987</td><td style="text-align:right;">337</td><td style="text-align:right;">224</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">3 mo</td><td>Black Monday crash</td></tr>';
-    html += '<tr><td>2000-02</td><td style="text-align:right;">1,527</td><td style="text-align:right;">777</td><td style="text-align:right;color:#ef4444;">-49%</td><td style="text-align:right;">31 mo</td><td>Dot-com bust</td></tr>';
-    html += '<tr><td>2007-09</td><td style="text-align:right;">1,565</td><td style="text-align:right;">677</td><td style="text-align:right;color:#ef4444;">-57%</td><td style="text-align:right;">17 mo</td><td>Financial crisis</td></tr>';
-    html += '<tr><td>2020</td><td style="text-align:right;">3,386</td><td style="text-align:right;">2,237</td><td style="text-align:right;color:#ef4444;">-34%</td><td style="text-align:right;">1 mo</td><td>COVID-19</td></tr>';
-    html += '<tr><td>2022</td><td style="text-align:right;">4,797</td><td style="text-align:right;">3,577</td><td style="text-align:right;color:#ef4444;">-25%</td><td style="text-align:right;">10 mo</td><td>Inflation, rate hikes</td></tr>';
-    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#ef4444;">-33%</td><td style="text-align:right;">14 mo</td><td></td></tr>';
-    html += '</tbody></table>';
-
-    html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">Bull Markets</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Period</th><th style="text-align:right;">Start</th><th style="text-align:right;">End</th><th style="text-align:right;">Gain</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Driver</th></tr></thead><tbody>';
-    html += '<tr><td>1957-61</td><td style="text-align:right;">39</td><td style="text-align:right;">72</td><td style="text-align:right;color:#10b981;">+86%</td><td style="text-align:right;">50 mo</td><td>Post-recession recovery, space race spending</td></tr>';
-    html += '<tr><td>1962-66</td><td style="text-align:right;">52</td><td style="text-align:right;">94</td><td style="text-align:right;color:#10b981;">+80%</td><td style="text-align:right;">44 mo</td><td>Kennedy tax cuts, economic expansion</td></tr>';
-    html += '<tr><td>1966-68</td><td style="text-align:right;">73</td><td style="text-align:right;">108</td><td style="text-align:right;color:#10b981;">+48%</td><td style="text-align:right;">26 mo</td><td>Great Society spending, consumer boom</td></tr>';
-    html += '<tr><td>1970-73</td><td style="text-align:right;">69</td><td style="text-align:right;">120</td><td style="text-align:right;color:#10b981;">+74%</td><td style="text-align:right;">32 mo</td><td>Nifty Fifty rally, Nixon price controls</td></tr>';
-    html += '<tr><td>1974-80</td><td style="text-align:right;">62</td><td style="text-align:right;">141</td><td style="text-align:right;color:#10b981;">+126%</td><td style="text-align:right;">74 mo</td><td>Post-Watergate recovery, energy boom</td></tr>';
-    html += '<tr><td>1982-87</td><td style="text-align:right;">102</td><td style="text-align:right;">337</td><td style="text-align:right;color:#10b981;">+229%</td><td style="text-align:right;">60 mo</td><td>Volcker inflation victory, Reagan tax reform</td></tr>';
-    html += '<tr><td>1987-00</td><td style="text-align:right;">224</td><td style="text-align:right;">1,527</td><td style="text-align:right;color:#10b981;">+582%</td><td style="text-align:right;">148 mo</td><td>Tech revolution, globalization, dot-com boom</td></tr>';
-    html += '<tr><td>2002-07</td><td style="text-align:right;">777</td><td style="text-align:right;">1,565</td><td style="text-align:right;color:#10b981;">+101%</td><td style="text-align:right;">60 mo</td><td>Housing boom, easy credit, global growth</td></tr>';
-    html += '<tr><td>2009-20</td><td style="text-align:right;">677</td><td style="text-align:right;">3,386</td><td style="text-align:right;color:#10b981;">+401%</td><td style="text-align:right;">131 mo</td><td>QE, zero rates, FAANG-led tech boom</td></tr>';
-    html += '<tr><td>2020-22</td><td style="text-align:right;">2,237</td><td style="text-align:right;">4,797</td><td style="text-align:right;color:#10b981;">+114%</td><td style="text-align:right;">21 mo</td><td>Stimulus, reopening, meme stocks</td></tr>';
-    html += '<tr><td>2022-Present</td><td style="text-align:right;">3,577</td><td style="text-align:right;">' + Math.round(MARKET.technical.sp500).toLocaleString() + '</td><td style="text-align:right;color:#10b981;">+' + Math.round((MARKET.technical.sp500 / 3577 - 1) * 100) + '%</td><td style="text-align:right;">Ongoing</td><td>AI revolution, Mag 7, rate cut hopes</td></tr>';
-    html += '<tr style="background:#f8fafc;font-weight:600;"><td>Median</td><td></td><td></td><td style="text-align:right;color:#10b981;">+107%</td><td style="text-align:right;">50 mo</td><td></td></tr>';
-    html += '</tbody></table>';
-
-    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
-    html += '</div>';
-
-    // Card 5: Pullback Detail Tables (auto-generated from pullback engine)
-    html += '<div class="card"><div class="card-title">Correction History — Meaningful &amp; Beyond Normal (S&amp;P 500, 1957–Present)</div>';
-    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">These tables are auto-generated from the pullback engine and update with each nightly refresh. Bear markets (20%+) are listed in the table above.</p>';
-
-    // Helper to format pullback duration
-    function fmtPbDur(days) {
-        if (!days) return '—';
-        var months = Math.round(days / 21);
-        if (months < 1) return Math.round(days / 5) + ' wks';
-        return months + ' mo';
-    }
-
-    // Trigger lookup for meaningful and beyond normal corrections
-    var correctionTriggers = {
-        '1959': 'Steel strike, recession fears',
-        '1967': 'Vietnam War costs, rising interest rates',
-        '1983': 'Debt crisis in Latin America, Fed raising rates',
-        '1989': 'Failed airline buyout triggered a sell-off',
-        '1997': 'Currency crisis in Asia spread to U.S. markets',
-        '1999': 'Fed raising rates, worries about Y2K computer bug',
-        '2015': 'China economy slowing, oil prices crashing, Fed starting to raise rates',
-        '2018-01': 'Inflation scare, bets against volatility blew up causing a chain reaction',
-        '1990-07': 'Iraq invaded Kuwait, oil prices spiked, savings & loan bank failures',
-        '1998': 'Russia defaulted on its debt, a giant hedge fund nearly collapsed',
-        '2018-09': 'Fed kept raising rates, U.S.-China trade war escalating',
-        '2025': 'Tariff escalation, concerns about AI stock valuations',
-    };
-    function getTrigger(dateStr) {
-        for (var key in correctionTriggers) {
-            if (dateStr.indexOf(key) >= 0) return correctionTriggers[key];
+    allIndicators.forEach(function(ind) {
+        // Parse "Name · Now: X · Healthy: condition"
+        var parts = ind.label.split(' · ');
+        var name = parts[0];
+        var healthy = '';
+        for (var i = 1; i < parts.length; i++) {
+            if (parts[i].toLowerCase().indexOf('healthy') >= 0) {
+                healthy = parts[i].replace(/^Healthy:\\s*/i, '');
+                break;
+            }
         }
-        return '';
-    }
-
-    // Meaningful (10-15%)
-    var meaningfulDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.meaningful && PULLBACK_STATS.tiers.meaningful.details) || [];
-    html += '<div style="font-weight: 700; color: #f59e0b; margin-bottom: 8px; margin-top: 16px;">Meaningful Corrections (10-15%) — ' + meaningfulDetails.length + ' since 1957</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 20px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
-    meaningfulDetails.forEach(function(pb) {
-        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f59e0b;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
+        var statusBadge = ind.pass
+            ? '<span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✓ TAILWIND</span>'
+            : '<span style="background:#fee2e2; color:#991b1b; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✗ HEADWIND</span>';
+        html += '<tr><td style="font-weight:500;">' + name + '</td><td style="font-size:12px; color:#64748b;">' + ind.cat + '</td><td style="font-size:12px; color:#64748b;">' + healthy + '</td><td style="text-align:center;">' + statusBadge + '</td></tr>';
     });
     html += '</tbody></table>';
+    html += '</div>';
 
-    // Beyond Normal (15-20%)
-    var beyondDetails = (PULLBACK_STATS.tiers && PULLBACK_STATS.tiers.beyond_normal && PULLBACK_STATS.tiers.beyond_normal.details) || [];
-    html += '<div style="font-weight: 700; color: #f97316; margin-bottom: 8px;">Beyond Normal Corrections (15-20%) — ' + beyondDetails.length + ' since 1957</div>';
-    html += '<table class="stock-table" style="font-size: 12px; margin-bottom: 12px;"><thead><tr><th style="text-align:left;">Peak Date</th><th style="text-align:left;">Trough Date</th><th style="text-align:right;">Peak</th><th style="text-align:right;">Trough</th><th style="text-align:right;">Decline</th><th style="text-align:right;">Duration</th><th style="text-align:left;">Trigger</th></tr></thead><tbody>';
-    beyondDetails.forEach(function(pb) {
-        html += '<tr><td>' + fmtAsOf(pb.start) + '</td><td>' + fmtAsOf(pb.trough) + '</td><td style="text-align:right;">' + Math.round(pb.peak).toLocaleString() + '</td><td style="text-align:right;">' + Math.round(pb.low).toLocaleString() + '</td><td style="text-align:right;color:#f97316;font-weight:600;">' + pb.mag + '%</td><td style="text-align:right;">' + fmtPbDur(pb.dur) + '</td><td>' + getTrigger(pb.start) + '</td></tr>';
-    });
-    html += '</tbody></table>';
+    // Card 5: Health Score Methodology (dynamic — reads live counts from MARKET)
+    var totalIndicators = (MARKET.healthWins.length + MARKET.healthMisses.length);
+    var macroCount = (MARKET.healthWins.filter(function(w){return w.cat==='Macro';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Macro';}).length);
+    var fundamentalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Fundamental';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Fundamental';}).length);
+    var technicalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Technical';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Technical';}).length);
+    var pointsEach = (100 / totalIndicators).toFixed(1);
 
-    html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 daily price data, 1957-present. These tables auto-update with each nightly pipeline refresh.</p>';
-    html += '<div style="margin-top: 12px; padding: 14px 18px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">';
-    html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;"><strong style="color: #475569;">How we count pullbacks:</strong> This scorecard counts one pullback per peak-to-trough cycle — a new pullback is not counted until the market fully recovers above its prior high. This gives ' + (PULLBACK_STATS.total || 62) + ' distinct 5%+ pullbacks since ' + (PULLBACK_STATS.start_year || 1957) + '. Some studies use a broader method that counts every distinct 5%+ slide, including intermediate dips within larger declines where the market bounces and slides repeatedly. That approach produces 130+ episodes because a single bear market can contain multiple 5%+ drops (for example, the 2022 bear market alone had 7 separate 5%+ slides). Both methods are valid — we use the traditional method here because it produces cleaner per-tier statistics and avoids double-counting declines that are part of the same larger move.</div>';
+    html += '<div class="card"><div class="card-title">Health Score Methodology</div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">The Momentum Scorecard uses a <strong>' + totalIndicators + '-indicator</strong> scoring system across three categories. Every indicator gets equal weight — one vote, one voice. No thumb on the scale. The total always equals 100 regardless of how many indicators we track, so scores are always comparable over time.</p>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">' + totalIndicators + ' Binary Indicators (equal weight):</strong><br/><span style="font-size: 14px; color: #64748b;">Macro (' + macroCount + ') + Fundamental (' + fundamentalCount + ') + Technical (' + technicalCount + ') — each worth <strong>' + pointsEach + ' points</strong></span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Total Possible:</strong><br/><span style="font-size: 14px; color: #64748b;">100 points (auto-balanced — weight per indicator = 100 &divide; ' + totalIndicators + ')</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Why Equal Weight?</strong><br/><span style="font-size: 14px; color: #64748b;">Simplicity and transparency. Each indicator gets an equal say. If one area matters more, it shows up naturally by having more indicators (Macro currently has ' + macroCount + ' votes vs ' + fundamentalCount + ' for Fundamental and ' + technicalCount + ' for Technical). No hidden biases.</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Health Score Bands:</strong><br/>';
+    html += '<div style="font-size: 13px; color: #64748b; margin-top: 8px;"><span style="color: #ef4444; font-weight: 600;">0-25%</span>: Risk Off · <span style="color: #f59e0b; font-weight: 600;">25-40%</span>: Defensive · <span style="color: #ca8a04; font-weight: 600;">40-60%</span>: Cautious · <span style="color: #10b981; font-weight: 600;">60-80%</span>: Cautiously Optimistic · <span style="color: #059669; font-weight: 600;">80-100%</span>: Bullish</div>';
     html += '</div>';
     html += '</div>';
 
