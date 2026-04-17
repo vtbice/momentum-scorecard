@@ -284,11 +284,14 @@ html_content = '''<!DOCTYPE html>
             font-family: 'Fraunces', serif;
             font-size: 22px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin: -24px -24px 20px -24px;
             color: #0f172a;
             text-align: center;
-            padding-bottom: 14px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border-bottom: 2px solid #e2e8f0;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
         }
 
         /* Health Score Banner */
@@ -420,15 +423,6 @@ html_content = '''<!DOCTYPE html>
             margin-bottom: 2px;
         }
 
-        /* Light variant used for the in-card Health Score Breakdown */
-        .health-breakdown-light .health-detail-panel {
-            border-top: 1px solid #e2e8f0;
-            margin-top: 0;
-            padding-top: 20px;
-        }
-        .health-breakdown-light .health-column h3 { color: #0f172a; }
-        .health-breakdown-light .health-item-label { color: #334155; }
-        .health-breakdown-light .health-item-weight { color: #94a3b8; }
 
         .health-item-weight {
             font-family: 'JetBrains Mono', monospace;
@@ -1064,8 +1058,8 @@ html_content = '''<!DOCTYPE html>
             <div id="historicalContextContent" style="margin-bottom: 24px;"></div>
 
             <!-- Tailwinds / Headwinds detail (at bottom for those who want to dig in) -->
-            <div class="card health-breakdown-light">
-                <div class="card-title">Health Score Breakdown</div>
+            <div class="health-banner" style="margin-bottom: 24px;">
+                <div style="font-family: Fraunces, serif; font-size: 18px; font-weight: 700; color: white; text-align: center; margin-bottom: 16px;">Health Score Breakdown</div>
                 <div id="healthDetail" class="health-detail-panel">
                     <div class="health-column health-wins">
                         <h3>Tailwinds</h3>
@@ -2144,7 +2138,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 1: WHERE ARE WE NOW ═══
-    html += '<div class="card" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">';
+    html += '<div class="card">';
     html += '<div class="card-title">Where Are We Now</div>';
 
     // Current cyclical bull market highlight
@@ -2216,7 +2210,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 2: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
-    html += '<div class="card" style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5);">';
+    html += '<div class="card">';
     html += '<div class="card-title">The Climb Is Always Longer Than the Slide</div>';
     html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
 
@@ -2240,7 +2234,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
-    html += '<div class="card" style="background: linear-gradient(135deg, #fffbeb, #fef3c7);">';
+    html += '<div class="card">';
     html += '<div class="card-title">Pullbacks Are Normal</div>';
     var frequency = PULLBACK_STATS.frequency || 0.9;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
@@ -2270,7 +2264,7 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 4: NOT EVERY SLIP IS THE SAME ═══
-    html += '<div class="card" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe);">';
+    html += '<div class="card">';
     html += '<div class="card-title">Not Every Slip Is the Same</div>';
     html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Of the ' + totalPullbacks + ' pullbacks since 1957, here is how they break down by severity:</p>';
     html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
@@ -2282,8 +2276,8 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // Closing quote
-    html += '<div style="margin-top: 16px; padding: 8px 20px;">';
-    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; font-style: italic; text-align: center;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
+    html += '<div style="margin-top: 8px; padding: 16px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 10px;">';
+    html += '<div style="font-size: 15px; color: #e2e8f0; line-height: 1.6; font-style: italic; text-align: center;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
     html += '</div>';
 
     html += '</div>';
