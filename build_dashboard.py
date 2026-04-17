@@ -2276,8 +2276,8 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // Closing quote
-    html += '<div style="margin-top: 8px; padding: 16px 20px; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 10px;">';
-    html += '<div style="font-size: 15px; color: #e2e8f0; line-height: 1.6; font-style: italic; text-align: center;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
+    html += '<div style="margin-top: 16px; padding: 8px 20px;">';
+    html += '<div style="font-size: 15px; color: #475569; line-height: 1.6; font-style: italic; text-align: center;">"The market has stumbled ' + totalPullbacks + ' times since 1957 and has always come back. The next pullback is not a surprise — it is the price of admission to the greatest wealth-building machine in history."</div>';
     html += '</div>';
 
     html += '</div>';
