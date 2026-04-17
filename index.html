@@ -2013,8 +2013,8 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 1: WHERE ARE WE NOW ═══
-    html += '<div style="margin-bottom: 28px; padding-top: 24px; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Where Are We Now</div>';
+    html += '<div class="card">';
+    html += '<div class="card-title">Where Are We Now</div>';
 
     // Current cyclical bull market highlight
     var bullGain = Math.round((t.sp500 / 3577 - 1) * 100);
@@ -2085,9 +2085,9 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 2: THE CLIMB IS ALWAYS LONGER THAN THE SLIDE ═══
-    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">The Climb Is Always Longer Than the Slide</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
+    html += '<div class="card">';
+    html += '<div class="card-title">The Climb Is Always Longer Than the Slide</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Since 1957, the S&P 500 has grown from ' + Math.round(startPrice) + ' to ' + Math.round(endPrice).toLocaleString() + '. Along the way, it stumbled ' + totalPullbacks + ' times — and came back every single time.</p>';
 
     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">';
     html += '<div style="padding: 20px; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 12px; border-left: 4px solid #10b981;">';
@@ -2109,8 +2109,8 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 3: PULLBACKS ARE NORMAL ═══
-    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Pullbacks Are Normal</div>';
+    html += '<div class="card">';
+    html += '<div class="card-title">Pullbacks Are Normal</div>';
     var frequency = PULLBACK_STATS.frequency || 0.9;
     var medianMag = PULLBACK_STATS.median_magnitude || -8.5;
     var medianDurDays = PULLBACK_STATS.median_duration_days || 31;
@@ -2139,9 +2139,9 @@ function renderHistoricalContext() {
     html += '</div>';
 
     // ═══ SECTION 4: NOT EVERY SLIP IS THE SAME ═══
-    html += '<div style="padding: 24px 0; border-top: 2px solid #e2e8f0;">';
-    html += '<div style="font-family: Fraunces, serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Not Every Slip Is the Same</div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px;">Of the ' + totalPullbacks + ' pullbacks since 1957, here is how they break down by severity:</p>';
+    html += '<div class="card">';
+    html += '<div class="card-title">Not Every Slip Is the Same</div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-bottom: 16px; text-align: center;">Of the ' + totalPullbacks + ' pullbacks since 1957, here is how they break down by severity:</p>';
     html += '<table class="stock-table" style="font-size: 14px; margin-bottom: 10px;"><thead><tr><th>Severity</th><th>Decline</th><th>Count</th><th>Typical Duration</th><th>What It Feels Like</th></tr></thead><tbody>';
     html += '<tr><td style="color: #10b981; font-weight: 600;">Routine</td><td>5-10%</td><td>' + routineTier.count + ' (' + routineTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(routineDur) + '</td><td>A stumble on the trail — over before most notice</td></tr>';
     html += '<tr><td style="color: #f59e0b; font-weight: 600;">Meaningful</td><td>10-15%</td><td>' + meaningfulTier.count + ' (' + meaningfulTier.pct.toFixed(0) + '%)</td><td>' + formatDuration(meaningfulDur) + '</td><td>You feel it — headlines get louder, but it passes</td></tr>';
