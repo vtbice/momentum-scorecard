@@ -2742,70 +2742,59 @@ function closeStockModal(e) {
 function renderSourcesTab() {
     let html = '';
 
-    // Card 1: Data Sources
-    html += '<div class="card"><div class="card-title">Data Sources</div>';
-    html += '<div class="metric-row"><span class="metric-label">yfinance (Yahoo Finance)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Stock prices, moving averages, VIX, oil, dollar index, sector classification</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">FRED (Federal Reserve Economic Data)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">GDP, unemployment, inflation, yields, credit spreads, mortgage rates, consumer sentiment, gas prices</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">CBOE (Chicago Board Options Exchange)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Put/Call ratio (updated weekly, entered manually)</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">AAII (American Association of Individual Investors)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Bull/Bear sentiment survey (updated weekly, entered manually)</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">FactSet Earnings Insight</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">S&P 500 earnings growth, revenue growth, beat rates, profit margins, forward P/E, analyst revisions</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">Manual Assessment</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Geopolitical risk level, fiscal policy stance, monetary policy stance</div></div></div>';
-    html += '</div>';
+    // Card 1: Health Score Methodology (dynamic — reads live counts from MARKET)
+    var totalIndicators = (MARKET.healthWins.length + MARKET.healthMisses.length);
+    var macroCount = (MARKET.healthWins.filter(function(w){return w.cat==='Macro';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Macro';}).length);
+    var fundamentalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Fundamental';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Fundamental';}).length);
+    var technicalCount = (MARKET.healthWins.filter(function(w){return w.cat==='Technical';}).length + MARKET.healthMisses.filter(function(m){return m.cat==='Technical';}).length);
+    var pointsEach = (100 / totalIndicators).toFixed(1);
 
-    // Card 2: Health Score Methodology
     html += '<div class="card"><div class="card-title">Health Score Methodology</div>';
-    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">The Momentum Scorecard uses an 18-indicator scoring system across three categories. Every indicator gets equal weight — one vote, one voice. No thumb on the scale.</p>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">18 Binary Indicators (equal weight):</strong><br/><span style="font-size: 14px; color: #64748b;">Macro (8) + Fundamental (5) + Technical (5) — each worth 5 points</span></div>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Total Possible:</strong><br/><span style="font-size: 14px; color: #64748b;">90 points (18 indicators &times; 5 points each)</span></div>';
-    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Why Equal Weight?</strong><br/><span style="font-size: 14px; color: #64748b;">Simplicity and transparency. Each indicator gets an equal say. If one area matters more, it shows up naturally by having more indicators (Macro has 8 votes vs 5 for the others). No hidden biases.</span></div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">The Momentum Scorecard uses a <strong>' + totalIndicators + '-indicator</strong> scoring system across three categories. Every indicator gets equal weight — one vote, one voice. No thumb on the scale. The total always equals 100 regardless of how many indicators we track, so scores are always comparable over time.</p>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">' + totalIndicators + ' Binary Indicators (equal weight):</strong><br/><span style="font-size: 14px; color: #64748b;">Macro (' + macroCount + ') + Fundamental (' + fundamentalCount + ') + Technical (' + technicalCount + ') — each worth <strong>' + pointsEach + ' points</strong></span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Total Possible:</strong><br/><span style="font-size: 14px; color: #64748b;">100 points (auto-balanced — weight per indicator = 100 &divide; ' + totalIndicators + ')</span></div>';
+    html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Why Equal Weight?</strong><br/><span style="font-size: 14px; color: #64748b;">Simplicity and transparency. Each indicator gets an equal say. If one area matters more, it shows up naturally by having more indicators (Macro currently has ' + macroCount + ' votes vs ' + fundamentalCount + ' for Fundamental and ' + technicalCount + ' for Technical). No hidden biases.</span></div>';
     html += '<div style="margin-bottom: 12px;"><strong style="color: #0f172a;">Health Score Bands:</strong><br/>';
-    html += '<div style="font-size: 13px; color: #64748b; margin-top: 8px;"><span style="color: #ef4444; font-weight: 600;">0-25%</span>: Risk Off · <span style="color: #f59e0b; font-weight: 600;">25-40%</span>: Defensive · <span style="color: #ca8a04; font-weight: 600;">40-60%</span>: Cautious · <span style="color: #10b981; font-weight: 600;">60-80%</span>: Optimistic · <span style="color: #059669; font-weight: 600;">80-100%</span>: Bullish</div>';
+    html += '<div style="font-size: 13px; color: #64748b; margin-top: 8px;"><span style="color: #ef4444; font-weight: 600;">0-25%</span>: Risk Off · <span style="color: #f59e0b; font-weight: 600;">25-40%</span>: Defensive · <span style="color: #ca8a04; font-weight: 600;">40-60%</span>: Cautious · <span style="color: #10b981; font-weight: 600;">60-80%</span>: Cautiously Optimistic · <span style="color: #059669; font-weight: 600;">80-100%</span>: Bullish</div>';
     html += '</div>';
     html += '</div>';
 
-    // Card 3: Indicator Thresholds
-    html += '<div class="card"><div class="card-title">All 18 Health Indicators</div>';
-    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th>Indicator</th><th>Healthy When</th><th>Category</th><th>Why It Matters</th></tr></thead><tbody>';
-    html += '<tr><td>Labor Market</td><td>Below 5%</td><td>Macro</td><td>Jobs = spending power = economic engine</td></tr>';
-    html += '<tr><td>GDP Growth</td><td>Above 2%</td><td>Macro</td><td>Growing economy supports corporate profits</td></tr>';
-    html += '<tr><td>Inflation</td><td>Below 3%</td><td>Macro</td><td>Stable prices keep the Fed from tightening</td></tr>';
-    html += '<tr><td>Credit Spreads</td><td>Below 4%</td><td>Macro</td><td>Tight spreads = confident lenders</td></tr>';
-    html += '<tr><td>Consumer Confidence</td><td>Above 70</td><td>Macro</td><td>Confident consumers spend more</td></tr>';
-    html += '<tr><td>Mortgage Rates</td><td>Below 6%</td><td>Macro</td><td>Lower rates boost housing and wealth</td></tr>';
-    html += '<tr><td>Yield Curve</td><td>Positive (not inverted)</td><td>Macro</td><td>Inverted curve has preceded every recession since 1960s</td></tr>';
-    html += '<tr><td>ISM Manufacturing</td><td>Above 50</td><td>Macro</td><td>Best leading indicator of economic turns</td></tr>';
-    html += '<tr><td>Earnings Growth</td><td>Above 5%</td><td>Fundamental</td><td>Companies making more money drives stocks</td></tr>';
-    html += '<tr><td>Profit Margins</td><td>Above 11%</td><td>Fundamental</td><td>Pricing power and efficiency signal</td></tr>';
-    html += '<tr><td>Earnings Revisions</td><td>Above 1.0x</td><td>Fundamental</td><td>Analysts raising estimates = positive trend</td></tr>';
-    html += '<tr><td>Valuation (Fwd P/E)</td><td>Below 20x</td><td>Fundamental</td><td>Lower P/E = more room for upside</td></tr>';
-    html += '<tr><td>Free Cash Flow Yield</td><td>Above 3.5%</td><td>Fundamental</td><td>Real cash for dividends, buybacks, growth</td></tr>';
-    html += '<tr><td>Long-Term Trend</td><td>S&P above 4-Year MA</td><td>Technical</td><td>Big-picture market direction</td></tr>';
-    html += '<tr><td>Medium-Term Trend</td><td>S&P above 150-Day MA</td><td>Technical</td><td>Intermediate trend direction</td></tr>';
-    html += '<tr><td>Market Breadth</td><td>Above 60%</td><td>Technical</td><td>Broad participation = healthy market</td></tr>';
-    html += '<tr><td>Volatility (VIX)</td><td>Below 20</td><td>Technical</td><td>Low fear = stable conditions</td></tr>';
-    html += '<tr><td>Sentiment (Put/Call)</td><td>Below 1.0</td><td>Technical</td><td>More calls than puts = bullish positioning</td></tr>';
+    // Card 2: All Live Indicators (auto-generated from current tailwinds + headwinds)
+    html += '<div class="card"><div class="card-title">All ' + totalIndicators + ' Health Indicators (Live)</div>';
+    html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">This table auto-updates with every refresh. It shows the exact indicators currently scored in the health score, what makes each one healthy, and whether it is currently a tailwind or headwind.</p>';
+    html += '<table class="stock-table" style="font-size: 13px;"><thead><tr><th style="text-align:left;">Indicator</th><th style="text-align:left;">Category</th><th style="text-align:left;">Healthy When</th><th style="text-align:center;">Current Status</th></tr></thead><tbody>';
+
+    // Combine wins and misses, sort by category then name
+    var allIndicators = [];
+    MARKET.healthWins.forEach(function(w) { allIndicators.push({label: w.label, cat: w.cat, pass: true}); });
+    MARKET.healthMisses.forEach(function(m) { allIndicators.push({label: m.label, cat: m.cat, pass: false}); });
+    var catOrder = {'Macro': 1, 'Fundamental': 2, 'Technical': 3};
+    allIndicators.sort(function(a, b) {
+        var catDiff = (catOrder[a.cat] || 99) - (catOrder[b.cat] || 99);
+        if (catDiff !== 0) return catDiff;
+        return a.label.localeCompare(b.label);
+    });
+
+    allIndicators.forEach(function(ind) {
+        // Parse "Name · Now: X · Healthy: condition"
+        var parts = ind.label.split(' · ');
+        var name = parts[0];
+        var healthy = '';
+        for (var i = 1; i < parts.length; i++) {
+            if (parts[i].toLowerCase().indexOf('healthy') >= 0) {
+                healthy = parts[i].replace(/^Healthy:\s*/i, '');
+                break;
+            }
+        }
+        var statusBadge = ind.pass
+            ? '<span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✓ TAILWIND</span>'
+            : '<span style="background:#fee2e2; color:#991b1b; font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px;">✗ HEADWIND</span>';
+        html += '<tr><td style="font-weight:500;">' + name + '</td><td style="font-size:12px; color:#64748b;">' + ind.cat + '</td><td style="font-size:12px; color:#64748b;">' + healthy + '</td><td style="text-align:center;">' + statusBadge + '</td></tr>';
+    });
     html += '</tbody></table>';
     html += '</div>';
 
-    // Card 4: Oversold Indicators
-    html += '<div class="card"><div class="card-title">Oversold Indicators & Capitulation Signals</div>';
-    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">Four key signals that indicate extreme selling and potential market bottoms:</p>';
-    html += '<div class="metric-row"><span class="metric-label">Breadth Washout</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">% of stocks above 20-day SMA drops below 20%</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">New Lows Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">50%+ of stocks making 20-day lows</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">Put/Call Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">CBOE Put/Call Ratio above 1.2</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">VIX Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">VIX above 30</div></div></div>';
-    html += '<p style="font-size: 14px; color: #64748b; margin-top: 16px; line-height: 1.5;">Each signal stands alone — any single signal firing is meaningful. Historically, oversold signals cluster near market bottoms and often precede strong bounces.</p>';
-    html += '</div>';
-
-    // Card 5: Stock Screener Methodology
-    html += '<div class="card"><div class="card-title">Stock Screener Methodology</div>';
-    html += '<div class="metric-row"><span class="metric-label">Trend Stage</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Based on price vs 150-day MA and MA slope direction: Uptrend, Pullback, Downtrend, Snapback</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">Rel. Momentum</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">12-month return percentile rank across full universe (100 = top performer, 1 = bottom)</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">Tier</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">1-10 ranking (1 = strongest, 10 = weakest) derived from relative momentum</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">% Over/Under 150d MA</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">How far price is from its 150-day moving average</div></div></div>';
-    html += '</div>';
-
-    // Card 6: Key Definitions & Formulas
+    // Card 3: Key Definitions & Formulas
     html += '<div class="card"><div class="card-title">Definitions &amp; Formulas</div>';
 
     // Market Trend
@@ -2889,13 +2878,22 @@ function renderSourcesTab() {
 
     html += '</div>';
 
-    // Card 7: Bull & Bear Market History
+    // Card 4: Bull & Bear Market History
     // Card: Secular & Cyclical Market Definitions
     html += '<div class="card"><div class="card-title">Market Cycle Definitions</div>';
 
     html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
     html += '<div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Secular (Generational) Bull Market</div>';
     html += '<div style="font-size: 13px; color: #64748b; line-height: 1.7;">A 16-21 year period where the broad market trends structurally higher. Cyclical bear markets (20%+ declines) still happen during secular bulls, but they are buying opportunities — the market recovers and makes new highs. Defined by the S&P 500 maintaining a long-term uptrend above its multi-year moving averages. Three since WWII: <strong>1945-1966</strong> (post-war boom, +571%), <strong>1982-2000</strong> (tech revolution, +1,397%), <strong>2016-present</strong> (AI and digital transformation).</div>';
+    html += '<div style="margin-top: 10px; padding: 12px 14px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #10b981;">';
+    html += '<div style="font-size: 12px; color: #475569; line-height: 1.6;"><strong style="color:#0f172a;">Why these specific start dates?</strong> Each secular bull begins the year the S&P sustainably broke above the prior generational peak — the clearest signal that a new regime has begun and the prior sideways/down era is over.';
+    html += '<ul style="margin: 8px 0 0 20px; padding: 0;">';
+    html += '<li><strong>1945:</strong> End of WWII. Market broke out of the 1929-45 range as the post-war economy took off.</li>';
+    html += '<li><strong>1982:</strong> S&P reclaimed its 1966 high (~100) after 16 years of inflation-plagued sideways action. Volcker broke inflation\'s back, launching the 18-year tech bull.</li>';
+    html += '<li><strong>2016:</strong> S&P sustainably broke above its 2000/2007 double-top near 1,550 after recovering through the 2011-15 chop. This was the technical end of the 2000-2016 secular bear.</li>';
+    html += '</ul>';
+    html += '<div style="margin-top: 8px;"><strong style="color:#0f172a;">Why not 2009?</strong> Some sources claim the current bull started in 2009 at the GFC low. That\'s a <em>cyclical</em> low inside the 2000-2016 secular bear — not a regime change. The S&P didn\'t sustainably break above its 2007 peak until 2013, and didn\'t break above the 2000 peak until 2013-2015. By 2009, the market was still trapped in the sideways range that defined the secular bear. Only after clearing those highs did the new secular bull begin. Picking 2009 cherry-picks a cyclical low to make any current stretch look overextended — it\'s not consistent with how the prior secular regimes are dated.</div>';
+    html += '</div></div>';
     html += '</div>';
 
     html += '<div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">';
@@ -2963,7 +2961,7 @@ function renderSourcesTab() {
     html += '<p style="font-size: 13px; color: #64748b; line-height: 1.6;">Source: S&P 500 price data, 1957-present. Bear market = 20%+ decline from peak to trough. Bull market = trough to next peak. Duration is peak-to-trough for bears, trough-to-peak for bulls. The current bull market (2022-present) is ongoing and included in the tally.</p>';
     html += '</div>';
 
-    // Card 8: Pullback Detail Tables (auto-generated from pullback engine)
+    // Card 5: Pullback Detail Tables (auto-generated from pullback engine)
     html += '<div class="card"><div class="card-title">Correction History — Meaningful &amp; Beyond Normal (S&amp;P 500, 1957–Present)</div>';
     html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">These tables are auto-generated from the pullback engine and update with each nightly refresh. Bear markets (20%+) are listed in the table above.</p>';
 
@@ -3021,7 +3019,25 @@ function renderSourcesTab() {
     html += '</div>';
     html += '</div>';
 
-    // Card 9: Delisting Tracker
+    // Card 6: Oversold Indicators
+    html += '<div class="card"><div class="card-title">Oversold Indicators & Capitulation Signals</div>';
+    html += '<p style="font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 16px;">Four key signals that indicate extreme selling and potential market bottoms:</p>';
+    html += '<div class="metric-row"><span class="metric-label">Breadth Washout</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">% of stocks above 20-day SMA drops below 20%</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">New Lows Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">50%+ of stocks making 20-day lows</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Put/Call Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">CBOE Put/Call Ratio above 1.2</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">VIX Spike</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">VIX above 30</div></div></div>';
+    html += '<p style="font-size: 14px; color: #64748b; margin-top: 16px; line-height: 1.5;">Each signal stands alone — any single signal firing is meaningful. Historically, oversold signals cluster near market bottoms and often precede strong bounces.</p>';
+    html += '</div>';
+
+    // Card 7: Stock Screener Methodology
+    html += '<div class="card"><div class="card-title">Stock Screener Methodology</div>';
+    html += '<div class="metric-row"><span class="metric-label">Trend Stage</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Based on price vs 150-day MA and MA slope direction: Uptrend, Pullback, Downtrend, Snapback</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Rel. Momentum</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">12-month return percentile rank across full universe (100 = top performer, 1 = bottom)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Tier</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">1-10 ranking (1 = strongest, 10 = weakest) derived from relative momentum</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">% Over/Under 150d MA</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">How far price is from its 150-day moving average</div></div></div>';
+    html += '</div>';
+
+    // Card 8: Delisting Tracker
     html += '<div class="card"><div class="card-title">Delisting Tracker</div>';
     html += '<p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">Tickers in your universe that have not returned price data for 5+ consecutive days. These may have been acquired, merged, delisted, or renamed. Review weekly and remove any confirmed delistings from <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">tickers.csv</code>.</p>';
 
@@ -3044,6 +3060,16 @@ function renderSourcesTab() {
         html += '<div style="font-size: 13px; color: #92400e; line-height: 1.6;"><strong>How to remove a ticker:</strong> Open <code>tickers.csv</code> in your project folder, delete the row, and save. The next nightly refresh will skip it automatically. You can verify a ticker is dead by searching it on finance.yahoo.com — if the page shows "Symbol Lookup" or redirects, it has been delisted.</div>';
         html += '</div>';
     }
+    html += '</div>';
+
+    // Card 9: Data Sources
+    html += '<div class="card"><div class="card-title">Data Sources</div>';
+    html += '<div class="metric-row"><span class="metric-label">yfinance (Yahoo Finance)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Stock prices, moving averages, VIX, oil, dollar index, sector classification</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FRED (Federal Reserve Economic Data)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">GDP, unemployment, inflation, yields, credit spreads, mortgage rates, consumer sentiment, gas prices</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">CBOE (Chicago Board Options Exchange)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Put/Call ratio (updated weekly, entered manually)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">AAII (American Association of Individual Investors)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Bull/Bear sentiment survey (updated weekly, entered manually)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FactSet Earnings Insight</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">S&P 500 earnings growth, revenue growth, beat rates, profit margins, forward P/E, analyst revisions</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Manual Assessment</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Geopolitical risk level, fiscal policy stance, monetary policy stance</div></div></div>';
     html += '</div>';
 
     // Card 10: Disclaimer
