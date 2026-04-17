@@ -937,39 +937,6 @@ html_content = '''<!DOCTYPE html>
             font-weight: 400;
         }
 
-        /* Breadth detail */
-        .breadth-detail {
-            margin-top: 16px;
-        }
-
-        .breadth-table {
-            width: 100%;
-            font-size: 12px;
-        }
-
-        .breadth-table th,
-        .breadth-table td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .breadth-table th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #475569;
-        }
-
-        .breadth-range {
-            color: #0f172a;
-            font-weight: 500;
-        }
-
-        .breadth-num {
-            text-align: right;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .card { padding: 16px; }
