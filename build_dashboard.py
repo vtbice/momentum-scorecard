@@ -1600,14 +1600,22 @@ function renderMarketPulse() {
     var currentRow = BREADTH_HISTORY.find(function(r) { return r.range === currentBucket; }) || {};
 
     // Helper to render a bar chart (type = 'freq' or 'fwd')
+    // Determine color scheme from current bucket's forward return
+    var curFwd = currentRow.fwd || 0;
+    var curScheme;
+    if (curFwd >= 15) curScheme = {bar:'#10b981', bg:'linear-gradient(135deg, #f0fdf4, #ecfdf5)', border:'#10b981', text:'#166534'};
+    else if (curFwd >= 10) curScheme = {bar:'#22c55e', bg:'linear-gradient(135deg, #f0fdf4, #ecfdf5)', border:'#22c55e', text:'#166534'};
+    else if (curFwd >= 7) curScheme = {bar:'#f59e0b', bg:'linear-gradient(135deg, #fffbeb, #fef3c7)', border:'#f59e0b', text:'#92400e'};
+    else curScheme = {bar:'#f97316', bg:'linear-gradient(135deg, #fff7ed, #ffedd5)', border:'#f97316', text:'#9a3412'};
+
     function renderBreadthChart(type) {
         var values = sortedBreadth.map(function(r) { return type === 'freq' ? r.pctTime : r.fwd; });
         var maxVal = type === 'freq' ? 25 : 50; // fixed scale so U-shape pops
         var barWidthPx = 58, gap = 10, startX = 62;
-        var chartTopY = 35, chartBotY = 175, chartH = chartBotY - chartTopY; // 140px
+        var chartTopY = 28, chartBotY = 128, chartH = chartBotY - chartTopY; // 140px
         var currentIdx = sortedBreadth.findIndex(function(r) { return r.range === currentBucket; });
 
-        var svg = '<svg class="chart-svg" viewBox="0 0 760 230" style="width:100%;">';
+        var svg = '<svg class="chart-svg" viewBox="0 0 760 175" style="width:100%;">';
         svg += '<text x="5" y="30" style="font-size:11px;fill:#64748b;font-weight:600;">' + (type === 'freq' ? '% of time' : '1yr Fwd') + '</text>';
         svg += '<line x1="55" y1="' + chartTopY + '" x2="55" y2="' + chartBotY + '" stroke="#cbd5e1" stroke-width="1"/>';
 
@@ -1667,10 +1675,10 @@ function renderMarketPulse() {
             var isCurrent = i === currentIdx;
             var color = isCurrent ? '#10b981' : '#94a3b8';
             var weight = isCurrent ? '700' : '400';
-            svg += '<text x="' + x + '" y="195" text-anchor="middle" style="font-size:11px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
+            svg += '<text x="' + x + '" y="146" text-anchor="middle" style="font-size:10px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
         });
 
-        svg += '<text x="397" y="220" style="font-size:11px;fill:#64748b;font-weight:600;" text-anchor="middle">Breadth Level (% above 150-day MA) — Low to High</text>';
+        svg += '<text x="397" y="168" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">Breadth Level (% above 150-day MA) — Low to High</text>';
         svg += '</svg>';
         return svg;
     }
@@ -1679,14 +1687,14 @@ function renderMarketPulse() {
     var vizHtml = '';
 
     // Top chart: frequency histogram
-    vizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:18px 24px; border:1px solid #e2e8f0; margin-top:20px; margin-bottom:14px;">';
+    vizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:12px 18px; border:1px solid #e2e8f0; margin-top:20px; margin-bottom:14px;">';
     vizHtml += '<div style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px;">How Often Are We At Each Breadth Level?</div>';
     vizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">% of time in each bucket. The bell curve — middle zones dominate.</div>';
     vizHtml += renderBreadthChart('freq');
     vizHtml += '</div>';
 
     // Bottom chart: forward returns U-shape
-    vizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:18px 24px; border:1px solid #e2e8f0; margin-bottom:14px;">';
+    vizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:12px 18px; border:1px solid #e2e8f0; margin-bottom:14px;">';
     vizHtml += '<div style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px;">What Happens Next? (1-Year Forward Return)</div>';
     vizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">The U-shape. Extremes pay off. The middle delivers muted returns.</div>';
     vizHtml += renderBreadthChart('fwd');
@@ -1695,9 +1703,9 @@ function renderMarketPulse() {
     // Insight callout
     var avgFwd = Math.round(currentRow.fwd || 0);
     var pctTime = Math.round(currentRow.pctTime || 0);
-    vizHtml += '<div style="padding:14px 18px; background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius:10px; border-left:4px solid #10b981; margin-bottom:10px;">';
-    vizHtml += '<div style="font-size:13px; font-weight:700; color:#166534; margin-bottom:4px;">Where does this leave us?</div>';
-    vizHtml += '<div style="font-size:13px; color:#166534; line-height:1.6;">We\\'re in the ' + currentBucket + ' bucket (~' + pctTime + '% of historical time). Forward returns from here have averaged <strong>' + avgFwd + '%</strong>. The market typically needs breadth to improve above 60% for strong forward returns OR wash out below 20% for the contrarian opportunity.</div>';
+    vizHtml += '<div style="padding:12px 16px; background:' + curScheme.bg + '; border-radius:10px; border-left:4px solid ' + curScheme.border + '; margin-bottom:10px;">';
+    vizHtml += '<div style="font-size:13px; font-weight:700; color:' + curScheme.text + '; margin-bottom:4px;">Where does this leave us?</div>';
+    vizHtml += '<div style="font-size:12px; color:' + curScheme.text + '; line-height:1.6;">We\\'re in the ' + currentBucket + ' bucket (~' + pctTime + '% of historical time). Forward returns from here have averaged <strong>' + avgFwd + '%</strong>. The market typically needs breadth to improve above 60% for strong forward returns OR wash out below 20% for the contrarian opportunity.</div>';
     vizHtml += '</div>';
 
     // Data attribution
