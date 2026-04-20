@@ -1593,11 +1593,10 @@ function renderMarketPulse() {
         var values = sortedBreadth.map(function(r) { return type === 'freq' ? r.pctTime : r.fwd; });
         var maxVal = type === 'freq' ? 25 : 50; // fixed scale so U-shape pops
         var barWidthPx = 58, gap = 10, startX = 62;
-        var chartTopY = 28, chartBotY = 128, chartH = chartBotY - chartTopY; // 140px
+        var chartTopY = 24, chartBotY = 104, chartH = chartBotY - chartTopY; // 140px
         var currentIdx = sortedBreadth.findIndex(function(r) { return r.range === currentBucket; });
 
-        var svg = '<svg class="chart-svg" viewBox="0 0 760 175" style="width:100%;">';
-        svg += '<text x="5" y="30" style="font-size:11px;fill:#64748b;font-weight:600;">' + (type === 'freq' ? '% of time' : '1yr Fwd') + '</text>';
+        var svg = '<svg class="chart-svg" viewBox="0 0 760 145" style="width:100%;">';
         svg += '<line x1="55" y1="' + chartTopY + '" x2="55" y2="' + chartBotY + '" stroke="#cbd5e1" stroke-width="1"/>';
 
         // Y ticks
@@ -1656,10 +1655,10 @@ function renderMarketPulse() {
             var isCurrent = i === currentIdx;
             var color = isCurrent ? '#10b981' : '#94a3b8';
             var weight = isCurrent ? '700' : '400';
-            svg += '<text x="' + x + '" y="146" text-anchor="middle" style="font-size:10px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
+            svg += '<text x="' + x + '" y="120" text-anchor="middle" style="font-size:10px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
         });
 
-        svg += '<text x="397" y="168" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">Breadth Level (% above 150-day MA) — Low to High</text>';
+        svg += '<text x="397" y="140" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">Breadth Level (% above 150-day MA) — Low to High</text>';
         svg += '</svg>';
         return svg;
     }
