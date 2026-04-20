@@ -1552,7 +1552,7 @@ function renderMarketPulse() {
     var pointerLeft = Math.min(Math.max(bPct, 2), 98);
     bGauge += '<div style="position: relative; height: 10px;"><div style="position: absolute; left: ' + pointerLeft + '%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid #1e293b;"></div></div>';
 
-    const breadth_html = '<div class="metric-row"><span class="metric-label">% Above 150-Day MA</span><span class="metric-value" style="color:' + bValColor + '; font-size: 28px;">' + Math.round(parseFloat(breadth_pct)) + '%</span></div>' +
+    const breadth_html = '<div class="metric-row"><span class="metric-label">Stocks Above 150-day MA</span><span class="metric-value" style="color:' + bValColor + '; font-size: 28px;">' + Math.round(parseFloat(breadth_pct)) + '%</span></div>' +
         bGauge +
         '<div id="breadthHistoryViz" style="margin-top:20px;"></div>';
 
@@ -1658,7 +1658,7 @@ function renderMarketPulse() {
             svg += '<text x="' + x + '" y="120" text-anchor="middle" style="font-size:10px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
         });
 
-        svg += '<text x="397" y="140" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">Breadth Level (% above 150-day MA) — Low to High</text>';
+        svg += '<text x="397" y="140" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">% of Stocks Above Their 150-day MA — Low to High</text>';
         svg += '</svg>';
         return svg;
     }
@@ -1669,7 +1669,7 @@ function renderMarketPulse() {
     // Top chart: frequency histogram
     vizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:12px 18px; border:1px solid #e2e8f0; margin-top:20px; margin-bottom:14px;">';
     vizHtml += '<div style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px;">How Often Are We At Each Breadth Level?</div>';
-    vizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">% of time in each bucket. The bell curve — middle zones dominate.</div>';
+    vizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">% of time the share of stocks above their 150-day MA falls in each range. The bell curve — middle zones dominate.</div>';
     vizHtml += renderBreadthChart('freq');
     vizHtml += '</div>';
 
