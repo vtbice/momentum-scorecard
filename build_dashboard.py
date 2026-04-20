@@ -119,6 +119,21 @@ breadth_history = [
     {"range": "Below 10%", "pctTime": 1.4, "fwd": 44.1},
 ]
 
+# S&P 500 Trend Strength — extension vs its own 150-day MA
+# Derived from 16,997 trading days (1957-03-04 → 2025-04-15, S&P 500 daily closes)
+# See research_studies/sp500_extension_study.py for the computation
+trend_strength_history = [
+    {"range": ">+20%",     "pctTime": 0.04, "fwd": 16.4},
+    {"range": "+15 to +20%", "pctTime": 1.2,  "fwd": 12.6},
+    {"range": "+10 to +15%", "pctTime": 9.2,  "fwd": 10.0},
+    {"range": "+5 to +10%",  "pctTime": 24.8, "fwd": 9.9},
+    {"range": "0 to +5%",    "pctTime": 33.3, "fwd": 7.6},
+    {"range": "-5 to 0%",    "pctTime": 18.9, "fwd": 6.7},
+    {"range": "-10 to -5%",  "pctTime": 8.0,  "fwd": 8.7},
+    {"range": "-15 to -10%", "pctTime": 2.6,  "fwd": 16.4},
+    {"range": "<-15%",       "pctTime": 1.9,  "fwd": 24.7},
+]
+
 html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1026,6 +1041,11 @@ html_content = '''<!DOCTYPE html>
                 </div>
 
                 <div class="card">
+                    <div class="card-title">Trend Strength</div>
+                    <div id="trendStrengthCardContent"></div>
+                </div>
+
+                <div class="card">
                     <div class="card-title">Market Breadth</div>
                     <div id="breadthCardContent"></div>
                 </div>
@@ -1260,6 +1280,7 @@ const SP500_DATES = DATA.sp500_daily_dates;
 const PULLBACK_STATS = DATA.pullbackStats || {};
 
 const BREADTH_HISTORY = ''' + json.dumps(breadth_history) + ''';
+const TREND_STRENGTH_HISTORY = ''' + json.dumps(trend_strength_history) + ''';
 
 
 // Colors
@@ -1693,6 +1714,174 @@ function renderMarketPulse() {
 
     document.getElementById('breadthHistoryViz').innerHTML = vizHtml;
 
+
+    // ═══════════════════════════════════════════════════════════
+    //  TREND STRENGTH CARD — S&P 500 extension vs its 150-day MA
+    // ═══════════════════════════════════════════════════════════
+    // Compute current extension from SP500_PRICES / 150d MA
+    var tsExt = null;
+    if (SP500_PRICES && SP500_PRICES.length >= 150) {
+        var last150 = SP500_PRICES.slice(-150);
+        var ma150 = last150.reduce(function(a, b) { return a + b; }, 0) / 150;
+        tsExt = (SP500_PRICES[SP500_PRICES.length - 1] / ma150 - 1) * 100;
+    }
+
+    function bucketForExtension(ext) {
+        if (ext >= 20) return '>+20%';
+        if (ext >= 15) return '+15 to +20%';
+        if (ext >= 10) return '+10 to +15%';
+        if (ext >= 5)  return '+5 to +10%';
+        if (ext >= 0)  return '0 to +5%';
+        if (ext >= -5) return '-5 to 0%';
+        if (ext >= -10) return '-10 to -5%';
+        if (ext >= -15) return '-15 to -10%';
+        return '<-15%';
+    }
+
+    function zoneForExtension(ext) {
+        // Returns {label, color, text} — parallel to breadth zones
+        if (ext < -10) return {label: 'Oversold',      color: '#10b981', text: 'Contrarian buy zone — deep oversold'};
+        if (ext < 0)   return {label: 'Broken Trend',  color: '#f97316', text: 'Below MA but not washed out — historically the weakest zone'};
+        if (ext < 5)   return {label: 'Building',      color: '#f59e0b', text: 'Price recovering above the 150-day MA'};
+        if (ext < 15)  return {label: 'Healthy Trend', color: '#22c55e', text: 'Extended above MA — trend strength'};
+        if (ext < 20)  return {label: 'Strong Trend',  color: '#10b981', text: 'Well-extended — historically 91% positive over 1yr'};
+        return {label: 'Extreme', color: '#0f172a', text: 'Very rare zone (<0.1% of history) — still positive fwd returns in small sample'};
+    }
+
+    var tsHtml = '';
+    if (tsExt !== null) {
+        var tsZones = [
+            { label: 'Oversold',   min: -20, max: -10, color: '#10b981' },
+            { label: 'Broken',     min: -10, max:   0, color: '#f97316' },
+            { label: 'Building',   min:   0, max:   5, color: '#f59e0b' },
+            { label: 'Healthy',    min:   5, max:  15, color: '#22c55e' },
+            { label: 'Strong',     min:  15, max:  25, color: '#10b981' }
+        ];
+        var tsZone = zoneForExtension(tsExt);
+        var tsExtRound = tsExt.toFixed(1);
+        var tsSign = tsExt >= 0 ? '+' : '';
+        tsHtml += '<div class="metric-row"><span class="metric-label">S&amp;P 500 vs 150-day MA</span><span class="metric-value" style="color:' + tsZone.color + '; font-size: 28px;">' + tsSign + tsExtRound + '%</span></div>';
+
+        // Zone gauge (gradient bar spanning -20% to +25%)
+        tsHtml += '<div style="position: relative; height: 32px; border-radius: 16px; overflow: hidden; display: flex; margin: 12px 0 4px;">';
+        tsZones.forEach(function(z) {
+            var w = (z.max - z.min) / 45 * 100; // total range 45pp
+            var isActive = tsExt >= z.min && tsExt < z.max;
+            tsHtml += '<div style="width: ' + w + '%; background: ' + z.color + '; opacity: ' + (isActive ? '1' : '0.25') + '; display: flex; align-items: center; justify-content: center;' + (isActive ? ' box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6);' : '') + '">';
+            tsHtml += '<span style="font-size: 12px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.3px;">' + z.label + '</span></div>';
+        });
+        tsHtml += '</div>';
+        // Pointer
+        var tsPtr = Math.min(Math.max((tsExt + 20) / 45 * 100, 2), 98);
+        tsHtml += '<div style="position: relative; height: 10px;"><div style="position: absolute; left: ' + tsPtr + '%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid #1e293b;"></div></div>';
+
+        tsHtml += '<div id="trendStrengthHistoryViz" style="margin-top:20px;"></div>';
+    } else {
+        tsHtml += '<div style="color:#64748b; font-size:13px;">Insufficient price history to compute trend strength.</div>';
+    }
+    document.getElementById('trendStrengthCardContent').innerHTML = tsHtml;
+
+    // Now render the stacked charts (mirrors breadth rendering)
+    if (tsExt !== null) {
+        var tsCurrentBucket = bucketForExtension(tsExt);
+        var tsSorted = TREND_STRENGTH_HISTORY.slice().reverse(); // low → high on X axis
+        var tsCurrentRow = TREND_STRENGTH_HISTORY.find(function(r) { return r.range === tsCurrentBucket; }) || {};
+
+        var tsCurFwd = tsCurrentRow.fwd || 0;
+        var tsCurScheme;
+        if (tsCurFwd >= 15) tsCurScheme = {bg:'linear-gradient(135deg, #f0fdf4, #ecfdf5)', border:'#10b981', text:'#166534'};
+        else if (tsCurFwd >= 10) tsCurScheme = {bg:'linear-gradient(135deg, #f0fdf4, #ecfdf5)', border:'#22c55e', text:'#166534'};
+        else if (tsCurFwd >= 7) tsCurScheme = {bg:'linear-gradient(135deg, #fffbeb, #fef3c7)', border:'#f59e0b', text:'#92400e'};
+        else tsCurScheme = {bg:'linear-gradient(135deg, #fff7ed, #ffedd5)', border:'#f97316', text:'#9a3412'};
+
+        function renderTSChart(type) {
+            var values = tsSorted.map(function(r) { return type === 'freq' ? r.pctTime : r.fwd; });
+            var maxVal = type === 'freq' ? 35 : 30;
+            var barWidthPx = 62, gap = 8, startX = 62;
+            var chartTopY = 24, chartBotY = 104, chartH = chartBotY - chartTopY;
+            var currentIdx = tsSorted.findIndex(function(r) { return r.range === tsCurrentBucket; });
+
+            var svg = '<svg class="chart-svg" viewBox="0 0 760 145" style="width:100%;">';
+            svg += '<line x1="55" y1="' + chartTopY + '" x2="55" y2="' + chartBotY + '" stroke="#cbd5e1" stroke-width="1"/>';
+
+            var ticks = type === 'freq' ? [35, 25, 15, 5, 0] : [30, 20, 10, 5, 0];
+            ticks.forEach(function(tick) {
+                var y = chartTopY + (chartH * (maxVal - tick) / maxVal);
+                if (tick === 0) y = chartBotY;
+                svg += '<text x="50" y="' + (y + 4) + '" style="font-size:10px;fill:#94a3b8;font-family:JetBrains Mono,monospace;" text-anchor="end">' + tick + '%</text>';
+            });
+
+            tsSorted.forEach(function(row, i) {
+                var val = type === 'freq' ? row.pctTime : row.fwd;
+                var barH = (val / maxVal) * chartH;
+                var barY = chartBotY - barH;
+                var x = startX + i * (barWidthPx + gap);
+                var isCurrent = i === currentIdx;
+
+                var color;
+                if (type === 'freq') {
+                    color = isCurrent ? '#10b981' : '#94a3b8';
+                } else {
+                    if (val >= 15) color = '#10b981';
+                    else if (val >= 10) color = '#22c55e';
+                    else if (val >= 7) color = '#f59e0b';
+                    else color = '#f97316';
+                }
+
+                var stroke = (type === 'fwd' && isCurrent) ? ' stroke="#10b981" stroke-width="2"' : '';
+                svg += '<rect x="' + x + '" y="' + barY + '" width="' + barWidthPx + '" height="' + barH + '" fill="' + color + '"' + stroke + '/>';
+
+                var labelColor = isCurrent ? '#10b981' : (type === 'freq' ? '#475569' : (val >= 10 ? '#166534' : val >= 7 ? '#92400e' : '#9a3412'));
+                var labelSize = isCurrent ? '12' : '10';
+                svg += '<text x="' + (x + barWidthPx/2) + '" y="' + (barY - 5) + '" style="font-size:' + labelSize + 'px;fill:' + labelColor + ';font-family:JetBrains Mono,monospace;font-weight:700;" text-anchor="middle">' + Math.round(val) + '%</text>';
+            });
+
+            if (currentIdx >= 0) {
+                var currentX = startX + currentIdx * (barWidthPx + gap) + barWidthPx/2;
+                var lineStartY = chartBotY - (values[currentIdx] / maxVal) * chartH - 20;
+                svg += '<line x1="' + currentX + '" y1="' + lineStartY + '" x2="' + currentX + '" y2="26" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2"/>';
+                svg += '<rect x="' + (currentX - 50) + '" y="2" width="100" height="22" rx="11" fill="#10b981"/>';
+                svg += '<text x="' + currentX + '" y="17" text-anchor="middle" style="font-size:11px;font-weight:800;fill:white;letter-spacing:1.5px;">YOU ARE HERE</text>';
+            }
+
+            tsSorted.forEach(function(row, i) {
+                var x = startX + i * (barWidthPx + gap) + barWidthPx/2;
+                var label = row.range.replace('<-15%', '<-15').replace('>+20%', '>+20').replace(' to ', '→').replace('%', '');
+                var isCurrent = i === currentIdx;
+                var color = isCurrent ? '#10b981' : '#94a3b8';
+                var weight = isCurrent ? '700' : '400';
+                svg += '<text x="' + x + '" y="120" text-anchor="middle" style="font-size:9px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
+            });
+
+            svg += '<text x="397" y="140" style="font-size:10px;fill:#64748b;font-weight:600;" text-anchor="middle">S&amp;P 500 Extension vs 150-day MA — Low to High</text>';
+            svg += '</svg>';
+            return svg;
+        }
+
+        var tsVizHtml = '';
+        tsVizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:12px 18px; border:1px solid #e2e8f0; margin-top:20px; margin-bottom:14px;">';
+        tsVizHtml += '<div style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px;">How Often Is the S&amp;P This Extended?</div>';
+        tsVizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">% of trading days (1957–2025) where the S&amp;P sat in each extension bucket. Most of the time we are within ±5% of the 150-day MA.</div>';
+        tsVizHtml += renderTSChart('freq');
+        tsVizHtml += '</div>';
+
+        tsVizHtml += '<div style="background:#f8fafc; border-radius:10px; padding:12px 18px; border:1px solid #e2e8f0; margin-bottom:14px;">';
+        tsVizHtml += '<div style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px;">What Happens Next? (1-Year Forward Return)</div>';
+        tsVizHtml += '<div style="font-size:12px; color:#64748b; margin-bottom:14px; font-style:italic;">The J-curve. Deep oversold pays off, the slightly-below-MA zone is the weakest, and extended trends tend to keep winning.</div>';
+        tsVizHtml += renderTSChart('fwd');
+        tsVizHtml += '</div>';
+
+        var tsAvgFwd = Math.round(tsCurrentRow.fwd || 0);
+        var tsPctTime = (tsCurrentRow.pctTime || 0).toFixed(1);
+        tsVizHtml += '<div style="padding:12px 16px; background:' + tsCurScheme.bg + '; border-radius:10px; border-left:4px solid ' + tsCurScheme.border + '; margin-bottom:10px;">';
+        tsVizHtml += '<div style="font-size:13px; font-weight:700; color:' + tsCurScheme.text + '; margin-bottom:4px;">Where does this leave us?</div>';
+        tsVizHtml += '<div style="font-size:12px; color:' + tsCurScheme.text + '; line-height:1.6;">The S&amp;P 500 sits <strong>' + tsSign + tsExtRound + '%</strong> above its 150-day MA — in the <strong>' + tsCurrentBucket + '</strong> bucket (' + tsPctTime + '% of historical trading days). Forward 1-year returns from this bucket have averaged <strong>' + tsAvgFwd + '%</strong>. ' + tsZone.text + '.</div>';
+        tsVizHtml += '</div>';
+
+        tsVizHtml += '<div style="font-size:11px; color:#94a3b8; font-style:italic;">Source: S&amp;P 500 daily closes from 1957-03-04 through 2025-04-15 (16,997 trading days with a valid 150-day MA and 1-year forward window).</div>';
+
+        document.getElementById('trendStrengthHistoryViz').innerHTML = tsVizHtml;
+    }
 
 
     // Macro
