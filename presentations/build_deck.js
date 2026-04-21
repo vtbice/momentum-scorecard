@@ -357,16 +357,39 @@ function drawBarChart(slide, opts) {
     }
   });
 
-  // Right — what it means (4yr MA first)
+  // Right — what it means (4yr MA first). Cleaner layout: 3 checkmark rows + separator + italic footnote.
   s.addShape(p.shapes.RECTANGLE, { x: 6.7, y: 2.9, w: 6.1, h: 3.7, fill: { color: "F0FDF4" }, line: { width: 0 } });
   s.addShape(p.shapes.RECTANGLE, { x: 6.7, y: 2.9, w: 0.1, h: 3.7, fill: { color: C.emerald }, line: { width: 0 } });
   s.addText("WHAT IT MEANS", { x: 7.0, y: 3.05, w: 6, h: 0.3, fontSize: 11, bold: true, color: C.emeraldDeep, charSpacing: 3 });
-  s.addText([
-    { text: "Above 4-year MA (" + L.ma4yrPct + ")  →  long-term secular trend intact", options: { bullet: true, breakLine: true } },
-    { text: "Above 150-day MA (" + L.ma150Pct + ")  →  intermediate trend is up",        options: { bullet: true, breakLine: true } },
-    { text: "Both moving averages are themselves sloping up — the trend is gaining ground, not just drifting above its averages.", options: { bullet: true, breakLine: true } },
-    { text: "The current cyclical bull started October 2022 at S&P 3,577 (+" + L.cyclicalGain + "% since)." }
-  ], { x: 7.0, y: 3.45, w: 5.8, h: 3.1, fontSize: 13, color: C.slateSoft, fontFace: F.body, valign: "top" });
+
+  // Three readings, each as its own row with checkmark + text
+  const whatItMeans = [
+    { lead: "Above 4-year MA " + L.ma4yrPct,  tail: "Long-term secular trend intact." },
+    { lead: "Above 150-day MA " + L.ma150Pct, tail: "Intermediate trend is up." },
+    { lead: "Both MAs sloping upward",        tail: "Trend is gaining ground — not just drifting above." }
+  ];
+  const wimY0 = 3.45;
+  const wimStep = 0.7;
+  whatItMeans.forEach((row, i) => {
+    const y = wimY0 + i * wimStep;
+    s.addText("✓", {
+      x: 7.0, y: y + 0.02, w: 0.35, h: 0.3, fontSize: 16, color: C.emerald, bold: true, fontFace: F.body, margin: 0
+    });
+    s.addText(row.lead, {
+      x: 7.4, y, w: 5.3, h: 0.3, fontSize: 13, color: C.navy, bold: true, fontFace: F.body, margin: 0
+    });
+    s.addText(row.tail, {
+      x: 7.4, y: y + 0.3, w: 5.3, h: 0.3, fontSize: 12, color: C.slateSoft, fontFace: F.body, margin: 0
+    });
+  });
+
+  // Separator + footnote
+  s.addShape(p.shapes.LINE, {
+    x: 7.0, y: 5.65, w: 5.6, h: 0, line: { color: C.emerald, width: 0.5, dashType: "dash" }
+  });
+  s.addText("Current cyclical bull started October 2022 at S&P 3,577 — up " + L.cyclicalGain + "% since.", {
+    x: 7.0, y: 5.8, w: 5.7, h: 0.65, fontSize: 12, italic: true, color: C.emeraldDeep, fontFace: F.body, valign: "top"
+  });
 
   footer(s, 4, TOTAL);
 }

@@ -1360,33 +1360,98 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         })
     
     # ── Macro checks ──
-    emp = macro.get("employment", {}).get("value", 4.4)
-    gdp = macro.get("gdp", {}).get("value", 2.9)
-    inf = macro.get("inflation", {}).get("value", 2.7)
-    hy = macro.get("hySpread", {}).get("value", 3.15)
-    sent = macro.get("sentiment", {}).get("value", 74.5)
-    mtg = macro.get("mortgage", {}).get("value", 6.65)
-    ten_yr = macro.get("tenYear", {}).get("value", 4.34)
-    two_yr = macro.get("twoYear", {}).get("value", 3.83)
-    ism = macro.get("ismPmi", {}).get("value", 50.0)
-    oil = market.get("oil", {}).get("price", 75.0)
-    gas = macro.get("gasPrice", {}).get("value", 3.50)
-    dxy = market.get("dxy", {}).get("price", 100.0)
-    jobless = macro.get("joblessClaims", {}).get("value", 220000)
+    # Read raw values (None if fetch failed — we do NOT silently fall back to hardcoded defaults).
+    def _mv(key):
+        v = macro.get(key, {})
+        return v.get("value") if isinstance(v, dict) else None
+    def _mp(side_dict, key):
+        v = side_dict.get(key, {})
+        return v.get("price") if isinstance(v, dict) else None
 
-    add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
-    add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
-    add(inf < 3.0, "Macro", f"Inflation · Now: {inf}% · Healthy: below 3%")
-    add(hy < 4.0, "Macro", f"Credit Spreads (HY OAS) · Now: {hy}% · Healthy: below 4%")
-    add(sent > 70, "Macro", f"Consumer Confidence · Now: {sent} · Healthy: above 70")
-    add(mtg < 6.0, "Macro", f"Mortgage Rates · Now: {mtg}% · Healthy: below 6%")
-    yc_val = round(ten_yr - two_yr, 2) if isinstance(ten_yr, (int, float)) and isinstance(two_yr, (int, float)) else 0
-    add(yc_val >= 0, "Macro", f"Yield Curve · Now: {yc_val:+.2f}% · Healthy: positive (not inverted)")
-    add(ism >= 50, "Macro", f"ISM Manufacturing · Now: {ism} · Healthy: above 50")
-    add(oil < 90, "Macro", f"Oil Price (WTI) · Now: ${oil:.2f} · Healthy: below $90")
-    add(gas < 4.0, "Macro", f"Gas Price · Now: ${gas:.2f} · Healthy: below $4.00")
-    add(dxy < 105, "Macro", f"US Dollar (DXY) · Now: {dxy:.1f} · Healthy: below 105")
-    add(jobless < 250000, "Macro", f"Initial Jobless Claims · Now: {int(jobless/1000)}K · Healthy: below 250K")
+    emp     = _mv("employment")
+    gdp     = _mv("gdp")
+    inf     = _mv("inflation")
+    hy      = _mv("hySpread")
+    sent    = _mv("sentiment")
+    mtg     = _mv("mortgage")
+    ten_yr  = _mv("tenYear")
+    two_yr  = _mv("twoYear")
+    ism     = _mv("ismPmi")
+    gas     = _mv("gasPrice")
+    jobless = _mv("joblessClaims")
+    oil     = _mp(market, "oil")
+    dxy     = _mp(market, "dxy")
+
+    def add_skip(category, metric_name, reason=""):
+        """Record a scored indicator as skipped because source data was unavailable.
+        Skipped indicators do NOT count toward tailwinds, headwinds, or the health score."""
+        reason_str = f" ({reason})" if reason else ""
+        checks.append({
+            "pass": False, "skip": True, "cat": category,
+            "label": f"{metric_name} · Data unavailable{reason_str}",
+            "weight": 0, "sinceDate": today_str,
+        })
+
+    if emp is not None:
+        add(emp < 5.0, "Macro", f"Labor Market · Now: {emp}% · Healthy: below 5%")
+    else:
+        add_skip("Macro", "Labor Market", "FRED fetch failed")
+
+    if gdp is not None:
+        add(gdp > 2.0, "Macro", f"GDP Growth · Now: {gdp}% · Healthy: above 2%")
+    else:
+        add_skip("Macro", "GDP Growth", "FRED fetch failed")
+
+    if inf is not None:
+        add(inf < 3.0, "Macro", f"Inflation · Now: {inf}% · Healthy: below 3%")
+    else:
+        add_skip("Macro", "Inflation", "FRED fetch failed")
+
+    if hy is not None:
+        add(hy < 4.0, "Macro", f"Credit Spreads (HY OAS) · Now: {hy}% · Healthy: below 4%")
+    else:
+        add_skip("Macro", "Credit Spreads (HY OAS)", "FRED fetch failed")
+
+    if sent is not None:
+        add(sent > 70, "Macro", f"Consumer Confidence · Now: {sent} · Healthy: above 70")
+    else:
+        add_skip("Macro", "Consumer Confidence", "FRED fetch failed")
+
+    if mtg is not None:
+        add(mtg < 6.0, "Macro", f"Mortgage Rates · Now: {mtg}% · Healthy: below 6%")
+    else:
+        add_skip("Macro", "Mortgage Rates", "FRED fetch failed")
+
+    if ten_yr is not None and two_yr is not None:
+        yc_val = round(ten_yr - two_yr, 2)
+        add(yc_val >= 0, "Macro", f"Yield Curve · Now: {yc_val:+.2f}% · Healthy: positive (not inverted)")
+    else:
+        add_skip("Macro", "Yield Curve", "FRED 10Y/2Y fetch failed")
+
+    if ism is not None:
+        add(ism >= 50, "Macro", f"ISM Manufacturing · Now: {ism} · Healthy: above 50")
+    else:
+        add_skip("Macro", "ISM Manufacturing", "FRED fetch failed")
+
+    if oil is not None:
+        add(oil < 90, "Macro", f"Oil Price (WTI) · Now: ${oil:.2f} · Healthy: below $90")
+    else:
+        add_skip("Macro", "Oil Price (WTI)", "yfinance fetch failed")
+
+    if gas is not None:
+        add(gas < 4.0, "Macro", f"Gas Price · Now: ${gas:.2f} · Healthy: below $4.00")
+    else:
+        add_skip("Macro", "Gas Price", "FRED fetch failed")
+
+    if dxy is not None:
+        add(dxy < 105, "Macro", f"US Dollar (DXY) · Now: {dxy:.1f} · Healthy: below 105")
+    else:
+        add_skip("Macro", "US Dollar (DXY)", "yfinance fetch failed")
+
+    if jobless is not None:
+        add(jobless < 250000, "Macro", f"Initial Jobless Claims · Now: {int(jobless/1000)}K · Healthy: below 250K")
+    else:
+        add_skip("Macro", "Initial Jobless Claims", "FRED fetch failed")
 
     # ── Fundamental checks ──
     f = MANUAL_INPUTS["fundamental"]
@@ -1397,17 +1462,18 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     # add(f["revisions"] > 1.0, "Fundamental", f"Earnings Revisions · Now: {f['revisions']}x · Healthy: above 1.0")
     # add(fcf_ok > 3.5, "Fundamental", f"Free Cash Flow · Now: {fcf_ok}% · Healthy: above 3.5%")
 
-    # Trailing P/E — auto-pulled from SPY (replaces manual forward P/E)
-    spy_pe = market.get("spy_etf", {}).get("price", 0)
-    # Calculate trailing P/E from SPY info if available, otherwise use estimate
-    trailing_pe = 27.8  # fallback
+    # Trailing P/E — auto-pulled from SPY (no silent fallback — skip if fetch fails)
+    trailing_pe = None
     try:
         import yfinance as _yf
         _spy_info = _yf.Ticker("SPY").info
-        trailing_pe = _spy_info.get("trailingPE", 27.8) or 27.8
+        trailing_pe = _spy_info.get("trailingPE")
     except Exception:
         pass
-    add(trailing_pe < 22.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 22x")
+    if trailing_pe is not None:
+        add(trailing_pe < 22.0, "Fundamental", f"Valuation (Trailing P/E) · Now: {trailing_pe:.1f}x · Healthy: below 22x")
+    else:
+        add_skip("Fundamental", "Valuation (Trailing P/E)", "yfinance SPY.info fetch failed")
 
     # ── Technical checks ──
     sp = market.get("sp500", {})
@@ -1437,11 +1503,14 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         f"AAII Bull Sentiment · Now: {aaii_val:.0f}% · Healthy: 25-45% (extremes are contrarian)")
 
     # ── Risk appetite & cross-asset signals ──
-    # Real interest rate (Fed Funds - Inflation)
-    ff = macro.get("fedFunds", {}).get("value", 3.64)
-    real_rate = round(ff - inf, 2)
-    add(real_rate <= 2.0, "Macro",
-        f"Real Interest Rate · Now: {real_rate:+.2f}% · Healthy: at or below 2%")
+    # Real interest rate (Fed Funds - Inflation) — needs BOTH to be live
+    ff = _mv("fedFunds")
+    if ff is not None and inf is not None:
+        real_rate = round(ff - inf, 2)
+        add(real_rate <= 2.0, "Macro",
+            f"Real Interest Rate · Now: {real_rate:+.2f}% · Healthy: at or below 2%")
+    else:
+        add_skip("Macro", "Real Interest Rate", "Fed Funds or Inflation fetch failed")
 
     # MOVE Index (bond volatility) — lower = calmer, like VIX for bonds
     move_price = market.get("move", {}).get("price", 0)
@@ -1462,19 +1531,21 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     # Monitored but not scored:
     # Bitcoin vs 150d MA
     
-    # Auto-balance: every indicator gets equal weight so total always = 100
-    # Each indicator is worth 100/N points where N = number of indicators
-    num_indicators = len(checks)
+    # Auto-balance: every ACTIVE (non-skipped) indicator gets equal weight so total always = 100.
+    # Skipped indicators don't change the score in either direction — they're reported separately.
+    active_checks = [c for c in checks if not c.get("skip")]
+    skipped_checks = [c for c in checks if c.get("skip")]
+    num_indicators = len(active_checks)
     weight_per = 100.0 / num_indicators if num_indicators > 0 else 0
-    for c in checks:
+    for c in active_checks:
         c["weight"] = weight_per
 
-    passed_count = sum(1 for c in checks if c["pass"])
+    passed_count = sum(1 for c in active_checks if c["pass"])
     score = round(passed_count * weight_per)
     total = 100
-    wins = [c for c in checks if c["pass"]]
-    misses = [c for c in checks if not c["pass"]]
-    
+    wins = [c for c in active_checks if c["pass"]]
+    misses = [c for c in active_checks if not c["pass"]]
+
     pct = score / total * 100 if total > 0 else 0
     if pct >= 80:
         label = "Bullish"
@@ -1488,10 +1559,14 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     else:
         label = "Defensive"
         overall = "Negative"
-    
+
     print(f"  Health Score: {score}/{total} ({pct:.0f}%) — {label}")
-    print(f"  Tailwinds: {len(wins)} | Headwinds: {len(misses)}")
-    
+    print(f"  Tailwinds: {len(wins)} | Headwinds: {len(misses)} | Skipped: {len(skipped_checks)}")
+    if skipped_checks:
+        print(f"  ⚠️  Skipped due to missing data:")
+        for s in skipped_checks:
+            print(f"       - {s['label']}")
+
     return {
         "score": score,
         "total": total,
@@ -1499,6 +1574,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
         "overall": overall,
         "wins": [{"label": w["label"], "weight": w["weight"], "cat": w["cat"], "sinceDate": w["sinceDate"]} for w in wins],
         "misses": [{"label": m["label"], "weight": m["weight"], "cat": m["cat"], "sinceDate": m["sinceDate"]} for m in misses],
+        "skipped": [{"label": s["label"], "cat": s["cat"], "sinceDate": s["sinceDate"]} for s in skipped_checks],
     }
 
 
@@ -1760,6 +1836,7 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
             "healthLabel": signals["label"],
             "healthWins": signals["wins"],
             "healthMisses": signals["misses"],
+            "healthSkipped": signals.get("skipped", []),
             
             "trend": {
                 "score": (
@@ -1778,24 +1855,25 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
             },
             
             "macro": {
-                "gdp": macro.get("gdp", {}).get("value", MANUAL_INPUTS.get("gdp", 2.9)),
-                "employment": macro.get("employment", {}).get("value", 4.4),
-                "inflation": macro.get("inflation", {}).get("value", 2.7),
-                "sentiment": macro.get("sentiment", {}).get("value", 74.5),
-                "fedFunds": macro.get("fedFunds", {}).get("value", 3.64),
-                "tenYear": ten_yr if isinstance(ten_yr, (int, float)) else 4.45,
-                "twoYear": two_yr if isinstance(two_yr, (int, float)) else 3.90,
-                "hySpread": macro.get("hySpread", {}).get("value", 3.15),
-                "igSpread": macro.get("igSpread", {}).get("value", 0.92),
-                "oil": market.get("oil", {}).get("price", 71.50),
-                "dxy": market.get("dxy", {}).get("price", 102.4),
-                "mortgage": macro.get("mortgage", {}).get("value", 6.65),
-                "gasPrice": macro.get("gasPrice", {}).get("value", 3.12),
-                "joblessClaims": macro.get("joblessClaims", {}).get("value", 218),
-                "fiscalPolicy": MANUAL_INPUTS["policy"]["fiscal"],
-                "monetaryPolicy": MANUAL_INPUTS["policy"]["monetary"],
-                "geopolitical": MANUAL_INPUTS["geopolitical"]["level"],
-                "ismPmi": macro.get("ismPmi", {}).get("value", 50.0),
+                # Nullable: None if source fetch failed (dashboard renders "—" instead of a stale default).
+                "gdp":           (macro.get("gdp", {})           or {}).get("value"),
+                "employment":    (macro.get("employment", {})    or {}).get("value"),
+                "inflation":     (macro.get("inflation", {})     or {}).get("value"),
+                "sentiment":     (macro.get("sentiment", {})     or {}).get("value"),
+                "fedFunds":      (macro.get("fedFunds", {})      or {}).get("value"),
+                "tenYear":       (macro.get("tenYear", {})       or {}).get("value"),
+                "twoYear":       (macro.get("twoYear", {})       or {}).get("value"),
+                "hySpread":      (macro.get("hySpread", {})      or {}).get("value"),
+                "igSpread":      (macro.get("igSpread", {})      or {}).get("value"),
+                "oil":           (market.get("oil", {})          or {}).get("price"),
+                "dxy":           (market.get("dxy", {})          or {}).get("price"),
+                "mortgage":      (macro.get("mortgage", {})      or {}).get("value"),
+                "gasPrice":      (macro.get("gasPrice", {})      or {}).get("value"),
+                "joblessClaims": (macro.get("joblessClaims", {}) or {}).get("value"),
+                "ismPmi":        (macro.get("ismPmi", {})        or {}).get("value"),
+                "fiscalPolicy":  MANUAL_INPUTS["policy"]["fiscal"],
+                "monetaryPolicy":MANUAL_INPUTS["policy"]["monetary"],
+                "geopolitical":  MANUAL_INPUTS["geopolitical"]["level"],
             },
             
             "fundamental": {
@@ -1968,7 +2046,27 @@ def main():
     edgar_ok = auto_data.get("edgar") is not None
     edgar_metrics = list(auto_data["edgar"].keys()) if edgar_ok else []
     print(f"\n  📡 Data Sources:")
-    print(f"     Macro (FRED):     ✅ Auto — GDP, jobs, inflation, yields, spreads, etc.")
+    # FRED per-series status (reports missing series loudly instead of blanket ✅ Auto)
+    FRED_TRACKED = [
+        ("employment",   "Unemployment"),
+        ("gdp",          "GDP Growth"),
+        ("inflation",    "Inflation"),
+        ("hySpread",     "HY Credit Spreads"),
+        ("sentiment",    "Consumer Sentiment"),
+        ("mortgage",     "Mortgage Rate"),
+        ("tenYear",      "10-Year Yield"),
+        ("twoYear",      "2-Year Yield"),
+        ("ismPmi",       "ISM PMI"),
+        ("gasPrice",     "Gas Price"),
+        ("joblessClaims","Jobless Claims"),
+        ("fedFunds",     "Fed Funds"),
+    ]
+    fred_ok = [lab for k, lab in FRED_TRACKED if macro.get(k, {}).get("value") is not None]
+    fred_missing = [lab for k, lab in FRED_TRACKED if macro.get(k, {}).get("value") is None]
+    if not fred_missing:
+        print(f"     Macro (FRED):     ✅ Auto — all {len(fred_ok)} series live")
+    else:
+        print(f"     Macro (FRED):     ⚠️  {len(fred_ok)}/{len(FRED_TRACKED)} live — MISSING: {', '.join(fred_missing)}")
     print(f"     Prices (yfinance):✅ Auto — S&P 500, VIX, oil, DXY, all stocks")
     print(f"     Breadth:          ✅ Auto — calculated from stock universe")
     print(f"     Pullbacks:        ✅ Auto — historical CSV + pullback engine")

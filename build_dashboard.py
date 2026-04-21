@@ -1067,6 +1067,11 @@ html_content = '''<!DOCTYPE html>
                         <div id="headwindsList"></div>
                     </div>
                 </div>
+                <div id="skippedBanner" style="display:none; margin-top:20px; padding:14px 18px; background:linear-gradient(135deg, #fffbeb, #fef3c7); border-radius:10px; border-left:4px solid #f59e0b;">
+                    <div style="font-size:13px; font-weight:700; color:#92400e; margin-bottom:6px;">⚠️ Indicators Skipped (Data Unavailable)</div>
+                    <div style="font-size:12px; color:#92400e; line-height:1.6; margin-bottom:8px;">These indicators were excluded from the Health Score because their source data could not be fetched. The score auto-balances across the remaining indicators.</div>
+                    <div id="skippedList" style="font-size:13px; color:#78350f;"></div>
+                </div>
             </div>
         </div>
 
@@ -1467,7 +1472,10 @@ function renderHeader() {
     document.getElementById('healthPct').textContent = health_pct;
     document.getElementById('healthLabel').textContent = MARKET.healthLabel;
     document.getElementById('healthLabel').style.color = health_color;
-    document.getElementById('healthCounts').textContent = totalIndicators + ' indicators tracked · ' + MARKET.healthWins.length + ' tailwinds · ' + MARKET.healthMisses.length + ' headwinds';
+    var skippedCount = (MARKET.healthSkipped || []).length;
+    var countsText = totalIndicators + ' indicators tracked · ' + MARKET.healthWins.length + ' tailwinds · ' + MARKET.healthMisses.length + ' headwinds';
+    if (skippedCount > 0) countsText += ' · ⚠️ ' + skippedCount + ' skipped';
+    document.getElementById('healthCounts').textContent = countsText;
 
     // Spectrum gauge
     var zones = [
@@ -1518,6 +1526,22 @@ function renderHeader() {
         headwinds += '</div></div>';
     });
     document.getElementById('headwindsList').innerHTML = headwinds;
+
+    // Skipped indicators (data unavailable) — render only when present
+    var skipped = MARKET.healthSkipped || [];
+    var skippedBanner = document.getElementById('skippedBanner');
+    var skippedList = document.getElementById('skippedList');
+    if (skippedBanner && skippedList) {
+        if (skipped.length > 0) {
+            var items = skipped.map(function(s) {
+                return '<div style="margin:4px 0;">• ' + s.label + '</div>';
+            }).join('');
+            skippedList.innerHTML = items;
+            skippedBanner.style.display = 'block';
+        } else {
+            skippedBanner.style.display = 'none';
+        }
+    }
 }
 
 function renderMarketPulse() {
