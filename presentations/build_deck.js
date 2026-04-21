@@ -238,106 +238,48 @@ function drawBarChart(slide, opts) {
     x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
 
-  // Left — compact score card (smaller so tailwinds/headwinds get more room)
-  const scoreW = 3.8;
+  // Left — big score card (original layout)
   s.addShape(p.shapes.RECTANGLE, {
-    x: 0.5, y: 2.1, w: scoreW, h: 4.5,
+    x: 0.5, y: 2.1, w: 5.6, h: 4.5,
     fill: { color: C.white }, line: { color: C.mist, width: 1 },
     shadow: { type: "outer", color: "000000", blur: 8, offset: 2, angle: 135, opacity: 0.08 }
   });
   s.addText(L.healthScore, {
-    x: 0.5, y: 2.4, w: scoreW, h: 2.3, fontSize: 150, fontFace: F.head,
+    x: 0.5, y: 2.5, w: 5.6, h: 2.7, fontSize: 200, fontFace: F.head,
     color: C.emerald, bold: true, align: "center", valign: "middle", margin: 0
   });
   s.addText("out of 100", {
-    x: 0.5, y: 4.75, w: scoreW, h: 0.4, fontSize: 14, fontFace: F.body,
+    x: 0.5, y: 5.3, w: 5.6, h: 0.45, fontSize: 16, fontFace: F.body,
     color: C.muteDark, align: "center", italic: true
   });
-  // Counts block with colored inline chips
-  s.addText([
-    { text: L.tailwindCount + " TAILWINDS",  options: { color: C.emerald, bold: true, charSpacing: 3, breakLine: true } },
-    { text: " ", options: { breakLine: true, fontSize: 6 } },
-    { text: L.headwindCount + " HEADWINDS",  options: { color: C.red,     bold: true, charSpacing: 3 } }
-  ], { x: 0.5, y: 5.4, w: scoreW, h: 0.9, fontSize: 13, fontFace: F.body, align: "center", valign: "top" });
-
-  s.addText("Auto-balanced across " + (L.tailwindItems.length + L.headwindItems.length) + " indicators.", {
-    x: 0.5, y: 6.3, w: scoreW, h: 0.25, fontSize: 10, fontFace: F.body,
-    color: C.mute, italic: true, align: "center"
+  s.addText(L.tailwindCount + " TAILWINDS  ·  " + L.headwindCount + " HEADWINDS", {
+    x: 0.5, y: 5.95, w: 5.6, h: 0.4, fontSize: 12, color: C.slateSoft, align: "center", bold: true, charSpacing: 3
   });
 
-  // Right area: full itemized Tailwinds + Headwinds
-  // Helper to render a single indicator row (single line: icon + name + value + optional threshold callout)
-  function renderIndicatorRow(slide, x, y, w, item, isTailwind) {
-    const icon = isTailwind ? "✓" : "✗";
-    const iconColor = isTailwind ? C.emerald : C.red;
-    const valColor = isTailwind ? C.emerald : C.red;
-    slide.addText(icon, {
-      x: x, y: y + 0.01, w: 0.22, h: 0.22, fontSize: 11, color: iconColor, bold: true,
-      fontFace: F.body, margin: 0
-    });
-    // For headwinds we want "Name (need X)" inline; tailwinds stay clean
-    if (!isTailwind && item.threshold) {
-      slide.addText([
-        { text: item.name, options: { color: C.navy, bold: true } },
-        { text: "  (need " + item.threshold + ")", options: { color: C.orange, italic: true, fontSize: 9 } }
-      ], {
-        x: x + 0.25, y: y, w: w * 0.7, h: 0.22, fontSize: 10.5, fontFace: F.body, margin: 0, valign: "middle"
-      });
-    } else {
-      slide.addText(item.name, {
-        x: x + 0.25, y: y, w: w * 0.7, h: 0.22, fontSize: 10.5, color: C.navy,
-        bold: true, fontFace: F.body, margin: 0, valign: "middle"
-      });
-    }
-    slide.addText(item.value || "", {
-      x: x + w * 0.7 + 0.25, y: y, w: w * 0.3 - 0.3, h: 0.22, fontSize: 10.5,
-      color: valColor, bold: true, fontFace: F.head, align: "right", margin: 0, valign: "middle"
-    });
-  }
-
-  const rightX = 4.6;
-  const rightW = 13.3 - rightX - 0.5;
-  s.addShape(p.shapes.RECTANGLE, { x: rightX, y: 2.1, w: 0.08, h: 4.5, fill: { color: C.emerald }, line: { width: 0 } });
-
-  // Tailwinds header
-  s.addText(L.tailwindCount + " TAILWINDS", {
-    x: rightX + 0.2, y: 2.1, w: rightW - 0.2, h: 0.28, fontSize: 12, color: C.emeraldDeep,
-    bold: true, charSpacing: 3, fontFace: F.body, margin: 0
+  // Right — Tailwinds (condensed thematic lines) + Headwinds ("what would flip them")
+  s.addShape(p.shapes.RECTANGLE, {
+    x: 6.4, y: 2.1, w: 6.4, h: 2.15,
+    fill: { color: "F0FDF4" }, line: { width: 0 }
   });
+  s.addShape(p.shapes.RECTANGLE, { x: 6.4, y: 2.1, w: 0.1, h: 2.15, fill: { color: C.emerald }, line: { width: 0 } });
+  s.addText(L.tailwindCount + " TAILWINDS", { x: 6.7, y: 2.2, w: 6, h: 0.4, fontSize: 13, bold: true, color: C.emeraldDeep, charSpacing: 3 });
+  const twRich = L.tailwindLines.map((t, i) => ({
+    text: t, options: i < L.tailwindLines.length - 1 ? { breakLine: true } : {}
+  }));
+  s.addText(twRich, { x: 6.7, y: 2.65, w: 6, h: 1.55, fontSize: 13, color: C.slateSoft, fontFace: F.body, valign: "top" });
 
-  // Tailwinds 2-column, single-line rows
-  const twItems = L.tailwindItems || [];
-  const tw_rowH = 0.25;
-  const tw_perCol = Math.ceil(twItems.length / 2);
-  const tw_colW = (rightW - 0.5) / 2;
-  const tw_y0 = 2.42;
-  twItems.forEach((item, i) => {
-    const col = Math.floor(i / tw_perCol);
-    const row = i % tw_perCol;
-    const x = rightX + 0.2 + col * (tw_colW + 0.3);
-    const y = tw_y0 + row * tw_rowH;
-    renderIndicatorRow(s, x, y, tw_colW, item, true);
+  s.addShape(p.shapes.RECTANGLE, {
+    x: 6.4, y: 4.45, w: 6.4, h: 2.15,
+    fill: { color: "FEF2F2" }, line: { width: 0 }
   });
-
-  // Headwinds header — positioned dynamically below tailwinds
-  const hw_sectionY = tw_y0 + tw_perCol * tw_rowH + 0.22;
+  s.addShape(p.shapes.RECTANGLE, { x: 6.4, y: 4.45, w: 0.1, h: 2.15, fill: { color: C.red }, line: { width: 0 } });
   s.addText(L.headwindCount + " HEADWINDS — WHAT WOULD FLIP THEM", {
-    x: rightX + 0.2, y: hw_sectionY, w: rightW - 0.2, h: 0.28, fontSize: 12, color: C.red,
-    bold: true, charSpacing: 3, fontFace: F.body, margin: 0
+    x: 6.7, y: 4.55, w: 6, h: 0.4, fontSize: 13, bold: true, color: C.red, charSpacing: 3
   });
-
-  const hwItems = L.headwindItems || [];
-  const hw_rowH = 0.25;
-  const hw_perCol = Math.ceil(hwItems.length / 2);
-  const hw_colW = (rightW - 0.5) / 2;
-  const hw_y0 = hw_sectionY + 0.32;
-  hwItems.forEach((item, i) => {
-    const col = Math.floor(i / hw_perCol);
-    const row = i % hw_perCol;
-    const x = rightX + 0.2 + col * (hw_colW + 0.3);
-    const y = hw_y0 + row * hw_rowH;
-    renderIndicatorRow(s, x, y, hw_colW, item, false);
-  });
+  const hwRich = L.headwindLines.map((t, i) => ({
+    text: t, options: i < L.headwindLines.length - 1 ? { breakLine: true } : {}
+  }));
+  s.addText(hwRich, { x: 6.7, y: 5.0, w: 6, h: 1.55, fontSize: 13, color: C.slateSoft, fontFace: F.body, valign: "top" });
 
   footer(s, 2, TOTAL);
 }

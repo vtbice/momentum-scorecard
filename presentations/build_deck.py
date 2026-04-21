@@ -151,9 +151,61 @@ def main(output_path: str | None = None):
     tailwind_items = [parse_indicator(w.get("label", "")) for w in tailwinds]
     headwind_items = [parse_indicator(w.get("label", "")) for w in headwinds]
 
-    # Keep the condensed lines as a backwards-compatible fallback (unused by the
-    # new slide-2 layout but preserved in case the template is ever rolled back).
-    tailwind_lines = [f"{t['name']} {t['value']}".strip() for t in tailwind_items]
+    # Condensed 4-line thematic summary for slide 2's right column (fits the box cleanly).
+    def grab(wins, label_contains):
+        for w in wins:
+            lab = w.get("label", "") if isinstance(w, dict) else ""
+            if label_contains in lab:
+                m2 = re.search(r"Now:\s*([^\s·]+)", lab)
+                return m2.group(1) if m2 else ""
+        return ""
+
+    labor = grab(tailwinds, "Labor Market")
+    gdp_t = grab(tailwinds, "GDP Growth")
+    infl_t= grab(tailwinds, "Inflation")
+    vix_t = grab(tailwinds, "Volatility")
+    hy_t  = grab(tailwinds, "Credit Spreads")
+    move_t= grab(tailwinds, "MOVE Index")
+    yc_t  = grab(tailwinds, "Yield Curve")
+    cf_t  = grab(tailwinds, "Economic Activity")
+    oil_t = grab(tailwinds, "Oil Price")
+    dxy_t = grab(tailwinds, "US Dollar")
+    jc_t  = grab(tailwinds, "Jobless Claims")
+    rr_t  = grab(tailwinds, "Real Interest Rate")
+    pc_t  = grab(tailwinds, "Sentiment")
+    aaii_t= grab(tailwinds, "AAII Bull Sentiment")
+    ipo_t = grab(tailwinds, "IPO ETF")
+
+    # Build 4 thematic lines, only including items that are CURRENT tailwinds
+    def join_theme(parts):
+        """Drop empty pieces and join with ' · '."""
+        clean = [p for p in parts if p]
+        return " · ".join(clean)
+
+    tailwind_lines = [
+        join_theme([
+            f"Labor {labor}" if labor else "",
+            f"GDP {gdp_t}" if gdp_t else "",
+            f"Inflation {infl_t}" if infl_t else "",
+            f"CFNAI {cf_t}" if cf_t else "",
+        ]),
+        "Trend positive (above 150-day + 4-year MA)" if trend_status == "Positive" else "",
+        join_theme([
+            f"VIX {vix_t}" if vix_t else "",
+            f"HY OAS {hy_t}" if hy_t else "",
+            f"MOVE {move_t}" if move_t else "",
+            f"Real rate {rr_t}" if rr_t else "",
+        ]),
+        join_theme([
+            f"Yield curve {yc_t}" if yc_t else "",
+            f"P/C {pc_t}" if pc_t else "",
+            f"AAII {aaii_t}" if aaii_t else "",
+            "IPO ETF risk-on" if ipo_t else "",
+        ]),
+    ]
+    # Drop any empty theme lines
+    tailwind_lines = [t for t in tailwind_lines if t]
+
     headwind_lines = [
         f"{h['name']} {h['value']} (want {h['threshold']})".strip() if h['threshold']
         else f"{h['name']} {h['value']}".strip()
