@@ -1369,7 +1369,7 @@ var INDICATOR_WHY = {
     'Consumer Confidence': 'When people feel good about the economy, they spend more — and spending drives growth.',
     'Mortgage Rates': 'Lower rates boost housing, consumer wealth, and the broader economy. Above 6% starts to pinch.',
     'Yield Curve': 'An inverted yield curve has preceded every recession since the 1960s — one of the most reliable warning signs in finance.',
-    'ISM Manufacturing': 'The single best leading indicator of economic turns. Above 50 means factories are expanding; below 50 signals contraction.',
+    'Economic Activity (CFNAI)': 'The Chicago Fed National Activity Index — a weighted average of 85 monthly economic indicators. Zero represents historical-trend growth; values above zero indicate above-trend growth, values below -0.7 have historically coincided with recessions. Replaces ISM PMI in the scorecard because FRED no longer publishes ISM series.',
     'Oil Price': 'WTI crude oil price per barrel. High oil prices raise production costs across the economy and push inflation higher, squeezing corporate margins and consumer wallets. Above $90 starts to bite.',
     'Gas Price': 'Average price for a gallon of regular gas. High gas prices hit consumer sentiment hard — people feel it every week at the pump, leaving less money for everything else. Above $4 becomes a real drag on spending.',
     'US Dollar': 'The dollar\\'s value against a basket of major currencies. A strong dollar hurts U.S. multinationals (their foreign earnings translate to fewer dollars) and emerging markets (their dollar-denominated debt gets more expensive). Above 105 is a meaningful headwind.',
@@ -1992,21 +1992,24 @@ function renderSynthesis() {
 
 function renderMacroCards() {
     const m = MARKET.macro;
+    // Helper: format a potentially-null value or render em-dash
+    function fmtN(v, digits) { return (v === null || v === undefined) ? '—' : (+v).toFixed(digits); }
     const cards = [
         {
             title: 'Economic Growth',
-            asOf: latestAsOf(['gdp', 'sentiment', 'ismPmi']),
+            asOf: latestAsOf(['gdp', 'sentiment', 'cfnai']),
             rows: [
-                { label: 'Real GDP Growth', value: '+' + m.gdp.toFixed(1) + '%', color: m.gdp > 2 ? '#10b981' : '#ef4444', sub: (m.gdp > 2 ? 'Healthy: above 2% · ' : 'Weak: below 2% · ') + 'A growing economy supports corporate profits. Below 2% signals a slowdown that can drag stocks lower.' },
-                { label: 'Consumer Sentiment', value: m.sentiment.toFixed(1), color: m.sentiment > 70 ? '#10b981' : '#ef4444', sub: (m.sentiment > 70 ? 'Healthy: above 70 · ' : 'Weak: below 70 · ') + 'When people feel good about the economy, they spend more — and spending drives 70% of GDP.' },
-                { label: 'ISM Manufacturing PMI', value: (m.ismPmi || 50).toFixed(1), color: (m.ismPmi || 50) >= 50 ? '#10b981' : '#ef4444', sub: ((m.ismPmi || 50) >= 50 ? 'Healthy: above 50 · ' : 'Contracting: below 50 · ') + 'The single best leading indicator of economic turns — above 50 means factories are expanding.' },
-                { label: 'Regular Gas Price', value: '$' + (m.gasPrice || 0).toFixed(2), sub: 'Impacts daily budgets — high prices eat into consumer spending and corporate margins.' }
+                { label: 'Real GDP Growth', value: m.gdp === null ? '—' : (m.gdp >= 0 ? '+' : '') + m.gdp.toFixed(1) + '%', color: m.gdp === null ? '#94a3b8' : m.gdp > 2 ? '#10b981' : '#ef4444', sub: (m.gdp === null ? '⚠️ Data unavailable · ' : m.gdp > 2 ? 'Healthy: above 2% · ' : 'Weak: below 2% · ') + 'A growing economy supports corporate profits. Below 2% signals a slowdown that can drag stocks lower.' },
+                { label: 'Consumer Sentiment', value: fmtN(m.sentiment, 1), color: m.sentiment === null ? '#94a3b8' : m.sentiment > 70 ? '#10b981' : '#ef4444', sub: (m.sentiment === null ? '⚠️ Data unavailable · ' : m.sentiment > 70 ? 'Healthy: above 70 · ' : 'Weak: below 70 · ') + 'When people feel good about the economy, they spend more — and spending drives 70% of GDP.' },
+                { label: 'Economic Activity (CFNAI)', value: m.cfnai === null ? '—' : (m.cfnai >= 0 ? '+' : '') + m.cfnai.toFixed(2), color: m.cfnai === null ? '#94a3b8' : m.cfnai > -0.7 ? '#10b981' : '#ef4444', sub: (m.cfnai === null ? '⚠️ Data unavailable · ' : m.cfnai > 0 ? 'Above-trend growth · ' : m.cfnai > -0.7 ? 'Below trend but not recessionary · ' : 'Recession threshold breached · ') + 'Chicago Fed composite of 85 economic indicators. Zero = historical-trend growth.' },
+                { label: 'Regular Gas Price', value: m.gasPrice === null ? '—' : '$' + m.gasPrice.toFixed(2), sub: 'Impacts daily budgets — high prices eat into consumer spending and corporate margins.' }
             ],
             desc: (function() {
+                if (m.gdp === null) return 'GDP reading unavailable this refresh.';
                 var gdpNote = m.gdp < 1 ? 'GDP at just ' + m.gdp.toFixed(1) + '% is flashing a slowdown warning — well below the 2% healthy threshold.' : m.gdp > 3 ? 'GDP at ' + m.gdp.toFixed(1) + '% signals strong expansion.' : 'GDP at ' + m.gdp.toFixed(1) + '% shows moderate growth.';
-                var sentNote = m.sentiment < 60 ? ' Consumer sentiment at ' + m.sentiment.toFixed(0) + ' is deeply pessimistic — historically a contrarian buy signal when paired with strong fundamentals.' : '';
-                var ismNote = (m.ismPmi || 50) < 50 ? ' ISM Manufacturing at ' + (m.ismPmi || 50).toFixed(1) + ' signals contraction — factories are pulling back.' : '';
-                return gdpNote + sentNote + ismNote;
+                var sentNote = (m.sentiment !== null && m.sentiment < 60) ? ' Consumer sentiment at ' + m.sentiment.toFixed(0) + ' is deeply pessimistic — historically a contrarian buy signal when paired with strong fundamentals.' : '';
+                var cfNote = (m.cfnai !== null && m.cfnai < -0.7) ? ' CFNAI at ' + m.cfnai.toFixed(2) + ' has crossed the recession threshold.' : '';
+                return gdpNote + sentNote + cfNote;
             })()
         },
         {
@@ -3581,7 +3584,7 @@ var EXPLANATIONS = {
         body: '<p><strong>What it shows:</strong> An overall reading of market conditions across 18 indicators.</p>' +
             '<p><strong>How it is calculated:</strong> 18 binary (yes/no) indicators across three categories, each worth 5 points:</p>' +
             '<ul style="margin:8px 0 8px 20px;">' +
-            '<li><strong>Macro (8 indicators, 40 pts)</strong> — Labor market, GDP, inflation, credit spreads, consumer confidence, mortgage rates, yield curve, ISM manufacturing</li>' +
+            '<li><strong>Macro (8 indicators, 40 pts)</strong> — Labor market, GDP, inflation, credit spreads, consumer confidence, mortgage rates, yield curve, Chicago Fed National Activity Index (CFNAI)</li>' +
             '<li><strong>Fundamental (5 indicators, 25 pts)</strong> — Earnings growth, profit margins, analyst revisions, valuation (P/E), free cash flow yield</li>' +
             '<li><strong>Technical (5 indicators, 25 pts)</strong> — Long-term trend, medium-term trend, breadth, VIX, put/call ratio</li>' +
             '</ul>' +

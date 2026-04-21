@@ -120,27 +120,27 @@ OVERSOLD_THRESHOLDS = {
 #   • geopolitical, fiscal/monetary policy
 
 MANUAL_INPUTS = {
-    # ── Last updated: March 25, 2026 ──
-    # Sources: FactSet Earnings Insight, Schwab, FRED, Multpl, S&P Global
+    # ── Last updated: April 21, 2026 ──
+    # Sources: FactSet Earnings Insight (April 17, 2026), yfinance SPY.info, Multpl
     "fundamental": {
         # ── Auto-overridden by EDGAR when available (these are fallbacks) ──
-        "salesGrowth": 8.2,       # S&P 500 Q4 2025 blended revenue growth %
-        "earningsGrowth": 11.9,   # S&P 500 Q4 2025 blended EPS growth %
+        "salesGrowth": 9.9,       # S&P 500 Q1 2026 blended revenue growth % (FactSet 04-17-26)
+        "earningsGrowth": 13.2,   # S&P 500 Q1 2026 blended EPS growth % (FactSet 04-17-26)
         "netMargin": 13.2,        # S&P 500 net margin % (Q1 2026 est, FactSet)
-        "marginTrend": "Stable",  # 13.2% vs 13.3% prior Q — essentially flat
+        "marginTrend": "Expanding",  # Q1 13.2% → Q2 13.8% → Q3/Q4 14.2% (FactSet projections)
         "leverage": 1.7,          # Net Debt / EBITDA (corporate re-leveraging trend)
         "capex": 6.0,             # Capex growth % (accelerating, AI-driven)
         # ── Still manual — requires FactSet / analyst data ──
-        "earningsBeat": 76,       # % of S&P companies beating estimates (Q4 2025)
-        "salesBeat": 66,          # % beating sales estimates (Q4 2025)
-        "revisions": 1.05,        # Up/down revision ratio (Q1 2026 ests down only 1% vs 1.6% avg)
-        "forwardPE": 20.3,        # S&P 500 forward 12-mo P/E (FactSet, Mar 2026)
-        "historicalPE": 18.9,     # 10-year average P/E (FactSet)
-        "pegRatio": 1.2,          # ~20.3 PE / ~16.3% expected growth
-        "fcfYield": 3.5,          # S&P 500 free cash flow yield %
-        "buybackYield": 2.2,      # % of mkt cap in buybacks ($1T+ annualized)
-        "divYield": 1.2,          # S&P 500 dividend yield % — auto-overridden by yfinance
-        "_lastUpdated": "2026-03-25",  # Track when fundamentals were last manually updated
+        "earningsBeat": 88,       # % beating EPS estimates Q1 2026 so far (FactSet 04-17-26; 5yr avg 78%)
+        "salesBeat": 84,          # % beating revenue estimates Q1 2026 so far (FactSet 04-17-26; 5yr avg 70%)
+        "revisions": 1.05,        # Up/down revision ratio (approximation — FactSet doesn't publish the single ratio)
+        "forwardPE": 20.9,        # S&P 500 forward 12-mo P/E (FactSet 04-17-26)
+        "historicalPE": 18.9,     # 10-year average Forward P/E (FactSet)
+        "pegRatio": 1.16,         # 20.9 forward PE / 18.0% CY2026 expected earnings growth
+        "fcfYield": 3.5,          # S&P 500 free cash flow yield % (softer conversion in 2026)
+        "buybackYield": 2.2,      # % of mkt cap in buybacks (~$1T annualized)
+        "divYield": 1.14,         # S&P 500 dividend yield % — auto-overridden by yfinance SPY.info
+        "_lastUpdated": "2026-04-21",  # Track when fundamentals were last manually updated
     },
     "sentiment": {
         "putCall": 0.90,          # Fallback CBOE Total Put/Call ratio
@@ -323,7 +323,10 @@ def fetch_dividend_yield():
 # SEC requires a User-Agent header identifying the requester
 SEC_HEADERS = {
     "User-Agent": "ProsperMomentumScorecard vtbice@gmail.com",
-    "Accept-Encoding": "gzip, deflate",
+    # Ask SEC for uncompressed responses — urllib.request does not auto-decompress
+    # gzip, and the previous "gzip, deflate" header caused "invalid start byte 0x8b"
+    # errors in _load_cik_map()/_fetch_xbrl_frame() that silently broke EDGAR.
+    "Accept-Encoding": "identity",
 }
 
 # S&P 500 large-cap CIKs we know — used as a quick filter when
@@ -1072,7 +1075,10 @@ def pull_fred_data():
             "A191RL1Q225SBEA": ("gdp",           "Real GDP Growth"),
             "CES0500000003":   ("wageGrowth_raw","Avg Hourly Earnings"),
             "GASREGW":         ("gasPrice",      "Regular Gas Price"),
-            "NAPM":            ("ismPmi",         "ISM Manufacturing PMI"),
+            # NAPM (ISM) was discontinued on FRED due to licensing. We now use the
+            # Chicago Fed National Activity Index (CFNAI) — a broader, weighted average
+            # of 85 economic indicators centered on zero (positive = above-trend growth).
+            "CFNAI":           ("cfnai",          "Chicago Fed Nat'l Activity Index"),
         }
         
         import time as _time
@@ -1376,7 +1382,7 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     mtg     = _mv("mortgage")
     ten_yr  = _mv("tenYear")
     two_yr  = _mv("twoYear")
-    ism     = _mv("ismPmi")
+    cfnai   = _mv("cfnai")
     gas     = _mv("gasPrice")
     jobless = _mv("joblessClaims")
     oil     = _mp(market, "oil")
@@ -1428,10 +1434,11 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     else:
         add_skip("Macro", "Yield Curve", "FRED 10Y/2Y fetch failed")
 
-    if ism is not None:
-        add(ism >= 50, "Macro", f"ISM Manufacturing · Now: {ism} · Healthy: above 50")
+    if cfnai is not None:
+        add(cfnai > -0.7, "Macro",
+            f"Economic Activity (CFNAI) · Now: {cfnai:+.2f} · Healthy: above -0.7 (recession threshold)")
     else:
-        add_skip("Macro", "ISM Manufacturing", "FRED fetch failed")
+        add_skip("Macro", "Economic Activity (CFNAI)", "FRED fetch failed")
 
     if oil is not None:
         add(oil < 90, "Macro", f"Oil Price (WTI) · Now: ${oil:.2f} · Healthy: below $90")
@@ -1870,7 +1877,7 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
                 "mortgage":      (macro.get("mortgage", {})      or {}).get("value"),
                 "gasPrice":      (macro.get("gasPrice", {})      or {}).get("value"),
                 "joblessClaims": (macro.get("joblessClaims", {}) or {}).get("value"),
-                "ismPmi":        (macro.get("ismPmi", {})        or {}).get("value"),
+                "cfnai":         (macro.get("cfnai", {})         or {}).get("value"),
                 "fiscalPolicy":  MANUAL_INPUTS["policy"]["fiscal"],
                 "monetaryPolicy":MANUAL_INPUTS["policy"]["monetary"],
                 "geopolitical":  MANUAL_INPUTS["geopolitical"]["level"],
@@ -1919,7 +1926,7 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
                 "hySpread": macro.get("hySpread", {}).get("asOf", ""),
                 "mortgage": macro.get("mortgage", {}).get("asOf", ""),
                 "joblessClaims": macro.get("joblessClaims", {}).get("asOf", ""),
-                "ismPmi": macro.get("ismPmi", {}).get("asOf", ""),
+                "cfnai": macro.get("cfnai", {}).get("asOf", ""),
                 # Prices — from yfinance (closing date)
                 "prices": market.get("sp500_daily_dates", [""])[-1] if market.get("sp500_daily_dates") else "",
                 # Fundamentals — EDGAR auto-fetch or manual update date
@@ -2056,7 +2063,7 @@ def main():
         ("mortgage",     "Mortgage Rate"),
         ("tenYear",      "10-Year Yield"),
         ("twoYear",      "2-Year Yield"),
-        ("ismPmi",       "ISM PMI"),
+        ("cfnai",        "CFNAI (Chicago Fed)"),
         ("gasPrice",     "Gas Price"),
         ("joblessClaims","Jobless Claims"),
         ("fedFunds",     "Fed Funds"),
