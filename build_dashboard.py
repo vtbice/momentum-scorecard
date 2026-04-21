@@ -1057,6 +1057,9 @@ html_content = '''<!DOCTYPE html>
             <!-- Tailwinds / Headwinds detail (at bottom for those who want to dig in) -->
             <div class="card health-breakdown-light">
                 <div class="card-title">Health Score Breakdown</div>
+                <div style="font-size: 12px; color: #64748b; font-style: italic; margin: -8px 0 16px; text-align: center;">
+                    All underlying data refreshes daily. "Since" dates show when each indicator last flipped between tailwind and headwind — not the last data update.
+                </div>
                 <div id="healthDetail" class="health-detail-panel">
                     <div class="health-column health-wins">
                         <h3>Tailwinds</h3>
