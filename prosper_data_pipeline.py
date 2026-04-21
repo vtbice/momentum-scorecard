@@ -1075,9 +1075,22 @@ def pull_fred_data():
             "NAPM":            ("ismPmi",         "ISM Manufacturing PMI"),
         }
         
+        import time as _time
         for code_str, (key, label) in series.items():
+            data = None
+            last_err = None
+            for attempt in range(3):
+                try:
+                    data = fred.get_series(code_str).dropna()
+                    break
+                except Exception as e:
+                    last_err = e
+                    if attempt < 2:
+                        _time.sleep(1.5)  # brief backoff before retry
+            if data is None:
+                print(f"  ❌ {label} ({code_str}): {last_err} (after 3 attempts)")
+                continue
             try:
-                data = fred.get_series(code_str).dropna()
                 if len(data) == 0:
                     print(f"  ❌ {label} ({code_str}): No data")
                     continue
