@@ -3511,12 +3511,13 @@ function renderSourcesTab() {
 
     // Card 9: Data Sources
     html += '<div class="card"><div class="card-title">Data Sources</div>';
-    html += '<div class="metric-row"><span class="metric-label">yfinance (Yahoo Finance)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Stock prices, moving averages, VIX, oil, dollar index, sector classification</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">FRED (Federal Reserve Economic Data)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">GDP, unemployment, inflation, yields, credit spreads, mortgage rates, consumer sentiment, gas prices</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">CBOE (Chicago Board Options Exchange)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Put/Call ratio (updated weekly, entered manually)</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">AAII (American Association of Individual Investors)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Bull/Bear sentiment survey (updated weekly, entered manually)</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">FactSet Earnings Insight</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">S&P 500 earnings growth, revenue growth, beat rates, profit margins, forward P/E, analyst revisions</div></div></div>';
-    html += '<div class="metric-row"><span class="metric-label">Manual Assessment</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Geopolitical risk level, fiscal policy stance, monetary policy stance</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">yfinance (Yahoo Finance)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Stock prices, moving averages, VIX, oil, dollar index, sector classification, SPY trailing P/E &amp; dividend yield — <strong>daily auto</strong></div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FRED (Federal Reserve Economic Data)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">GDP, unemployment, inflation, 10Y/2Y yields, Fed Funds, HY credit spreads, mortgage rates, consumer sentiment, gas prices, jobless claims, CFNAI (Chicago Fed Nat\\'l Activity Index) — <strong>daily auto via API</strong></div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">SEC EDGAR (XBRL Frames API)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">S&amp;P 500 trailing earnings growth, revenue growth, net margin, leverage, capex growth — <strong>daily auto</strong> (falls back to FactSet if current quarter not yet filed)</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">CBOE (Chicago Board Options Exchange)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Put/Call ratio — <strong>weekly auto</strong></div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">AAII (Nasdaq Data Link)</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Bull/Bear sentiment survey — <strong>weekly auto</strong></div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">FactSet Earnings Insight</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Blended beat rates, forward P/E, PEG, margin trend, FCF &amp; buyback yield — <strong>manual quarterly</strong>, last updated ' + (typeof MARKET !== 'undefined' && MARKET.fundamental && MARKET.fundamental._lastUpdated ? MARKET.fundamental._lastUpdated : '—') + '</div></div></div>';
+    html += '<div class="metric-row"><span class="metric-label">Manual Assessment</span><div style="text-align:right;"><div style="font-size:13px; color:#64748b;">Geopolitical risk level, fiscal policy stance, monetary policy stance — <strong>manual, as conditions change</strong></div></div></div>';
     html += '</div>';
 
     // Card 10: Disclaimer
@@ -3581,22 +3582,39 @@ var EXPLANATIONS = {
     },
     healthScore: {
         title: 'Health Score',
-        body: '<p><strong>What it shows:</strong> An overall reading of market conditions across 18 indicators.</p>' +
-            '<p><strong>How it is calculated:</strong> 18 binary (yes/no) indicators across three categories, each worth 5 points:</p>' +
-            '<ul style="margin:8px 0 8px 20px;">' +
-            '<li><strong>Macro (8 indicators, 40 pts)</strong> — Labor market, GDP, inflation, credit spreads, consumer confidence, mortgage rates, yield curve, Chicago Fed National Activity Index (CFNAI)</li>' +
-            '<li><strong>Fundamental (5 indicators, 25 pts)</strong> — Earnings growth, profit margins, analyst revisions, valuation (P/E), free cash flow yield</li>' +
-            '<li><strong>Technical (5 indicators, 25 pts)</strong> — Long-term trend, medium-term trend, breadth, VIX, put/call ratio</li>' +
-            '</ul>' +
-            '<p><strong>Score bands:</strong></p>' +
-            '<ul style="margin:8px 0 8px 20px;">' +
-            '<li>80-100% = Bullish</li>' +
-            '<li>60-80% = Cautiously Optimistic</li>' +
-            '<li>40-60% = Cautious</li>' +
-            '<li>25-40% = Defensive</li>' +
-            '<li>0-25% = Risk Off</li>' +
-            '</ul>' +
-            '<p><strong>Why equal weight?</strong> Simplicity and transparency. Each indicator gets an equal vote. No hidden biases.</p>'
+        body: (function() {
+            var total = 0, macro = 0, fundamental = 0, technical = 0, skipped = 0;
+            if (typeof MARKET !== 'undefined') {
+                total = (MARKET.healthWins || []).length + (MARKET.healthMisses || []).length;
+                macro = (MARKET.healthWins || []).filter(function(w){return w.cat==='Macro';}).length
+                      + (MARKET.healthMisses || []).filter(function(m){return m.cat==='Macro';}).length;
+                fundamental = (MARKET.healthWins || []).filter(function(w){return w.cat==='Fundamental';}).length
+                            + (MARKET.healthMisses || []).filter(function(m){return m.cat==='Fundamental';}).length;
+                technical = (MARKET.healthWins || []).filter(function(w){return w.cat==='Technical';}).length
+                          + (MARKET.healthMisses || []).filter(function(m){return m.cat==='Technical';}).length;
+                skipped = (MARKET.healthSkipped || []).length;
+            }
+            var ptsEach = total > 0 ? (100 / total).toFixed(1) : '—';
+            var skipNote = skipped > 0
+                ? '<p style="padding:8px 12px; background:#fffbeb; border-left:3px solid #f59e0b; border-radius:4px;"><strong>⚠️ ' + skipped + ' indicator' + (skipped === 1 ? '' : 's') + ' skipped this refresh</strong> because source data was unavailable. Skipped indicators do not affect the score — see the Health Score Breakdown for details.</p>'
+                : '';
+            return '<p><strong>What it shows:</strong> An overall reading of market conditions across ' + total + ' live indicators.</p>' +
+                '<p><strong>How it is calculated:</strong> ' + total + ' binary (yes/no) indicators across three categories, auto-balanced so each worth <strong>' + ptsEach + ' points</strong>:</p>' +
+                '<ul style="margin:8px 0 8px 20px;">' +
+                '<li><strong>Macro (' + macro + ' indicators)</strong> — Labor, GDP, inflation, credit spreads, consumer confidence, mortgage rates, yield curve, CFNAI (Chicago Fed), oil, gas, dollar, jobless claims, real rate</li>' +
+                '<li><strong>Fundamental (' + fundamental + ' indicators)</strong> — Trailing P/E</li>' +
+                '<li><strong>Technical (' + technical + ' indicators)</strong> — Long-term trend, medium-term trend, breadth, VIX, MOVE, put/call, AAII sentiment, IPO ETF</li>' +
+                '</ul>' +
+                skipNote +
+                '<p><strong>Score bands:</strong></p>' +
+                '<ul style="margin:8px 0 8px 20px;">' +
+                '<li>80-100 = Bullish</li>' +
+                '<li>60-80 = Cautiously Optimistic</li>' +
+                '<li>40-60 = Cautious</li>' +
+                '<li>0-40 = Defensive</li>' +
+                '</ul>' +
+                '<p><strong>Why equal weight?</strong> Simplicity and transparency. Each indicator gets one vote. If one area matters more, it shows up naturally by having more indicators. Skipped indicators shrink the denominator — the score never gets a free pass from missing data.</p>';
+        })()
     }
 };
 
