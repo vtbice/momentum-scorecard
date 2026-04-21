@@ -233,9 +233,12 @@ function drawBarChart(slide, opts) {
 {
   const s = p.addSlide(); light(s);
   accentBar(s, 0.5, 0.5, 1.2);
-  eyebrow(s, "HEALTH SCORE");
-  s.addText(L.healthLabel, {
+  eyebrow(s, "MARKET PULSE");
+  s.addText("Health Score", {
     x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
+  });
+  s.addText(L.healthLabel, {
+    x: 0.5, y: 1.85, w: 12, h: 0.45, fontSize: 20, fontFace: F.head, color: C.emerald, italic: true, margin: 0
   });
 
   // Left — big score card (original layout)
@@ -521,12 +524,15 @@ function drawBarChart(slide, opts) {
 {
   const s = p.addSlide(); light(s);
   accentBar(s, 0.5, 0.5, 1.2);
-  eyebrow(s, "WHERE WE ARE NOW");
-  s.addText("Cyclical Bull, Secular Bull #3", {
+  eyebrow(s, "THE BIG PICTURE");
+  s.addText("Where We Are Now", {
     x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
+  s.addText("Cyclical bull since October 2022 · Third post-WWII secular bull since 2016", {
+    x: 0.5, y: 1.9, w: 12.3, h: 0.45, fontSize: 18, fontFace: F.head, color: C.emerald, italic: true, margin: 0
+  });
   s.addText("We are ~3.5 years into a cyclical bull market that started October 2022 — nested inside the third post-WWII secular bull that began in 2016.", {
-    x: 0.5, y: 2.0, w: 12.3, h: 0.7, fontSize: 15, color: C.slateSoft, italic: true
+    x: 0.5, y: 2.4, w: 12.3, h: 0.55, fontSize: 14, color: C.slateSoft
   });
 
   // Three secular-bull cards
@@ -535,7 +541,7 @@ function drawBarChart(slide, opts) {
     { yrs: "1982–2000", gain: "+1,397%",      label: "SECULAR BULL #2" },
     { yrs: "2016–?",    gain: L.bull3Gain, label: "SECULAR BULL #3 (active)" }
   ];
-  const bx = [0.5, 4.75, 9.0], bw = 3.8, by = 2.95, bh = 2.0;
+  const bx = [0.5, 4.75, 9.0], bw = 3.8, by = 3.15, bh = 1.95;
   bulls.forEach((b, i) => {
     const active = i === 2;
     s.addShape(p.shapes.RECTANGLE, {
