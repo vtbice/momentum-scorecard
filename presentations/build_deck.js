@@ -235,7 +235,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2);
   eyebrow(s, "HEALTH SCORE");
   s.addText(L.healthLabel, {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
 
   // Left — compact score card (smaller so tailwinds/headwinds get more room)
@@ -266,51 +266,51 @@ function drawBarChart(slide, opts) {
   });
 
   // Right area: full itemized Tailwinds + Headwinds
-  // Helper to render a single indicator row with check/cross + name + value (+ threshold for headwinds)
+  // Helper to render a single indicator row (single line: icon + name + value + optional threshold callout)
   function renderIndicatorRow(slide, x, y, w, item, isTailwind) {
     const icon = isTailwind ? "✓" : "✗";
     const iconColor = isTailwind ? C.emerald : C.red;
     const valColor = isTailwind ? C.emerald : C.red;
     slide.addText(icon, {
-      x: x, y: y + 0.02, w: 0.25, h: 0.22, fontSize: 12, color: iconColor, bold: true,
+      x: x, y: y + 0.01, w: 0.22, h: 0.22, fontSize: 11, color: iconColor, bold: true,
       fontFace: F.body, margin: 0
     });
-    // Name + value (right-aligned value)
-    slide.addText(item.name, {
-      x: x + 0.28, y: y, w: w * 0.58, h: 0.22, fontSize: 11, color: C.navy,
-      bold: true, fontFace: F.body, margin: 0, valign: "middle"
-    });
-    slide.addText(item.value || "", {
-      x: x + w * 0.58 + 0.28, y: y, w: w * 0.42 - 0.3, h: 0.22, fontSize: 11,
-      color: valColor, bold: true, fontFace: F.head, align: "right", margin: 0, valign: "middle"
-    });
-    // Threshold (light italic beneath)
-    if (item.threshold) {
-      const prefix = isTailwind ? "healthy " : "need ";
-      slide.addText(prefix + item.threshold, {
-        x: x + 0.28, y: y + 0.2, w: w - 0.3, h: 0.18, fontSize: 9,
-        color: isTailwind ? C.muteDark : C.orange, italic: true, fontFace: F.body, margin: 0
+    // For headwinds we want "Name (need X)" inline; tailwinds stay clean
+    if (!isTailwind && item.threshold) {
+      slide.addText([
+        { text: item.name, options: { color: C.navy, bold: true } },
+        { text: "  (need " + item.threshold + ")", options: { color: C.orange, italic: true, fontSize: 9 } }
+      ], {
+        x: x + 0.25, y: y, w: w * 0.7, h: 0.22, fontSize: 10.5, fontFace: F.body, margin: 0, valign: "middle"
+      });
+    } else {
+      slide.addText(item.name, {
+        x: x + 0.25, y: y, w: w * 0.7, h: 0.22, fontSize: 10.5, color: C.navy,
+        bold: true, fontFace: F.body, margin: 0, valign: "middle"
       });
     }
+    slide.addText(item.value || "", {
+      x: x + w * 0.7 + 0.25, y: y, w: w * 0.3 - 0.3, h: 0.22, fontSize: 10.5,
+      color: valColor, bold: true, fontFace: F.head, align: "right", margin: 0, valign: "middle"
+    });
   }
 
-  // Tailwinds — top-right; 2 columns to fit up to ~20 items
   const rightX = 4.6;
-  const rightW = 13.3 - rightX - 0.5;  // to 12.8
+  const rightW = 13.3 - rightX - 0.5;
   s.addShape(p.shapes.RECTANGLE, { x: rightX, y: 2.1, w: 0.08, h: 4.5, fill: { color: C.emerald }, line: { width: 0 } });
 
   // Tailwinds header
   s.addText(L.tailwindCount + " TAILWINDS", {
-    x: rightX + 0.2, y: 2.1, w: rightW - 0.2, h: 0.3, fontSize: 12, color: C.emeraldDeep,
+    x: rightX + 0.2, y: 2.1, w: rightW - 0.2, h: 0.28, fontSize: 12, color: C.emeraldDeep,
     bold: true, charSpacing: 3, fontFace: F.body, margin: 0
   });
 
-  // Tailwinds 2-column layout
+  // Tailwinds 2-column, single-line rows
   const twItems = L.tailwindItems || [];
-  const tw_colW = (rightW - 0.5) / 2;       // small gutter
-  const tw_rowH = 0.4;                       // name + threshold fits in 0.4
+  const tw_rowH = 0.25;
   const tw_perCol = Math.ceil(twItems.length / 2);
-  const tw_y0 = 2.5;
+  const tw_colW = (rightW - 0.5) / 2;
+  const tw_y0 = 2.42;
   twItems.forEach((item, i) => {
     const col = Math.floor(i / tw_perCol);
     const row = i % tw_perCol;
@@ -319,18 +319,18 @@ function drawBarChart(slide, opts) {
     renderIndicatorRow(s, x, y, tw_colW, item, true);
   });
 
-  // Headwinds — bottom; single column with threshold callouts
-  const hw_sectionY = tw_y0 + tw_perCol * tw_rowH + 0.25;
+  // Headwinds header — positioned dynamically below tailwinds
+  const hw_sectionY = tw_y0 + tw_perCol * tw_rowH + 0.22;
   s.addText(L.headwindCount + " HEADWINDS — WHAT WOULD FLIP THEM", {
-    x: rightX + 0.2, y: hw_sectionY, w: rightW - 0.2, h: 0.3, fontSize: 12, color: C.red,
+    x: rightX + 0.2, y: hw_sectionY, w: rightW - 0.2, h: 0.28, fontSize: 12, color: C.red,
     bold: true, charSpacing: 3, fontFace: F.body, margin: 0
   });
 
   const hwItems = L.headwindItems || [];
-  const hw_colW = (rightW - 0.5) / 2;
-  const hw_rowH = 0.4;
+  const hw_rowH = 0.25;
   const hw_perCol = Math.ceil(hwItems.length / 2);
-  const hw_y0 = hw_sectionY + 0.35;
+  const hw_colW = (rightW - 0.5) / 2;
+  const hw_y0 = hw_sectionY + 0.32;
   hwItems.forEach((item, i) => {
     const col = Math.floor(i / hw_perCol);
     const row = i % hw_perCol;
@@ -351,7 +351,7 @@ function drawBarChart(slide, opts) {
 
   s.addText("THE FRAMEWORK", { x: 0.9, y: 0.7, w: 10, h: 0.3, fontSize: 12, color: C.emerald, bold: true, charSpacing: 5 });
   s.addText("Three Layers of Market Health", {
-    x: 0.9, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.white, bold: true, margin: 0
+    x: 0.9, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.white, bold: true, margin: 0
   });
   s.addText("Each layer answers a different question — together they triangulate where the market really stands.", {
     x: 0.9, y: 2.0, w: 12, h: 0.6, fontSize: 15, color: C.silver, italic: true
@@ -385,7 +385,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2);
   eyebrow(s, "LAYER 1 · DIRECTION");
   s.addText("Market Trend", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("The S&P 500 sits above both its 4-year moving average and its 150-day moving average — long-term and intermediate trends are aligned up.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.7, fontSize: 15, color: C.slateSoft, italic: true
@@ -466,7 +466,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2, C.green);
   eyebrow(s, "LAYER 2 · CONVICTION", 0.5, 0.7, C.green);
   s.addText("Trend Strength", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("How far the S&P sits from its 150-day MA — and why extended trends tend to keep winning.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.5, fontSize: 15, color: C.slateSoft, italic: true
@@ -524,7 +524,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2, C.amber);
   eyebrow(s, "LAYER 3 · PARTICIPATION", 0.5, 0.7, C.amber);
   s.addText("Market Breadth", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("What percentage of stocks are trading above their 150-day MA — the 'are we all in this together' signal.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.5, fontSize: 15, color: C.slateSoft, italic: true
@@ -581,7 +581,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2);
   eyebrow(s, "WHERE WE ARE NOW");
   s.addText("Cyclical Bull, Secular Bull #3", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("We are ~3.5 years into a cyclical bull market that started October 2022 — nested inside the third post-WWII secular bull that began in 2016.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.7, fontSize: 15, color: C.slateSoft, italic: true
@@ -632,7 +632,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2);
   eyebrow(s, "HISTORICAL CONTEXT");
   s.addText("Pullbacks Are Normal", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("Since 1957, the S&P has grown from 44 to " + L.spPrice + " — stumbling " + L.pullbackTotal + " times along the way and coming back every single time.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.5, fontSize: 15, color: C.slateSoft, italic: true
@@ -705,7 +705,7 @@ function drawBarChart(slide, opts) {
   accentBar(s, 0.5, 0.5, 1.2);
   eyebrow(s, "SECULAR CYCLES · THE BIG PICTURE");
   s.addText("How Much Runway Is Left?", {
-    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
+    x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 46, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
   s.addText("Secular cycles run in 15–25 year regimes. The two prior secular bulls each lasted roughly 21 years — we are about halfway through the current one.", {
     x: 0.5, y: 2.0, w: 12.3, h: 0.7, fontSize: 15, color: C.slateSoft, italic: true
