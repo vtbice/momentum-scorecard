@@ -130,26 +130,9 @@ def main(output_path: str | None = None):
                 return m2.group(1) if m2 else ""
         return ""
 
-    labor = grab(tailwinds, "Labor Market")
-    gdp   = grab(tailwinds, "GDP Growth")
-    infl  = grab(tailwinds, "Inflation")
-    vix   = grab(tailwinds, "Volatility")
-    hyoas = grab(tailwinds, "Credit Spreads")
-    move_ = grab(tailwinds, "MOVE Index")
-    yc    = grab(tailwinds, "Yield Curve")
-    ism   = grab(tailwinds, "ISM Manufacturing")
-
-    tailwind_lines = [
-        f"Labor {labor} · GDP {gdp} · Inflation {infl}".strip(" ·"),
-        "Trend positive (above 150-day + 4-year MA)" if trend_status == "Positive" else "Trend mixed",
-        f"VIX {vix} · HY OAS {hyoas} · MOVE {move_}".strip(" ·"),
-        f"Yield curve {yc} · ISM {ism} · IPO ETF risk-on".strip(" ·"),
-    ]
-    headwind_lines = []
-    for w in headwinds:
-        lab = w.get("label", "")
-        # e.g. "Mortgage Rates · Now: 6.65% · Healthy: below 6%"
-        # Want "Mortgage rates 6.65% (want below 6%)"
+    # Parse every indicator into {name, value, threshold} so the deck can
+    # render them as tidy rows with the "what flips them" call-out inline.
+    def parse_indicator(lab: str) -> dict:
         match = re.match(
             r"(?P<name>[^·]+)·\s*Now:\s*(?P<val>[^·]+)·\s*Healthy:\s*(?P<threshold>.+)",
             lab,
@@ -158,9 +141,24 @@ def main(output_path: str | None = None):
             name = match.group("name").strip()
             val = match.group("val").strip()
             thr = match.group("threshold").strip().split("—")[0].strip()
-            headwind_lines.append(f"{name} {val} (want {thr})")
-        else:
-            headwind_lines.append(lab)
+            return {"name": name, "value": val, "threshold": thr}
+        # Trend labels have a different shape: "Long-Term Trend · S&P 7,126 vs 4-Year MA 5,180"
+        if "·" in lab:
+            head, rest = lab.split("·", 1)
+            return {"name": head.strip(), "value": rest.strip(), "threshold": ""}
+        return {"name": lab, "value": "", "threshold": ""}
+
+    tailwind_items = [parse_indicator(w.get("label", "")) for w in tailwinds]
+    headwind_items = [parse_indicator(w.get("label", "")) for w in headwinds]
+
+    # Keep the condensed lines as a backwards-compatible fallback (unused by the
+    # new slide-2 layout but preserved in case the template is ever rolled back).
+    tailwind_lines = [f"{t['name']} {t['value']}".strip() for t in tailwind_items]
+    headwind_lines = [
+        f"{h['name']} {h['value']} (want {h['threshold']})".strip() if h['threshold']
+        else f"{h['name']} {h['value']}".strip()
+        for h in headwind_items
+    ]
 
     # Format output filename with today's date
     if not output_path:
@@ -178,6 +176,8 @@ def main(output_path: str | None = None):
         "DECK_HW_COUNT":     str(len(headwinds)),
         "DECK_TW_LINES":     json.dumps(tailwind_lines),
         "DECK_HW_LINES":     json.dumps(headwind_lines),
+        "DECK_TW_ITEMS":     json.dumps(tailwind_items),
+        "DECK_HW_ITEMS":     json.dumps(headwind_items),
         "DECK_TREND":        trend_status,
         "DECK_MA150":        f"{ma150:,.0f}" if ma150 else "—",
         "DECK_MA4YR":        f"{ma4yr:,.0f}" if ma4yr else "—",

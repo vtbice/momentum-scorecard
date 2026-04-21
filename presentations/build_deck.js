@@ -11,8 +11,10 @@ const L = {
   view:                env.DECK_VIEW           || "Bullish",
   tailwindCount:       env.DECK_TW_COUNT       || "19",
   headwindCount:       env.DECK_HW_COUNT       || "3",
-  tailwindLines:       JSON.parse(env.DECK_TW_LINES || '["Labor 4.4% · GDP 2.9% · Inflation 2.7%","Trend positive (above 150-day + 4-year MA)","VIX 19 · HY OAS 3.15% · MOVE 66","Yield curve +0.51% · ISM 50 · IPO ETF risk-on"]'),
-  headwindLines:       JSON.parse(env.DECK_HW_LINES || '["Mortgage rates 6.65% (want below 6%)","Trailing P/E 28x (want below 22x)","Breadth 53% (want above 60% or below 20%)"]'),
+  tailwindLines:       JSON.parse(env.DECK_TW_LINES || '[]'),
+  headwindLines:       JSON.parse(env.DECK_HW_LINES || '[]'),
+  tailwindItems:       JSON.parse(env.DECK_TW_ITEMS || '[]'),
+  headwindItems:       JSON.parse(env.DECK_HW_ITEMS || '[]'),
   trendStatus:         env.DECK_TREND          || "Positive",
   ma150:               env.DECK_MA150          || "6,786",
   ma4yr:               env.DECK_MA4YR          || "5,180",
@@ -236,46 +238,106 @@ function drawBarChart(slide, opts) {
     x: 0.5, y: 1.05, w: 12, h: 0.9, fontSize: 40, fontFace: F.head, color: C.navy, bold: true, margin: 0
   });
 
-  // Left — big score card
+  // Left — compact score card (smaller so tailwinds/headwinds get more room)
+  const scoreW = 3.8;
   s.addShape(p.shapes.RECTANGLE, {
-    x: 0.5, y: 2.1, w: 5.6, h: 4.5,
+    x: 0.5, y: 2.1, w: scoreW, h: 4.5,
     fill: { color: C.white }, line: { color: C.mist, width: 1 },
     shadow: { type: "outer", color: "000000", blur: 8, offset: 2, angle: 135, opacity: 0.08 }
   });
   s.addText(L.healthScore, {
-    x: 0.5, y: 2.5, w: 5.6, h: 2.7, fontSize: 200, fontFace: F.head,
+    x: 0.5, y: 2.4, w: scoreW, h: 2.3, fontSize: 150, fontFace: F.head,
     color: C.emerald, bold: true, align: "center", valign: "middle", margin: 0
   });
   s.addText("out of 100", {
-    x: 0.5, y: 5.3, w: 5.6, h: 0.45, fontSize: 16, fontFace: F.body,
+    x: 0.5, y: 4.75, w: scoreW, h: 0.4, fontSize: 14, fontFace: F.body,
     color: C.muteDark, align: "center", italic: true
   });
-  s.addText(L.tailwindCount + " TAILWINDS  ·  " + L.headwindCount + " HEADWINDS", {
-    x: 0.5, y: 5.95, w: 5.6, h: 0.4, fontSize: 12, color: C.slateSoft, align: "center", bold: true, charSpacing: 3
+  // Counts block with colored inline chips
+  s.addText([
+    { text: L.tailwindCount + " TAILWINDS",  options: { color: C.emerald, bold: true, charSpacing: 3, breakLine: true } },
+    { text: " ", options: { breakLine: true, fontSize: 6 } },
+    { text: L.headwindCount + " HEADWINDS",  options: { color: C.red,     bold: true, charSpacing: 3 } }
+  ], { x: 0.5, y: 5.4, w: scoreW, h: 0.9, fontSize: 13, fontFace: F.body, align: "center", valign: "top" });
+
+  s.addText("Auto-balanced across " + (L.tailwindItems.length + L.headwindItems.length) + " indicators.", {
+    x: 0.5, y: 6.3, w: scoreW, h: 0.25, fontSize: 10, fontFace: F.body,
+    color: C.mute, italic: true, align: "center"
   });
 
-  // Right — Tailwinds / Headwinds at-a-glance (macro, trend, risk, and sentiment groups)
-  s.addShape(p.shapes.RECTANGLE, {
-    x: 6.4, y: 2.1, w: 6.4, h: 2.15,
-    fill: { color: "F0FDF4" }, line: { width: 0 }
-  });
-  s.addShape(p.shapes.RECTANGLE, { x: 6.4, y: 2.1, w: 0.1, h: 2.15, fill: { color: C.emerald }, line: { width: 0 } });
-  s.addText(L.tailwindCount + " TAILWINDS", { x: 6.7, y: 2.2, w: 6, h: 0.4, fontSize: 13, bold: true, color: C.emeraldDeep, charSpacing: 3 });
-  const twRich = L.tailwindLines.map((t, i) => ({
-    text: t, options: i < L.tailwindLines.length - 1 ? { breakLine: true } : {}
-  }));
-  s.addText(twRich, { x: 6.7, y: 2.65, w: 6, h: 1.55, fontSize: 13, color: C.slateSoft, fontFace: F.body, valign: "top" });
+  // Right area: full itemized Tailwinds + Headwinds
+  // Helper to render a single indicator row with check/cross + name + value (+ threshold for headwinds)
+  function renderIndicatorRow(slide, x, y, w, item, isTailwind) {
+    const icon = isTailwind ? "✓" : "✗";
+    const iconColor = isTailwind ? C.emerald : C.red;
+    const valColor = isTailwind ? C.emerald : C.red;
+    slide.addText(icon, {
+      x: x, y: y + 0.02, w: 0.25, h: 0.22, fontSize: 12, color: iconColor, bold: true,
+      fontFace: F.body, margin: 0
+    });
+    // Name + value (right-aligned value)
+    slide.addText(item.name, {
+      x: x + 0.28, y: y, w: w * 0.58, h: 0.22, fontSize: 11, color: C.navy,
+      bold: true, fontFace: F.body, margin: 0, valign: "middle"
+    });
+    slide.addText(item.value || "", {
+      x: x + w * 0.58 + 0.28, y: y, w: w * 0.42 - 0.3, h: 0.22, fontSize: 11,
+      color: valColor, bold: true, fontFace: F.head, align: "right", margin: 0, valign: "middle"
+    });
+    // Threshold (light italic beneath)
+    if (item.threshold) {
+      const prefix = isTailwind ? "healthy " : "need ";
+      slide.addText(prefix + item.threshold, {
+        x: x + 0.28, y: y + 0.2, w: w - 0.3, h: 0.18, fontSize: 9,
+        color: isTailwind ? C.muteDark : C.orange, italic: true, fontFace: F.body, margin: 0
+      });
+    }
+  }
 
-  s.addShape(p.shapes.RECTANGLE, {
-    x: 6.4, y: 4.45, w: 6.4, h: 2.15,
-    fill: { color: "FEF2F2" }, line: { width: 0 }
+  // Tailwinds — top-right; 2 columns to fit up to ~20 items
+  const rightX = 4.6;
+  const rightW = 13.3 - rightX - 0.5;  // to 12.8
+  s.addShape(p.shapes.RECTANGLE, { x: rightX, y: 2.1, w: 0.08, h: 4.5, fill: { color: C.emerald }, line: { width: 0 } });
+
+  // Tailwinds header
+  s.addText(L.tailwindCount + " TAILWINDS", {
+    x: rightX + 0.2, y: 2.1, w: rightW - 0.2, h: 0.3, fontSize: 12, color: C.emeraldDeep,
+    bold: true, charSpacing: 3, fontFace: F.body, margin: 0
   });
-  s.addShape(p.shapes.RECTANGLE, { x: 6.4, y: 4.45, w: 0.1, h: 2.15, fill: { color: C.red }, line: { width: 0 } });
-  s.addText(L.headwindCount + " HEADWINDS", { x: 6.7, y: 4.55, w: 6, h: 0.4, fontSize: 13, bold: true, color: C.red, charSpacing: 3 });
-  const hwRich = L.headwindLines.map((t, i) => ({
-    text: t, options: i < L.headwindLines.length - 1 ? { breakLine: true } : {}
-  }));
-  s.addText(hwRich, { x: 6.7, y: 5.0, w: 6, h: 1.55, fontSize: 13, color: C.slateSoft, fontFace: F.body, valign: "top" });
+
+  // Tailwinds 2-column layout
+  const twItems = L.tailwindItems || [];
+  const tw_colW = (rightW - 0.5) / 2;       // small gutter
+  const tw_rowH = 0.4;                       // name + threshold fits in 0.4
+  const tw_perCol = Math.ceil(twItems.length / 2);
+  const tw_y0 = 2.5;
+  twItems.forEach((item, i) => {
+    const col = Math.floor(i / tw_perCol);
+    const row = i % tw_perCol;
+    const x = rightX + 0.2 + col * (tw_colW + 0.3);
+    const y = tw_y0 + row * tw_rowH;
+    renderIndicatorRow(s, x, y, tw_colW, item, true);
+  });
+
+  // Headwinds — bottom; single column with threshold callouts
+  const hw_sectionY = tw_y0 + tw_perCol * tw_rowH + 0.25;
+  s.addText(L.headwindCount + " HEADWINDS — WHAT WOULD FLIP THEM", {
+    x: rightX + 0.2, y: hw_sectionY, w: rightW - 0.2, h: 0.3, fontSize: 12, color: C.red,
+    bold: true, charSpacing: 3, fontFace: F.body, margin: 0
+  });
+
+  const hwItems = L.headwindItems || [];
+  const hw_colW = (rightW - 0.5) / 2;
+  const hw_rowH = 0.4;
+  const hw_perCol = Math.ceil(hwItems.length / 2);
+  const hw_y0 = hw_sectionY + 0.35;
+  hwItems.forEach((item, i) => {
+    const col = Math.floor(i / hw_perCol);
+    const row = i % hw_perCol;
+    const x = rightX + 0.2 + col * (hw_colW + 0.3);
+    const y = hw_y0 + row * hw_rowH;
+    renderIndicatorRow(s, x, y, hw_colW, item, false);
+  });
 
   footer(s, 2, TOTAL);
 }
@@ -296,18 +358,20 @@ function drawBarChart(slide, opts) {
   });
 
   const cards = [
-    { label: "DIRECTION",    head: "Market Trend",   body: "Which way is the market moving — above or below its moving averages?", icon: "→" },
-    { label: "CONVICTION",   head: "Trend Strength", body: "How far extended is the trend? Deep oversold and strong uptrends both pay.", icon: "↑" },
-    { label: "PARTICIPATION",head: "Market Breadth", body: "How many stocks are along for the ride? Broad rallies are more durable.", icon: "▦" }
+    { label: "DIRECTION",    question: "Which way?",  head: "Market Trend",   body: "Is the market moving up or down — above or below its moving averages?",             icon: "→" },
+    { label: "CONVICTION",   question: "How strong?", head: "Trend Strength", body: "How extended is the trend? Deep oversold and strong uptrends both pay off.",     icon: "↑" },
+    { label: "PARTICIPATION",question: "How many?",   head: "Market Breadth", body: "How many stocks are along for the ride? Broad rallies are more durable.",         icon: "▦" }
   ];
-  const xs = [0.9, 5.25, 9.6], cw = 3.55, ch = 3.8, cy = 2.95;
+  const xs = [0.9, 5.25, 9.6], cw = 3.55, ch = 3.95, cy = 2.9;
   cards.forEach((c, i) => {
     s.addShape(p.shapes.RECTANGLE, { x: xs[i], y: cy, w: cw, h: ch, fill: { color: C.slate }, line: { color: "2F3E54", width: 1 } });
     s.addShape(p.shapes.RECTANGLE, { x: xs[i], y: cy, w: cw, h: 0.08, fill: { color: C.emerald }, line: { width: 0 } });
-    s.addText(c.icon, { x: xs[i]+0.3, y: cy+0.35, w: 1, h: 1, fontSize: 54, fontFace: F.head, color: C.emerald, bold: true, margin: 0 });
-    s.addText(c.label, { x: xs[i]+0.3, y: cy+1.45, w: cw-0.6, h: 0.3, fontSize: 11, color: C.emerald, bold: true, charSpacing: 4 });
-    s.addText(c.head, { x: xs[i]+0.3, y: cy+1.75, w: cw-0.6, h: 0.6, fontSize: 24, fontFace: F.head, color: C.white, bold: true, margin: 0 });
-    s.addText(c.body, { x: xs[i]+0.3, y: cy+2.45, w: cw-0.6, h: 1.2, fontSize: 13, color: C.silver, fontFace: F.body, valign: "top" });
+    s.addText(c.icon,     { x: xs[i]+0.3, y: cy+0.3,  w: 1,       h: 0.9,  fontSize: 50, fontFace: F.head, color: C.emerald, bold: true, margin: 0 });
+    s.addText(c.label,    { x: xs[i]+0.3, y: cy+1.3,  w: cw-0.6,  h: 0.3,  fontSize: 11, color: C.emerald, bold: true, charSpacing: 4 });
+    s.addText(c.head,     { x: xs[i]+0.3, y: cy+1.6,  w: cw-0.6,  h: 0.55, fontSize: 24, fontFace: F.head, color: C.white, bold: true, margin: 0 });
+    // Subheading question — italic, prominent
+    s.addText(c.question, { x: xs[i]+0.3, y: cy+2.2,  w: cw-0.6,  h: 0.45, fontSize: 18, fontFace: F.head, color: C.emerald, italic: true, bold: true, margin: 0 });
+    s.addText(c.body,     { x: xs[i]+0.3, y: cy+2.75, w: cw-0.6,  h: 1.15, fontSize: 13, color: C.silver, fontFace: F.body, valign: "top" });
   });
 
   footer(s, 3, TOTAL);
