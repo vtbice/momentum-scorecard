@@ -45,6 +45,9 @@ export REQUESTS_CA_BUNDLE="/etc/ssl/cert.pem"
 export CURL_CA_BUNDLE="/etc/ssl/cert.pem"
 echo "🔐 SSL certificates configured"
 
+# Track overall success — any failure = exit non-zero so launchd flags it
+OVERALL_STATUS=0
+
 # Run the data pipeline
 echo ""
 echo "🚀 Starting data pipeline..."
@@ -57,6 +60,7 @@ if [ $PIPELINE_STATUS -eq 0 ]; then
 else
     echo ""
     echo "❌ Pipeline failed with exit code $PIPELINE_STATUS"
+    OVERALL_STATUS=1
 fi
 
 # Build the dashboard HTML
@@ -64,7 +68,8 @@ echo ""
 echo "📊 Updating dashboard..."
 if [ -f "$PROJECT_DIR/build_dashboard.py" ]; then
     /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 "$PROJECT_DIR/build_dashboard.py"
-    if [ $? -eq 0 ]; then
+    BUILD_STATUS=$?
+    if [ $BUILD_STATUS -eq 0 ]; then
         echo "✅ Dashboard updated"
 
         # Copy to root for GitHub Pages and push
@@ -79,10 +84,26 @@ if [ -f "$PROJECT_DIR/build_dashboard.py" ]; then
                 echo "✅ GitHub Pages updated — live link refreshed"
             else
                 echo "⚠️  Git push failed — dashboard is fresh locally but GitHub Pages not updated"
+                OVERALL_STATUS=1
             fi
         fi
     else
-        echo "⚠️  Dashboard update failed — scorecard_data.json is still fresh"
+        echo "❌ Dashboard build failed — scorecard_data.json is fresh but dashboard is stale"
+        OVERALL_STATUS=1
+    fi
+else
+    echo "❌ build_dashboard.py not found"
+    OVERALL_STATUS=1
+fi
+
+# Verify scorecard_data.json was updated today
+TODAY=$(date '+%Y-%m-%d')
+JSON_FILE="$PROJECT_DIR/scorecard_data.json"
+if [ -f "$JSON_FILE" ]; then
+    JSON_DATE=$(date -r "$JSON_FILE" '+%Y-%m-%d')
+    if [ "$JSON_DATE" != "$TODAY" ]; then
+        echo "⚠️  WARNING: scorecard_data.json was last modified on $JSON_DATE (not today)"
+        OVERALL_STATUS=1
     fi
 fi
 
@@ -91,8 +112,16 @@ find "$PROJECT_DIR/logs" -name "refresh_20*.log" -mtime +30 -delete 2>/dev/null
 
 echo ""
 echo "═══════════════════════════════════════════════════"
-echo "  Finished at $(date '+%I:%M %p')"
+if [ $OVERALL_STATUS -eq 0 ]; then
+    echo "  ✅ All steps succeeded at $(date '+%I:%M %p')"
+else
+    echo "  ⚠️  COMPLETED WITH FAILURES at $(date '+%I:%M %p')"
+    echo "  Check above for ❌ marks. Run \`launchctl list | grep prosper\` to see exit code."
+fi
 echo "═══════════════════════════════════════════════════"
 
 # Copy to dated archive
 cp "$LOG_FILE" "$ARCHIVE_LOG" 2>/dev/null
+
+# Exit with overall status so launchd shows the error
+exit $OVERALL_STATUS

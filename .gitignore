@@ -4,3 +4,15 @@ __pycache__/
 *.pyc
 logs/
 research/*.html
+
+# Local work-in-progress / scratch
+.claude/
+breadth_preview_*.html
+email_summary_mockup.html
+skipped_history.json
+
+# Deck generator
+presentations/node_modules/
+presentations/Market_Pulse_Overview_*.pptx
+presentations/node_modules
+presentations/~$*.pptx
