@@ -1432,7 +1432,6 @@ def roman_numeral(i: int) -> str:
 def render_act_heading(act: dict, index: int) -> str:
     return f"""
     <div class="act-heading">
-      <div class="act-label">Act {roman_numeral(index)}</div>
       <h2 class="act-title">{esc(act.get('title', ''))}</h2>
       <div class="act-subtitle">{esc(act.get('subtitle', ''))}</div>
     </div>
@@ -1473,7 +1472,6 @@ def render_toc_by_acts(by_district: dict, districts: dict, acts: list, district_
         parts.append(f"""
         <div class="toc-act">
           <div class="toc-act-header">
-            <div class="toc-act-label">Act {roman_numeral(act_idx)}</div>
             <div class="toc-act-title">{esc(act.get('title', ''))}</div>
             <div class="toc-act-subtitle">{esc(act.get('subtitle', ''))}</div>
           </div>
@@ -1696,8 +1694,7 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
   <section class="fund-intro">
     <div class="fund-intro-tagline">The City of the Future</div>
     <div class="fund-intro-body">
-      <p>Every company in our five innovation growth funds is playing a role in building the city of the future. The Chip Works and The Wires make AI physically possible. The Machine Shop, The Power Plant, and The Construction Yards make AI physically real. The Arsenal defends the city and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. Main Street feeds, moves, trains, and entertains the people who live in the city, while The Stadium hosts the concerts, fights, and games. The Software Layer runs the code beneath all of it. And The Financial District moves the capital that funds everything else.</p>
-      <p>This page is the universe view — every name we own across every fund, organized by district, with little chips showing which funds hold each one. Click any fund above to drill into its full guide.</p>
+      <p>Every company in our five innovation growth funds is playing a role in building the city of the future. The Chips and The Wires make AI physically possible. The Machine Shop, The Power Plant, and The Construction Yards make AI physically real. The Arsenal defends the city and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. Main Street feeds, moves, trains, and entertains the people who live in the city. The Software Layer runs the applications beneath all of it. And The Financial District moves the capital that funds everything else.</p>
     </div>
   </section>
 
@@ -1708,7 +1705,7 @@ def build_overview_page(study: dict, holdings_by_fund: dict, as_of: str, search_
   </div>
 
   <h2 class="overview-section-title">The Universe</h2>
-  <div class="overview-section-sub">Every name we own across all 5 funds — {total_unique} companies total. The small badges next to each ticker (FLC / LC / MID / SC / MIC) show which funds hold it.</div>
+  <div class="overview-section-sub">Every name we own across all 5 funds — {total_unique} companies total. On each card below, the small badges (FLC / LC / MID / SC / MIC) show which funds hold that name.</div>
 
   <nav class="toc">
     <h3>Quick Index</h3>

@@ -9,7 +9,7 @@
       "tagline": "The City of the Future",
       "story": [
         "The companies in this portfolio are building the things underneath the AI and innovation narrative — the chips and cables and cooling systems, the power plants and transmission lines, the specialty metals and circuit boards, the drones and satellites, the diagnostic tests and rare-disease therapies, the trade schools training the welders, the contractors wiring the buildings. Most people have never heard of them. That is part of the point: in the gap between what the market has already priced and what these companies will become lies the opportunity we are looking for.",
-        "Taken together, these are not isolated bets. They are a connected vision of where innovation is taking us — a city we are building piece by piece. It starts with Components: The Chip Works, The Wires, and The Machine Shop, where raw materials and parts become the building blocks of everything else. Then we Build & Power it: The Construction Yards turn empty land into real facilities, and The Power Plant generates the electricity (and owns the sites) that bring it all to life. Money & Code run the city: The Financial District moves the capital that funds everything, and The Software Layer runs the code beneath it all. Then come The Services — what the city actually does for people. The Arsenal defends it and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. And Main Street is where people live their lives — shopping, eating, traveling, training, and being entertained.",
+        "Taken together, these are not isolated bets. They are a connected vision of where innovation is taking us — a city we are building piece by piece. It starts with Components: The Chips, The Wires, and The Machine Shop, where raw materials and parts become the building blocks of everything else. Then we Build & Power it: The Construction Yards turn empty land into real facilities, and The Power Plant generates the electricity (and owns the sites) that bring it all to life. Money & Software run the city: The Financial District moves the capital that funds everything, and The Software Layer runs the code beneath it all. Then come The Services — what the city actually does for people. The Arsenal defends it and extends it into space. The Clinic catches disease early and The Research Labs treats what once had no treatment. And Main Street is where people live their lives — shopping, eating, traveling, training, and being entertained.",
         "Every company in this fund is playing a role. This guide is how to remember all of them."
       ]
     },
@@ -17,7 +17,7 @@
       "tagline": "The City of the Future",
       "story": [
         "Focused Large Cap is the highest-conviction expression of the City of the Future. Around 33 names — every one of them earning its place. The portfolio leans into the megaliths that anchor the AI buildout (NVIDIA, Broadcom, Microsoft, Alphabet, Meta, Apple, Amazon, Tesla), the dominant pharmaceutical innovators (Eli Lilly, Gilead), and a tight collection of mid-cap names where conviction is unusually high (Bloom Energy, GE Vernova, Howmet, argenx).",
-        "Every district is represented but the weight is intentional: The Chip Works and The Software Layer dominate, because that is where the AI revolution is being built and monetized. The Research Labs holds a select few biotech leaders rather than a broad biotech bet. The Construction Yards, The Power Plant, and The Machine Shop carry the picks-and-shovels exposure to the data center buildout. Every name here is meant to be recognizable — to a client, to a teammate, to a board.",
+        "Every district is represented but the weight is intentional: The Chips and The Software Layer dominate, because that is where the AI revolution is being built and monetized. The Research Labs holds a select few biotech leaders rather than a broad biotech bet. The Construction Yards, The Power Plant, and The Machine Shop carry the picks-and-shovels exposure to the data center buildout. Every name here is meant to be recognizable — to a client, to a teammate, to a board.",
         "If the broader funds in the complex are about discovering tomorrow's leaders, Focused Large Cap is about owning today's. This is the guide for the highest-conviction core."
       ]
     },
@@ -25,7 +25,7 @@
       "tagline": "The City of the Future",
       "story": [
         "Large Cap is the broadest expression of the City of the Future at scale. Around 60 names that span every major district, with a deliberate tilt toward proven business models, durable franchises, and the megaliths that have already won their categories. Where Focused Large Cap is concentrated and high-conviction, Large Cap takes a more diversified view of the same thesis.",
-        "The Chip Works and The Software Layer carry the AI buildout — NVIDIA, Broadcom, AMD, Micron, Lam Research, KLA, Microsoft, Alphabet, Meta, Cloudflare, CrowdStrike, Palantir. The Research Labs holds the major pharmaceutical innovators (Eli Lilly, Vertex, Gilead, argenx) plus a few rare-disease specialists. The Power Plant and Construction Yards capture the physical infrastructure required to make AI real (GE Vernova, Cheniere, Vertiv, EMCOR, Quanta). The Arsenal owns the defense and aerospace primes (L3Harris, GE Aerospace, Howmet) and Main Street carries the consumer giants (Apple, Amazon, Costco, Tesla, Netflix, Hilton).",
+        "The Chips and The Software Layer carry the AI buildout — NVIDIA, Broadcom, AMD, Micron, Lam Research, KLA, Microsoft, Alphabet, Meta, Cloudflare, CrowdStrike, Palantir. The Research Labs holds the major pharmaceutical innovators (Eli Lilly, Vertex, Gilead, argenx) plus a few rare-disease specialists. The Power Plant and Construction Yards capture the physical infrastructure required to make AI real (GE Vernova, Cheniere, Vertiv, EMCOR, Quanta). The Arsenal owns the defense and aerospace primes (L3Harris, GE Aerospace, Howmet) and Main Street carries the consumer giants (Apple, Amazon, Costco, Tesla, Netflix, Hilton).",
         "This is the workhorse fund — the one a typical investor would own as a single core large-cap allocation in growth-oriented innovation."
       ]
     },
@@ -61,10 +61,10 @@
   ],
   "districts": {
     "chip_works": {
-      "title": "The Chip Works",
+      "title": "The Chips",
       "subtitle": "Where silicon begins — and where rare earths come from",
       "intro": [
-        "Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chip Works is the district where it happens.",
+        "Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chips is the district where it happens.",
         "It begins in the ground. MP Materials (MP) mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and chip-making equipment itself. MP is the only large-scale rare-earth producer in the Western Hemisphere, which makes it a strategic asset as well as a commercial one.",
         "Inside the fab, Nova (NVMI) builds the inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to any human eye. MKS Instruments (MKSI) controls the gases, temperatures, and energy inside the fabrication chambers — imagine maintaining perfect weather inside a sealed room where a single stray particle could ruin everything. Amkor (AMKR) handles the final step, taking a finished chip thinner than a fingernail and encasing it in a protective housing with hundreds of tiny electrical connections so it can survive the heat and vibration of a working computer. Lattice Semiconductor (LSCC) makes programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need at the moment. And Rambus (RMBS) designs the rules that govern how processors and memory chips talk to each other, which is another way of saying Rambus decides how fast the entire computer can think. Without these six companies, the AI revolution would be a slideshow."
       ]
@@ -1742,8 +1742,8 @@
       ]
     },
     {
-      "title": "Money & Code",
-      "subtitle": "Funding and running the city",
+      "title": "Money & Software",
+      "subtitle": "Funding and running the software that runs the city",
       "districts": [
         "financial_district",
         "software_layer"
