@@ -1873,7 +1873,12 @@ function renderMarketPulse() {
 
             tsSorted.forEach(function(row, i) {
                 var x = startX + i * (barWidthPx + gap) + barWidthPx/2;
-                var label = row.range.replace('<-15%', '<-15').replace('>+20%', '>+20').replace(' to ', '→').replace('%', '');
+                // Readable range labels: keep explicit "to" (not an arrow, which blurs
+                // adjacent negative signs into one long dash), and strip the "%".
+                var label = row.range
+                    .replace('<-15%', '≤ -15')
+                    .replace('>+20%', '≥ +20')
+                    .replace('%', '');
                 var isCurrent = i === currentIdx;
                 var color = isCurrent ? '#10b981' : '#94a3b8';
                 var weight = isCurrent ? '700' : '400';
