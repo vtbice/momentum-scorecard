@@ -1,0 +1,789 @@
+THE CITY OF THE FUTURE — MICRO CAP
+============================================================
+
+The City of the Future
+
+Micro Cap is where the venture-style bets live. Around 80 names that are still small enough to be unknown — many under $2 billion in market cap — and many of them in the early innings of their stories. The risk is real and the volatility is real. The upside, when a thesis works, is also real.
+
+Several themes run through the portfolio. The Clinic is unusually deep here, with companies redefining how disease is detected: GeneDx in pediatric whole-genome sequencing, BillionToOne in molecular prenatal and oncology testing, CeriBell in point-of-care EEG, HeartFlow in non-invasive cardiac imaging, Twist Bioscience in synthetic DNA, 10x Genomics in single-cell sequencing. The Research Labs holds early-stage biotechs that could be the next Madrigal or Revolution Medicines if the science works out — Mineralys, NewAmsterdam, Praxis, Forte. The Arsenal owns the small defense and space names with outsized growth (Ondas, BlackSky, Karman, Rocket Lab) and the Power Plant has the hardest-to-replicate clean energy and nuclear plays (Bloom, Centrus, Cipher, TeraWulf, Hut 8).
+
+Many micro caps in this fund will not become mid caps. That is the nature of the asset class. The ones that do tend to compound at rates you cannot find anywhere else, and the guide exists to help remember why each one is in the portfolio in the first place.
+
+
+==== COMPONENTS ====
+What everything is made from
+
+
+--- THE CHIPS ---
+Where silicon begins — and where rare earths come from
+
+Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chips is the district where it happens.
+
+It begins in the ground. MP Materials (MP) mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and chip-making equipment itself. MP is the only large-scale rare-earth producer in the Western Hemisphere, which makes it a strategic asset as well as a commercial one.
+
+Inside the fab, Nova (NVMI) builds the inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to any human eye. MKS Instruments (MKSI) controls the gases, temperatures, and energy inside the fabrication chambers — imagine maintaining perfect weather inside a sealed room where a single stray particle could ruin everything. Amkor (AMKR) handles the final step, taking a finished chip thinner than a fingernail and encasing it in a protective housing with hundreds of tiny electrical connections so it can survive the heat and vibration of a working computer. Lattice Semiconductor (LSCC) makes programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need at the moment. And Rambus (RMBS) designs the rules that govern how processors and memory chips talk to each other, which is another way of saying Rambus decides how fast the entire computer can think. Without these six companies, the AI revolution would be a slideshow.
+
+Aehr Test Systems — ticker AEHR.
+
+Burn-in test systems for power semiconductors — critical for silicon carbide chips in EVs.
+
+Aehr Test Systems builds the wafer-level burn-in systems that semiconductor companies use to stress-test chips before shipping them. Their FOX systems became essential as silicon carbide (SiC) power chips for electric vehicles took off — SiC chips are expensive and field failures are unacceptable, so manufacturers test every wafer. Aehr is small but dominant in its niche.
+
+Memorable line: Every silicon carbide chip in an EV gets stress-tested on an Aehr machine.
+
+Navitas Semiconductor — ticker NVTS.
+
+Next-gen GaN and silicon carbide power chips — the key to 800V AI data center power architecture.
+
+Navitas Semiconductor is a leader in gallium nitride (GaN) and silicon carbide (SiC) power chips — a new generation of semiconductors that deliver dramatically higher efficiency than traditional silicon in high-voltage, high-current applications. The company's 'Navitas 2.0' pivot is to focus squarely on the AI data center market, where their GaN and SiC parts enable NVIDIA's next-generation 800VDC power architecture for AI factories, cutting power losses by 50%+ and copper usage by up to 45%. Navitas has a direct partnership with NVIDIA on the 800VDC standard.
+
+Memorable line: When an AI factory runs on 800 volts instead of 48, it does so because of chips like Navitas's.
+
+
+--- THE WIRES ---
+The interconnect that lets the city talk to itself
+
+A chip by itself is useless. Chips only matter when they can talk to each other — and in the era of AI, talking means moving vast amounts of data at extraordinary speeds between racks, between buildings, between cities, and across oceans. The Wires is the district where signals travel.
+
+Credo Technology (CRDO) builds the high-speed cables and connection chips that let thousands of AI processors pass notes at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes — the speed of those notes determines how fast the group can think. Credo makes the notes move at light speed. Astera Labs (ALAB) controls the data flows inside a single rack the way traffic cops manage a highway interchange, preventing collisions and making sure nothing gets stuck. MACOM (MTSI) turns electrical signals into laser light and back again so data can ride glass fibers across continents, billions of times per second.
+
+SiTime (SITM) makes the precision silicon clocks that keep every signal perfectly synchronized — the conductor's baton inside every electronic orchestra. Semtech (SMTC) cleans up degraded signals so data arrives crisp instead of fuzzy, like preventing a photocopy-of-a-photocopy from losing quality with every pass. And Allegro MicroSystems (ALGM) builds the sensors that measure exactly how fast things are moving inside EVs, factory robots, and data-center cooling fans so control systems can respond in milliseconds. None of these companies make headlines. All of them are essential.
+
+Applied Optoelectronics — ticker AAOI.
+
+Fiber-optic transceivers and components for data centers and broadband networks.
+
+Applied Optoelectronics designs and manufactures the fiber-optic modules that data centers use to connect servers and switches at very high speeds. The company has been winning new design wins for next-generation 800G transceivers as hyperscalers upgrade their networks to handle AI traffic.
+
+Memorable line: When data needs to ride a beam of light across a data center, AAOI makes the converter.
+
+Calix — ticker CALX.
+
+Networking equipment that brings high-speed broadband to small and rural internet providers.
+
+Calix builds the networking equipment that lets small, local internet providers deliver fast, reliable broadband to rural and underserved communities. Their cloud-based software gives a small-town provider the sophistication of a tech giant, helping close the digital divide one community at a time.
+
+Memorable line: The Cisco for small-town America's broadband.
+
+Ouster — ticker OUST.
+
+Digital lidar sensors for autonomous vehicles, smart infrastructure, and robotics.
+
+Ouster makes solid-state digital lidar sensors that let machines see the world in 3D. Their sensors are used in self-driving vehicles, smart cities, robotics, defense, and security applications. Lidar has been a notoriously difficult business — many companies failed — but Ouster has built a real product portfolio and is one of the few public pure-play lidar names with meaningful revenue.
+
+Memorable line: If a machine needs to see in 3D, Ouster sells the eyes.
+
+
+--- THE MACHINE SHOP ---
+Precision parts, specialty metals, and the hidden hands that assemble the city
+
+Chips and wires are useful only if someone can turn them into physical things — airplanes, satellites, medical devices, data-center cooling loops, circuit boards, power supplies. The Machine Shop is the district where raw materials and components become real machines. These are the hidden hands that turn brilliant designs into actual products.
+
+Carpenter Technology (CRS) forges specialty metals and advanced alloys engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe. RBC Bearings (RBC) makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery — a deceptively simple concept, engineered to survive where nothing else can.
+
+Sanmina (SANM) handles complex electronic contract manufacturing: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing. Fabrinet (FN) specializes in optical components aligned to tolerances thinner than a wavelength of light. TTM Technologies (TTMI) is one of the top five PCB manufacturers in the world and the largest supplier of printed circuit boards to the U.S. military, and the fastest-growing segment of its business is now data center computing and AI accelerators. Modine Manufacturing (MOD) designs the liquid cooling systems that absorb heat from AI racks the way a car radiator cools an engine — transforming a legacy auto-parts company into an AI infrastructure play. And Bel Fuse (BELFB) makes the power supplies and connectivity components that quietly sit inside almost every piece of essential equipment.
+
+The last group is about control. Woodward (WWD) designs the fuel-metering control systems inside aircraft engines and industrial turbines — what happens when a pilot pushes the throttle forward is Woodward's responsibility. Crane Company (CR) supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories. And Littelfuse (LFUS) makes circuit-protection components that sacrifice themselves during power surges, absorbing excess energy before expensive equipment is damaged. Every physical machine in the city passes through a shop like one of these.
+
+Bel Fuse — ticker BELFB.
+
+Power supplies and connectivity components hiding inside networking gear, radar, and industrial controls.
+
+Bel Fuse manufactures the electronic power supplies and connectivity components found inside an enormous range of essential equipment. Networking gear, military radar systems, industrial controls — they all need reliable power conversion and data connections, and Bel Fuse is one of those small companies whose parts quietly show up everywhere.
+
+Memorable line: The parts you'll never see but that everything depends on.
+
+Standex International — ticker SXI.
+
+Diversified specialty industrial — electronics, engraving, scientific products, and engineering technologies.
+
+Standex is a small diversified industrial holding a portfolio of engineered products businesses, including specialty electronics components, custom engraving for consumer brands, and scientific cold storage equipment. Each segment is small but holds a strong niche position. The company has been a quiet compounder run with capital discipline.
+
+Memorable line: A handful of small industrial niches, each with leadership in its lane.
+
+Transcat — ticker TRNS.
+
+Calibration services for the precision instruments that quality-critical industries depend on.
+
+Transcat provides accredited calibration services for the precision measuring equipment used in life sciences, aerospace, semiconductors, and other regulated industries. When the FDA, FAA, or a chip-fab QA team requires that an instrument be traceable to NIST standards, Transcat is one of the largest providers in North America. The business is recurring (calibration cycles repeat) and growing as regulation gets more rigorous.
+
+Memorable line: The company that makes sure the instruments measuring everything are themselves accurate.
+
+Xometry — ticker XMTR.
+
+AI-powered marketplace that connects engineers to thousands of small custom-manufacturing shops.
+
+Xometry has built something genuinely new: an AI-powered online marketplace for custom manufacturing. An engineer uploads a 3D design file, and Xometry's system instantly analyzes the geometry, picks the right manufacturing method (machining, 3D printing, injection molding, sheet metal), prices it, and routes the order to the best shop in a network of thousands. Finished parts arrive in days. It's bringing the convenience of online shopping to an industry that historically required weeks of phone calls.
+
+Memorable line: Amazon for custom-manufactured parts. With AI doing the routing.
+
+
+==== BUILT & POWERED ====
+Turning parts into real things
+
+
+--- THE CONSTRUCTION YARDS ---
+The contractors who turn empty land into functioning infrastructure
+
+Generating power is still just half the battle. Someone has to build the buildings, pour the foundations, pull the wire, connect the pipes, lay the roads, and keep it all environmentally responsible. When a new data center rises out of empty desert, a small army of specialty contractors shows up first. The Construction Yards is where that army lives.
+
+Sterling Infrastructure (STRL) grades the site and pours the foundations, turning empty land into a functioning campus. Cardinal Infrastructure Group (CDNL) handles the wet utilities — water, sewer, stormwater — and the site work that has to happen before anything vertical can begin. MasTec (MTZ) runs the heavy power lines from the grid to the property line, plus the pipelines and cell towers that connect the larger network. Construction Partners (ROAD) builds the highways that get everyone from the outside world to the facility, because every data center still needs roads to reach it.
+
+Inside the building, Comfort Systems USA (FIX) installs the HVAC, plumbing, and electrical systems while IES Holdings (IESC) handles the specialized high-voltage electrical work — wiring facilities that draw as much power as small towns. Legence (LGN) provides engineering, installation, and maintenance for the mission-critical mechanical systems inside technology, life sciences, healthcare, and education buildings. Applied Digital (APLD) takes it one step further, designing entire AI-native data-center facilities from scratch with electrical and cooling systems engineered for demands traditional buildings were never meant to handle. And CECO Environmental (CECO) installs the scrubbers, filters, and wastewater-treatment equipment that ensure all this growth doesn't come at the expense of the air and water around it. Before a single server rack spins up, these companies have already done most of the real work.
+
+Applied Digital — ticker APLD.
+
+Building AI-native data center facilities from scratch, engineered for extreme electrical and cooling demands.
+
+Applied Digital is building entire data-center facilities designed from scratch for AI computing, with electrical and cooling systems engineered specifically for the extreme demands that traditional buildings were never meant to handle.
+
+Memorable line: Traditional data centers were built for websites. Applied Digital is building for AI.
+
+Cardinal Infrastructure Group — ticker CDNL.
+
+Wet utilities, site development, and civil contracting across the southeastern US.
+
+Cardinal Infrastructure Group is a civil contracting company that provides site development and infrastructure services to residential, commercial, industrial, municipal, and state infrastructure markets in the southeastern United States. They handle wet utility installations of water, sewer, and stormwater systems, as well as grading, site clearing, erosion control, drilling and blasting, paving, and related site services. Before anything vertical can be built on a piece of land, Cardinal has to handle what happens underneath it.
+
+Memorable line: The work that happens before anything vertical can begin.
+
+CECO Environmental — ticker CECO.
+
+Scrubbers, filters, and wastewater treatment that keep industrial growth from trashing the air and water.
+
+CECO Environmental designs and builds the systems that keep industrial operations environmentally responsible — the scrubbers that remove pollutants from factory exhaust, the filters that clean industrial air, and the treatment equipment that purifies wastewater before it returns to rivers and aquifers. It's unglamorous work that ensures economic growth doesn't come at the expense of the air we breathe and the water we drink.
+
+Memorable line: Growth without pollution. CECO is how that happens.
+
+Legence — ticker LGN.
+
+Engineering, installation, and maintenance for mission-critical building systems in tech, life sciences, healthcare, and education.
+
+Legence is a leading provider of engineering, installation, and maintenance services for mission-critical systems inside technically demanding buildings — data centers, semiconductor fabs, biotech labs, hospitals, and university research facilities. Founded in January 2025 and headquartered in San Jose, Legence focuses on the high-growth sectors where building systems absolutely cannot fail. When a chip fab needs mechanical engineering that meets class-10 cleanroom standards, or a biotech lab needs HVAC that maintains exact pressure gradients between rooms, Legence is the company that designs, installs, and services it.
+
+Memorable line: The specialist who handles the mechanical systems nobody else knows how to service.
+
+MYR Group — ticker MYRG.
+
+Specialty electrical contractor focused on transmission, distribution, and commercial-industrial electrical work.
+
+MYR Group builds high-voltage transmission lines, substations, and distribution systems for utilities, plus large commercial and industrial electrical projects. The company sits in exactly the right place for the U.S. grid expansion driven by AI power, electrification, and renewables.
+
+Memorable line: When a utility needs a new transmission line built, MYR is one of the few who can do it.
+
+Primoris Services — ticker PRIM.
+
+Specialty infrastructure construction across utilities, energy, and renewables.
+
+Primoris is a specialty contractor for the utility, energy, and renewables sectors — building solar farms, electrical transmission, gas distribution, and pipeline systems. The business has shifted significantly toward renewables and electrical work as those markets grew faster than legacy oil and gas pipeline construction.
+
+Memorable line: Solar farms, transmission lines, gas distribution — the contractor for what the energy transition actually needs built.
+
+Sterling Infrastructure — ticker STRL.
+
+Massive earthwork that turns empty land into functioning data center campuses.
+
+Sterling Infrastructure does the massive earthwork that turns empty land into a functioning data-center campus — grading the site, pouring foundations, installing underground water and electrical systems, and building the roads within the campus.
+
+Memorable line: Before a data center can compute, Sterling has to move the dirt.
+
+Willdan Group — ticker WLDN.
+
+Engineering and consulting for utilities and municipalities to modernize the grid and improve energy efficiency.
+
+Willdan helps utilities, cities, and other public agencies design plans for grid modernization, energy efficiency programs, and electrification. They figure out where new capacity is needed, how existing buildings can use energy more efficiently, and how the transition to greater electrification can happen in an orderly way.
+
+Memorable line: The brain that helps cities and utilities figure out how to upgrade the grid.
+
+
+--- THE POWER PLANT ---
+Where the electrons come from — and where they get used
+
+Intelligence without electricity is just an expensive pile of metal. And the amount of electricity that AI requires is almost hard to believe — a single large AI training run can consume as much power as 120 American homes use in an entire year. The existing grid was never designed for this.
+
+Bloom Energy (BE) is building a bridge. Their ceramic fuel cells generate electricity through an electrochemical reaction — continuous, on-site, no combustion, no connection to the traditional grid required. A stack can be installed in 90 days and start generating power immediately, compared to the five-to-ten-year timeline for a new power plant. Nextracker (NXT) takes a very different approach to the same crisis: scale the cheapest source of new electricity ever created. Their motorized mounting systems let fields of solar panels follow the sun across the sky, squeezing up to 25% more energy from the same equipment, and have become standard equipment at the largest solar installations in the world. And Argan (AGX) does something more traditional but increasingly rare: it designs, engineers, and actually builds power plants from the ground up. As demand for gas turbine generation surges to feed AI data centers, Argan's skillset is suddenly in short supply.
+
+But generating power is only half the equation. Someone also has to own the physical sites where those electrons get converted into compute. Three companies in this district were originally built to mine Bitcoin — which required exactly the same infrastructure an AI data center needs: massive power connections, serious cooling systems, and dense racks of processors. It turns out that infrastructure is worth a lot more to an AI customer than to a Bitcoin miner. Hut 8 (HUT) flexes between mining and AI hosting depending on which customer pays more. TeraWulf (WULF) does the same with a distinctive emphasis on clean energy, running primarily on nuclear and hydroelectric power. And Cipher Mining (CIFR) has leaned hardest into the pivot, signing a roughly $5.5 billion 15-year lease with Amazon Web Services to deliver 300 MW of AI capacity in 2026, plus a 168 MW 10-year HPC agreement with Fluidstack worth about $3 billion, plus a 200 MW Ohio site and 95% of a 1-gigawatt West Texas campus. Cipher is transforming into a hybrid Bitcoin miner and power landlord for AI tenants — and is increasingly priced that way.
+
+Argan — ticker AGX.
+
+Designs, engineers, and constructs power plants from the ground up.
+
+Argan builds power plants from the ground up — designing, engineering, and constructing the generation facilities that create the electricity the rest of the city depends on. As gas turbine demand surges to power AI data centers, Argan's skillset is in rare supply.
+
+Memorable line: Someone has to actually build the power plants. Argan is that someone.
+
+Cipher Mining — ticker CIFR.
+
+Bitcoin miner pivoting hardest to AI — $5.5B AWS lease, $3B+ Fluidstack deals, 1GW West Texas HPC campus.
+
+Cipher Mining has leaned hardest into the AI pivot among Bitcoin miners. In late 2025 it signed a roughly $5.5 billion, 15-year lease with Amazon Web Services to deliver 300 MW of turnkey space and power for AI workloads starting in 2026. Separately, Cipher has a 168 MW, 10-year HPC agreement with Fluidstack worth approximately $3 billion in contracted revenue, plus a 56 MW Fluidstack expansion. They recently acquired the 200 MW 'Ulysses' site in Ohio with an AEP Ohio utility agreement, and took 95% majority control of Colchis, a 1-gigawatt HPC development in West Texas. Cipher is transforming into a hybrid bitcoin miner and 'power landlord' for AI data center tenants — and is increasingly being priced that way.
+
+Memorable line: A Bitcoin miner that just signed a $5.5B AWS lease. That's the whole story.
+
+TeraWulf — ticker WULF.
+
+Bitcoin miner running primarily on nuclear and hydro power — one of the greenest mining operations in the industry.
+
+TeraWulf takes a similar approach to Hut 8 but with a distinctive emphasis on clean energy — their flagship facility runs primarily on nuclear and hydroelectric power, making them one of the greenest mining operations in the industry. Like Hut 8, they are expanding their AI hosting capabilities, recognizing that the same infrastructure built for cryptocurrency can serve the exploding demand for artificial intelligence computing.
+
+Memorable line: The green Bitcoin miner. And an AI host on the side.
+
+
+==== MONEY & SOFTWARE ====
+Funding and running the software that runs the city
+
+
+--- THE FINANCIAL DISTRICT ---
+Where the money moves and the deals get done
+
+None of this gets built without capital. The Financial District is where the money for the rest of the city flows — the investment banks, the exchanges, and a few specialists where finance meets the physical world in interesting ways.
+
+Evercore (EVR) is one of the most respected independent investment banks in the world — the financial architect behind some of the most consequential M&A deals and IPOs in the economy. Piper Sandler (PIPR) does similar work with particular depth in healthcare and technology, helping innovative smaller companies raise the capital they need to grow from promising startup to established player. MIAX runs electronic options exchanges — the marketplaces where a farmer locks in next year's crop price and a money manager buys insurance against a market drop.
+
+FTAI Aviation (FTAI) occupies a fascinating niche where finance meets aerospace — leasing commercial jet engines to airlines and, crucially, rebuilding them in-house through a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate. And Mirion Technologies (MIR) makes the instruments that detect and measure radiation — the monitors worn by nuclear-plant workers, the calibration devices inside hospital imaging equipment, the environmental sensors around radioactive materials. As interest in nuclear energy surges to power AI data centers, Mirion's safety technology only becomes more critical.
+
+Dave Inc. — ticker DAVE.
+
+Mobile banking app for everyday Americans — no overdraft fees, small-dollar advances, and credit building.
+
+Dave is a mobile banking app aimed at everyday Americans who pay overdraft fees and live paycheck-to-paycheck. The app offers a checking account with no overdraft fees, small-dollar cash advances against an upcoming paycheck (ExtraCash), and credit-building tools. The business has grown rapidly as consumers seek alternatives to traditional bank fee structures.
+
+Memorable line: Banking for the 60% of Americans living paycheck-to-paycheck.
+
+Miami International Holdings — ticker MIAX.
+
+Runs options exchanges — the marketplaces where investors buy insurance against losses or bets on price moves.
+
+MIAX runs options exchanges — the electronic marketplaces where investors buy and sell contracts that let them protect against losses or profit from price changes. Think of it like insurance for investments: a farmer might lock in a price for next year's harvest, and a money manager might protect against a market downturn, and both transactions happen on an exchange like MIAX.
+
+Memorable line: Every financial 'just in case' has to trade somewhere. MIAX is one of those somewheres.
+
+Marex Group — ticker MRX.
+
+Global commodities and financial derivatives broker — energy, metals, agricultural, and financial markets.
+
+Marex is a diversified financial services group focused on commodities and financial derivatives clearing, market making, and broking. The company sits at the center of energy, metals, agricultural, and financial market trade flows, and has grown rapidly through acquisitions of specialty brokers in adjacent markets.
+
+Memorable line: The broker for the markets that move physical things — oil, copper, wheat.
+
+Neptune Insurance Holdings — ticker NP.
+
+Specialty flood insurance — using technology and analytics to underwrite a market most insurers fled.
+
+Neptune Insurance Holdings is a specialty flood insurance carrier that has used technology and analytics to underwrite flood risk more accurately than the federal NFIP program. As climate risk becomes harder to ignore and the federal flood program prices change, private flood insurers like Neptune have a structural growth opportunity in a market most large insurers have stayed away from.
+
+Memorable line: Flood insurance, but underwritten with technology instead of bureaucracy.
+
+Piper Sandler Companies — ticker PIPR.
+
+Investment bank with deep healthcare and tech expertise — helps innovative smaller companies raise capital.
+
+Piper Sandler does deal-advisory work with particular expertise in healthcare and technology, often helping innovative smaller companies raise the capital they need to grow from promising startup to established player.
+
+Memorable line: The boutique investment bank for the next wave of healthcare and tech.
+
+StoneX Group — ticker SNEX.
+
+Diversified global financial services firm — clearing, market making, payments, and physical commodities.
+
+StoneX provides clearing, execution, and risk management services across commodities, currencies, securities, and global payments. The business is a collection of niche franchises serving customers other major banks have neglected — emerging-market currency payments, physical commodity hedging, small institutional clearing.
+
+Memorable line: The financial services firm that picks up the niches the big banks won't bother with.
+
+WisdomTree Investments — ticker WT.
+
+Smart-beta ETF issuer — pioneer of dividend-weighted and fundamentally-weighted indexing, plus a growing tokenization platform.
+
+WisdomTree Investments is an asset manager best known for pioneering smart-beta and fundamentally-weighted ETFs (where holdings are weighted by dividends, earnings, or other fundamentals rather than market cap). The company runs over $100 billion in AUM across its ETF lineup and is one of the few independent ETF sponsors in a category dominated by giants like BlackRock and Vanguard. More recently, WisdomTree has been pushing into tokenized assets — digital representations of funds on blockchain rails — which could open a new distribution channel entirely.
+
+Memorable line: Smart-beta ETFs as the core business, tokenized funds as the call option.
+
+
+--- THE SOFTWARE LAYER ---
+The code that runs quietly beneath everything else
+
+Not every software company belongs in a futuristic city. These six do, because they build the scaffolding that lets everything else work — the cloud, the edge, the insurance backbone, the trades management system, and the business travel platform. Unsexy, essential, and increasingly AI-powered.
+
+JFrog (FROG) manages what you might call the supply chain of software — moving code from a developer's laptop through testing and security checks to the servers that run it in production, making sure no malicious code slips in along the way. DigitalOcean (DOCN) is the developer-friendly cloud for startups and small businesses that can't afford the complexity of AWS; its AI-native revenue has been doubling for five straight quarters as AI startups look for a simpler home. Fastly (FSLY) runs a programmable edge network that speeds up the internet and stops attacks, concentrating servers in the most network-dense hubs rather than spreading them everywhere.
+
+Guidewire (GWRE) is the operating system of the property and casualty insurance industry — more than 570 insurers in 42 countries, including Allianz, AXA, and Liberty Mutual, run their core claims, policy, and billing systems on it. The shift from on-premise to Guidewire Cloud is a multi-year migration that is now hitting full stride. ServiceTitan (TTAN) is doing for the skilled trades what Guidewire did for insurance — plumbers, electricians, HVAC contractors, landscapers — a full business management suite that lets a family-owned contractor compete with a national chain. And Navan (NAVN) is rebuilding corporate travel and expense management around a traveler-first experience, with $7.6B in annual gross bookings across 10,000+ business customers.
+
+Fastly — ticker FSLY.
+
+Programmable edge cloud platform — CDN + security + compute, concentrated in the most network-dense hubs.
+
+Fastly runs a programmable edge cloud platform combining content delivery, security, and compute. Unlike traditional CDNs that race to put servers in as many locations as possible, Fastly concentrates its servers in the most network-dense data centers and lets customers program on its platform, which delivers better performance on dynamic content and edge compute workloads. The growth strategy centers on three pillars: platform innovation, security expansion (higher-margin services that diversify revenue), and international growth in Asia-Pacific and Europe.
+
+Memorable line: Fewer, faster, smarter edge locations. Programmable end to end.
+
+Navan — ticker NAVN.
+
+All-in-one business travel, payments, and expense management — 10,000+ customers, $7.6B annual gross bookings.
+
+Navan is an all-in-one business travel, payments, and expense management platform that competes with both niche players like Expensify and enterprise heavyweights like Oracle and SAP. The pitch is traveler-first: make booking flights and hotels feel like a consumer app, then automate expense reconciliation on the back end with 24/7 support. Trailing 12-month revenue of $613M is growing 32%, across 10,000+ customers, with $7.6B in annual gross bookings (up 34%). Navan IPO'd on Nasdaq in October 2025 at $25/share and a $6.2B valuation, though shares dropped 20% on the first day of trading.
+
+Memorable line: Consumer-app business travel. Enterprise-scale expense automation.
+
+Paymentus Holdings — ticker PAY.
+
+Cloud-based bill payment platform for utilities, telcos, governments, and other billers.
+
+Paymentus provides cloud-based bill payment software to utilities, telecom companies, government agencies, and other billers — the unglamorous but essential infrastructure that lets a customer pay a water bill or electric bill online. The business is recurring, sticky, and benefits from the long-term shift away from paper checks.
+
+Memorable line: The bill payment SaaS that's quietly replacing paper checks one utility at a time.
+
+Pattern Group — ticker PTRN.
+
+AI-powered ecommerce accelerator that helps consumer brands sell on Amazon and other marketplaces.
+
+Pattern Group operates as an ecommerce accelerator combining proprietary technology and on-demand expertise to help consumer brands sell on Amazon and other digital marketplaces. The company acquires inventory from brand partners and sells to consumers across health and wellness, beauty, home and lifestyle, pet, sports and outdoors, and consumer electronics categories. 2026 guidance targets $3.1B+ in revenue.
+
+Memorable line: The operator that consumer brands hand their Amazon business to.
+
+
+==== THE SERVICES ====
+What the city actually does for people
+
+
+--- THE ARSENAL ---
+Drones, rockets, satellites, and the parts that defend and extend the city
+
+The city expands beyond Earth. And it needs to be defended. The future of military power is increasingly autonomous, increasingly digital, and increasingly orbital — and the Arsenal is where the drones, rockets, satellites, and precision components that reshape national security and open the space economy get built.
+
+Kratos Defense (KTOS) builds combat drones around a radical idea: make them affordable enough that military forces can deploy them in large numbers and accept losing some. Traditional fighter jets cost tens of millions each, which makes every loss devastating. Kratos's drones cost a fraction of that, fundamentally changing the math of air combat. Karman Holdings (KRMN) provides the precision components inside advanced military platforms — work that requires decades of specialized knowledge and security clearances competitors simply cannot acquire quickly.
+
+In space, Rocket Lab (RKLB) operates one of the most reliable small launch vehicles in the world with its Electron rocket, and the next-generation Neutron rocket — designed to carry 40 times more weight to orbit — targets first flight in mid-2026. York Space Systems (YSS) brings assembly-line thinking to satellite manufacturing, building standardized platforms the way a car factory builds vehicles instead of one-off science projects. Planet Labs (PL) operates the world's largest fleet of Earth-imaging satellites, photographing every square meter of the planet every single day, with a 10+ billion km² archive and over $500M of recent deals with Sweden, Japan, Germany, and NATO allies.
+
+Back on Earth, Mercury Systems (MRCY) builds the computing brains inside military radar and missile-defense systems, turning torrents of raw sensor data into actionable intelligence in fractions of a second. And VSE Corporation (VSEC) keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts complex machines constantly require — every flight hour generates wear, and a grounded aircraft is a mission that can't be flown.
+
+AAR Corp — ticker AIR.
+
+Aerospace aftermarket — parts, repair, and supply chain services for commercial and military aircraft.
+
+AAR provides aftermarket support for commercial airlines and government/defense customers — parts supply, MRO (maintenance, repair, overhaul), and integrated supply chain management. As aircraft fleets age and flight hours grow, the aftermarket has become structurally larger than new aircraft sales. AAR is one of the largest independent aftermarket players.
+
+Memorable line: When an airline or air force needs parts and repairs to keep planes flying, AAR is one of the first calls.
+
+AEVEX Aerospace — ticker AVEX.
+
+Defense-tech IPO — uncrewed systems, navigation and autonomy, and mission solutions for US special operations and intelligence.
+
+AEVEX Aerospace is a defense-tech company focused on uncrewed aerial systems, navigation and autonomy software, and adaptable mission solutions. The US government accounted for 78% of 2025 revenue, with AEVEX serving the Department of War, Special Operations Forces, the intelligence community, and allied international partners. Founded in 2007 and backed by Madison Dearborn Partners, AEVEX IPO'd on the NYSE in April 2026 at a ~$2.35B valuation with $433M in trailing revenue. The thesis is clean: defense autonomy is exploding, and AEVEX is a pure-play focused on it.
+
+Memorable line: Autonomy, drones, and special-ops software — a defense-tech pure play you can now own.
+
+BlackSky Technology — ticker BKSY.
+
+Real-time satellite imaging and intelligence for defense and intelligence customers.
+
+BlackSky operates a constellation of small earth-observation satellites that can revisit the same spot on Earth multiple times per day, then run AI analytics on the imagery to detect activity in real time. Their customers are primarily defense and intelligence agencies that need persistent monitoring of specific locations — bases, ships, borders, contested zones.
+
+Memorable line: Watch any spot on Earth, in real time, and let AI tell you what's changed.
+
+Gilat Satellite Networks — ticker GILT.
+
+Satellite communications equipment for in-flight connectivity, defense, and rural broadband.
+
+Gilat provides the satellite ground equipment, antennas, and modems that connect remote terminals to satellite networks. Their gear is used in commercial in-flight Wi-Fi, military satcom, maritime, and rural broadband. As low-earth-orbit satellite constellations like Starlink and Project Kuiper proliferate, Gilat is selling the ground infrastructure that talks to them.
+
+Memorable line: If a satellite is talking to the ground, there's a good chance Gilat made the gear on the ground.
+
+nLight — ticker LASR.
+
+High-power lasers for advanced manufacturing, microfabrication, and directed-energy defense weapons.
+
+nLight designs and builds the high-power semiconductor and fiber lasers used in industrial cutting, 3D printing, microfabrication, and increasingly in directed-energy weapons for defense. The defense business has become the most exciting growth driver as the Pentagon invests heavily in laser-based counter-drone and missile-defense systems.
+
+Memorable line: The same laser tech that cuts metal in a factory is starting to shoot down drones.
+
+Mercury Systems — ticker MRCY.
+
+Computing brains inside military radar — turns raw sensor torrents into actionable intelligence in fractions of a second.
+
+Mercury Systems builds the computing brains inside military radar and missile-defense systems. When a radar station scans the sky, it generates a torrent of data that must be processed in real time to distinguish a flock of birds from an incoming threat. Mercury builds the hardware that does that processing, turning raw radar signals into actionable intelligence in fractions of a second.
+
+Memorable line: The computer that decides, in milliseconds, whether it's a goose or a missile.
+
+Ondas Holdings — ticker ONDS.
+
+Autonomous drones and counter-drone systems for defense, infrastructure, and border security.
+
+Ondas builds autonomous drone systems and counter-drone defenses through its subsidiaries American Robotics, Airobotics, and Apeiro Motion. Their Optimus System is the first FAA-certified small UAS for automated security and data capture, and their Iron Drone Raider is a counter-drone platform. In 2025, Ondas won a major government tender to deploy thousands of drones for border protection, plus contracts for counter-UAS at major European airports. Revenue grew 605% in 2025.
+
+Memorable line: Drones to deploy and drones to shoot down other drones.
+
+OSI Systems — ticker OSIS.
+
+Security inspection and screening systems — the X-ray and CT machines at airports, borders, and ports.
+
+OSI Systems builds the X-ray and CT-based screening systems used by airports, customs agencies, ports, and large public venues to detect threats and contraband. Their Rapiscan brand is one of the most familiar in the space. The business benefits from rising global defense and security spending plus the steady upgrade cycles of legacy airport equipment.
+
+Memorable line: Every bag at the airport that goes through an X-ray belt — there's a decent chance OSI built the belt.
+
+TAT Technologies — ticker TATT.
+
+Aerospace heat exchangers and aftermarket repair for commercial and military aircraft.
+
+TAT Technologies makes heat exchangers and other thermal management components for commercial and military aircraft, plus provides MRO services. They have particular strength in aftermarket repair of legacy components where newer competitors have not bothered to qualify.
+
+Memorable line: Tiny aerospace niche, dominant position, recurring repair revenue.
+
+VSE Corporation — ticker VSEC.
+
+Keeps military and commercial aircraft flying — maintenance, repair, and spare parts for complex machines.
+
+VSE Corporation keeps military and commercial aircraft flying by providing the maintenance, repair, and spare parts that complex machines constantly require. Every flight hour generates wear that must be addressed, every aging component must be replaced on schedule, and every grounded aircraft represents a mission that can't be flown.
+
+Memorable line: A grounded aircraft is a failed mission. VSE keeps them in the air.
+
+York Space Systems — ticker YSS.
+
+Brings assembly-line thinking to satellites — standardized platforms built like cars, not one-of-a-kind projects.
+
+York Space Systems brings assembly-line thinking to satellite manufacturing. Instead of building each satellite as a one-of-a-kind custom project that takes years, York builds standardized platforms the way a car factory builds vehicles — faster, cheaper, and in much greater quantities. The military needs hundreds of small satellites for communications and early-warning systems, and York's approach makes that affordable for the first time.
+
+Memorable line: Satellites built on an assembly line. Finally.
+
+
+--- THE CLINIC ---
+Finding disease before it becomes unbearable
+
+Before there can be treatment, there has to be detection. The idea at the heart of modern medicine is deceptively simple: find disease earlier and everything changes. The Clinic is a small district but a powerful one, and everything it does flows from that one idea.
+
+Guardant Health (GH) pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream — Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry. The result reveals not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.
+
+Natera (NTRA) uses the same basic concept — reading DNA fragments floating in blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of residual disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold. Adaptive Biotechnologies (ADPT) takes the idea even further: every infection, every vaccine, every cancer a person has ever encountered leaves a unique molecular fingerprint on their immune cells — and Adaptive's technology decodes those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible. Three companies, one mission: don't wait until the damage is done.
+
+Adaptive Biotechnologies — ticker ADPT.
+
+Reads the immune system like a book — every infection, cancer, and vaccine leaves a molecular fingerprint they can decode.
+
+Adaptive Biotechnologies reads the immune system like a book — every infection, every cancer, every vaccine a person has ever encountered leaves a unique molecular fingerprint on their immune cells, and Adaptive's technology can decode those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible.
+
+Memorable line: Your immune system is a history book of every disease you've ever fought. Adaptive reads it.
+
+Alamar Biosciences — ticker ALMR.
+
+Ultra-sensitive proteomics platform — the NULISA technology detects rare protein biomarkers in blood at unprecedented sensitivity.
+
+Alamar Biosciences is a commercial-stage proteomics company that makes instruments, assays, and software for detecting low-abundance protein biomarkers in blood and other biofluids. Their NULISA (Nucleic acid-Linked Immuno-Sandwich Assay) technology pushes immunoassay sensitivity to levels needed for biomarker-driven early disease detection in areas like neurodegeneration, immunology, and oncology. Revenue grew 195% to $74.2 million in 2025. The company IPO'd on Nasdaq in April 2026, raising about $150 million.
+
+Memorable line: Ultra-sensitive protein detection — reading biology at a level traditional assays can't touch.
+
+Artivion — ticker AORT.
+
+Heart valves and aortic repair products for cardiovascular surgery.
+
+Artivion (formerly CryoLife) makes the heart valves, aortic stent grafts, and surgical repair products that cardiac surgeons use in complex aortic procedures. The business is small but holds strong positions in particular niches like aortic dissections and pediatric cardiac surgery.
+
+Memorable line: Specialty cardiac repair, where there's no margin for error.
+
+BillionToOne — ticker BLLN.
+
+Molecular diagnostics for prenatal testing and oncology, using a quantitative platform to detect rare mutations.
+
+BillionToOne uses its proprietary QCT (Quantitative Counting Templates) platform to detect single-molecule changes in DNA — much more sensitive than older approaches. Their UNITY prenatal tests can screen for fetal genetic conditions and Rh blood type compatibility from a single blood draw, and their Northstar oncology tests are growing fast in tumor profiling. Revenue grew over 100% in 2025, with $430-445M guided for 2026.
+
+Memorable line: Counting individual DNA molecules to catch what other tests miss.
+
+CeriBell — ticker CBLL.
+
+Point-of-care EEG headband that lets non-specialists detect seizures in hospital ICUs.
+
+CeriBell makes a portable EEG (electroencephalogram) headband that any nurse can put on a patient at the bedside, eliminating the multi-hour wait for a neurologist and a traditional EEG cart. The device uses AI to detect seizures in real time. ICUs have embraced it because undetected seizures are common in critically ill patients and devastating when missed. CeriBell also has FDA Breakthrough Device designation for stroke detection.
+
+Memorable line: EEG that doesn't need a neurologist to set up — and AI that flags the seizure.
+
+HeartFlow — ticker HTFL.
+
+AI that builds a 3D model of a patient's heart arteries from a CT scan to find blockages without invasive testing.
+
+HeartFlow uses artificial intelligence to create a detailed 3D model of a patient's heart arteries from a standard CT scan. The model shows exactly where blood is flowing freely and where blockages are restricting it. Traditionally, answering that question required threading a thin tube through a blood vessel into the heart. HeartFlow can often provide the same answer from a simple, non-invasive scan.
+
+Memorable line: Find heart blockages without threading a tube through someone's artery.
+
+Twist Bioscience — ticker TWST.
+
+Synthetic DNA at industrial scale — for biotech research, drug discovery, and DNA data storage.
+
+Twist Bioscience makes synthetic DNA on silicon chips at unprecedented scale and quality. Researchers and biotech companies use Twist DNA for gene synthesis, antibody discovery, and increasingly to store digital data in DNA strands (which are millions of times denser than any electronic medium). The company is a key supplier to nearly every modern biotech research lab.
+
+Memorable line: Industrial-scale custom DNA. The toolmaker for the biotech revolution.
+
+10x Genomics — ticker TXG.
+
+Single-cell sequencing platforms that let researchers read DNA, RNA, and proteins one cell at a time.
+
+10x Genomics builds the instruments and chemistry that let researchers analyze biology at the resolution of individual cells. Traditional sequencing reads the average across millions of cells — 10x lets researchers see exactly what each cell is doing, which is the only way to understand many diseases. Almost every major academic and pharmaceutical research lab has a 10x instrument.
+
+Memorable line: Reading biology one cell at a time. The microscope of the genomics era.
+
+GeneDx Holdings — ticker WGS.
+
+Whole-exome and whole-genome sequencing for diagnosing rare childhood genetic diseases.
+
+GeneDx sequences the complete human genome to diagnose rare genetic diseases, especially in children. For families who have spent years visiting specialist after specialist without answers, a single test can finally reveal the underlying cause and open the door to targeted treatment. The company has the largest pediatric exome database in the world, which gives its tests an interpretation advantage no one else can match.
+
+Memorable line: The end of years of unanswered questions for families with sick children.
+
+
+--- THE RESEARCH LABS ---
+Treating disease by its molecular mechanism — the largest district in the city
+
+The Research Labs is by far the largest district in the city — thirty companies working on some of the most remarkable medical innovation in human history. The unifying thesis is to move beyond treating diseases by where they happen in the body, and start treating them by their molecular mechanism. Some of these companies will face setbacks. Some will deliver breakthroughs that reshape medicine. The breadth of what is happening here is extraordinary.
+
+Start with the giants. Eli Lilly (LLY) is the most valuable healthcare company in the world, riding the GLP-1 obesity wave with Mounjaro and Zepbound while building a deep next-generation pipeline. Vertex Pharmaceuticals (VRTX) effectively cured cystic fibrosis and is now expanding into pain (suzetrigine), kidney disease, and gene therapy with Casgevy for sickle cell. Gilead (GILD) built the franchise that turned HIV into a manageable condition and is now pushing into oncology and inflammation. argenx (ARGX) created Vyvgart, the first FcRn-blocker, which has become the new standard of care for myasthenia gravis and is being expanded into a half-dozen autoimmune indications.
+
+The mid-cap rare-disease specialists do extraordinary work. Madrigal (MDGL) developed the first real medication for serious liver disease — a once-daily pill for what used to have only one prescription, 'eat better and exercise more.' BridgeBio (BBIO) hunts rare genetic diseases that individually affect few but collectively touch tens of millions. Insmed (INSM) is rebuilding pulmonary medicine with Arikayce for serious lung infections and brensocatib (TPIP) for bronchiectasis. Tarsus (TARS), Glaukos (GKOS), Rhythm (RYTM), Ascendis (ASND), PTC (PTCT), and Mirum (MIRM) each tackle specific diseases that had no good treatment before — eye mites affecting 25 million Americans, glaucoma, broken hunger signals, daily injections turned weekly, childhood muscle disorders, and bile-processing failures in kids.
+
+In oncology, Celcuity (CELC) and Cogent (COGT) match patients to therapies based on their tumor's molecular fingerprint — stop guessing which cancer drug works, test it on the actual tumor first. Arrowhead (ARWR) silences disease-causing genes before they can do damage, like shredding a bad recipe before the kitchen can use it. Revolution Medicines (RVMD) finally found a way to drug a cancer target considered impossible for decades — a set of mutations found in roughly one out of every three cancers, including many of the deadliest forms. Nuvalent (NUVL) designs precision lung cancer therapies engineered to block the escape routes tumors use to develop resistance. CG Oncology (CGON) built an engineered virus that selectively infects bladder tumors and bursts them from the inside. Immunocore (IMCR) developed the first approved TCR therapy, Kimmtrak, for a rare eye cancer — and is expanding the platform. Terns (TERN) attacks the same liver disease as Madrigal but through a different mechanism, creating combination potential. Abivax (ABVX) is developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease. And TransMedics (TMDX) has revolutionized organ transplantation — keeping donor organs warm and functioning during transport instead of racing them in ice.
+
+The next wave includes companies in registration or late-stage clinical work. NewAmsterdam Pharma (NAMS) is bringing obicetrapib — an oral CETP inhibitor that reduced LDL cholesterol by 33% in a Phase 3 trial — to market in Europe with partner Menarini, with EMA decision expected 2H26. Mineralys (MLYS) is developing lorundrostat for treatment-resistant hypertension, a massive market with no good options. Praxis Precision (PRAX) is in late-stage trials for essential tremor and epilepsy. Forte Biosciences (FBRX) targets autoimmune diseases through a novel anti-CD122 mechanism. Dianthus (DNTH), Protagonist (PTGX), and Nektar (NKTR) round out the late-stage block — claseprubart in Phase 3 CIDP, rusfertide NDA filed for polycythemia vera with Takeda, and rezpegaldesleukin hitting endpoints in atopic dermatitis. Thirty companies, one thesis, and a staggering pipeline of medicine that did not exist a decade ago.
+
+Celcuity — ticker CELC.
+
+Tests a patient's living cancer cells in the lab to match them to the therapy most likely to work.
+
+Celcuity takes a different approach to cancer. Rather than treating every tumor the same way, they test a patient's living cancer cells in the lab to determine exactly which biological signals are driving the tumor's growth, then match the patient to the therapy most likely to shut those signals down.
+
+Memorable line: Stop guessing which cancer drug works. Test it on the actual tumor first.
+
+CG Oncology — ticker CGON.
+
+Engineered a virus that selectively infects bladder tumor cells, replicates until they burst, then spreads to neighboring cancer.
+
+CG Oncology has developed a creative approach to bladder cancer: they've engineered a virus that selectively infects tumor cells, replicates inside them until they burst, and then spreads to neighboring cancer cells — all while leaving healthy tissue untouched. For patients facing the prospect of having their bladder surgically removed, this could be a life-changing alternative.
+
+Memorable line: A virus that hunts cancer and leaves healthy tissue alone.
+
+Cogent Biosciences — ticker COGT.
+
+Designs a cancer drug that fits a specific genetic mutation like a key fits a lock.
+
+Cogent Biosciences targets a specific type of gastrointestinal tumor driven by a known genetic mutation, designing a drug that fits the mutation like a key fits a lock. This represents the broader revolution in cancer care: treating the disease based on its molecular fingerprint rather than simply where it appears in the body.
+
+Memorable line: A drug designed to fit one mutation, the way a key fits one lock.
+
+Dianthus Therapeutics — ticker DNTH.
+
+Next-generation complement antibody therapies for autoimmune neurological diseases like myasthenia gravis and CIDP.
+
+Dianthus Therapeutics is leading the next generation of complement antibody therapeutics. Their lead drug, claseprubart (DNTH103), is a highly selective antibody that binds only to the active form of C1s in the classical complement pathway. It's being tested in generalized myasthenia gravis (where a Phase 2 study showed statistically significant improvements with a safety profile comparable to placebo), chronic inflammatory demyelinating polyneuropathy (the Phase 3 CAPTIVATE trial recently got an early GO decision based on a responder analysis), and multifocal motor neuropathy. A second candidate, DNTH212, is a bifunctional fusion protein being tested in lupus.
+
+Memorable line: Pick one lock — the active form of C1s — and don't touch the rest of the immune system.
+
+Enliven Therapeutics — ticker ELVN.
+
+Highly selective kinase inhibitors for cancer — lead drug ELVN-001 targets BCR-ABL in chronic myeloid leukemia.
+
+Enliven Therapeutics develops highly selective small-molecule kinase inhibitors for cancer. Their lead program, ELVN-001, is a selective ATP-competitive ABL1 tyrosine kinase inhibitor for chronic myeloid leukemia (CML) — it binds to a unique P-loop folded-in conformation of ABL1 that gives it better selectivity than existing BCR-ABL inhibitors. Recent Phase 1b data showed cumulative major molecular response rates up to 53% in heavily pretreated patients, with deep molecular response up to 35% and a favorable safety profile. A pivotal Phase 3 ENABLE-2 trial is planned for 2H 2026.
+
+Memorable line: A better-selected BCR-ABL inhibitor for CML, with Phase 1 data that looks like it could matter.
+
+Forte Biosciences — ticker FBRX.
+
+Targeting autoimmune diseases through a novel anti-CD122 antibody.
+
+Forte Biosciences develops antibody therapies for autoimmune diseases, with its lead program targeting CD122 — a receptor involved in the activation of pathogenic immune cells. The approach offers potential advantages over older biologics in selectivity and durability of effect.
+
+Memorable line: A new mechanism for autoimmune disease, in early clinical work.
+
+Mirum Pharmaceuticals — ticker MIRM.
+
+Treats children whose livers can't process bile — a devastating cause of itching, malnutrition, and organ failure.
+
+Mirum Pharmaceuticals treats children whose livers can't properly process bile, a digestive fluid that backs up and causes agonizing itching, malnutrition, and potential organ failure.
+
+Memorable line: For kids living with a broken liver, Mirum is a lifeline.
+
+Mineralys Therapeutics — ticker MLYS.
+
+Lorundrostat — a novel oral drug for treatment-resistant hypertension.
+
+Mineralys is developing lorundrostat, an aldosterone synthase inhibitor for patients whose high blood pressure does not respond to standard medications — one of the largest unmet needs in cardiovascular medicine. Phase 2 data has been encouraging, and Phase 3 trials are underway.
+
+Memorable line: The blood pressure pill that works on patients other pills can't reach.
+
+NewAmsterdam Pharma — ticker NAMS.
+
+Obicetrapib — an oral CETP inhibitor that cut LDL cholesterol by 33% in Phase 3, partnered with Menarini in Europe.
+
+NewAmsterdam is bringing obicetrapib to market — a once-daily oral CETP inhibitor that reduced LDL cholesterol by 33% in the Phase 3 BROADWAY trial and showed an exploratory 21% reduction in major adverse cardiovascular events. Marketing applications have been accepted by the European Medicines Agency, with a decision expected 2H26. Partner Menarini holds European commercial rights, and a U.S. cardiovascular outcomes trial (PREVAIL) is ongoing.
+
+Memorable line: If obicetrapib gets approved, it could be the biggest cardiovascular drug launch of the decade.
+
+Nektar Therapeutics — ticker NKTR.
+
+First-in-class regulatory T-cell stimulator — hit primary endpoints in a 393-patient Phase 2b for severe atopic dermatitis.
+
+Nektar Therapeutics is developing rezpegaldesleukin (REZPEG), a first-in-class regulatory T-cell stimulator that works by targeting the IL-2 receptor complex and preferentially expanding Treg cells to restore immune balance. The global Phase 2b REZOLVE-AD study in 393 patients with moderate-to-severe atopic dermatitis met its primary and key secondary endpoints, with durable responses in the 36-week blinded maintenance period showing both monthly and quarterly dosing work. The FDA granted Fast Track designation for atopic dermatitis and separately for severe-to-very severe alopecia areata, and a Phase 2 trial in Type 1 diabetes is also underway.
+
+Memorable line: Restoring immune balance from the top of the pathway. And it hit its endpoints.
+
+Praxis Precision Medicines — ticker PRAX.
+
+Late-stage drugs for essential tremor and epilepsy — neurological disorders with limited options.
+
+Praxis Precision Medicines develops therapies for central nervous system disorders, with late-stage programs in essential tremor (ulixacaltamide) and epilepsy. Both indications are large markets where existing drugs have meaningful limitations, and Praxis has shown encouraging Phase 2 and 3 data.
+
+Memorable line: The hands stop shaking. The seizures stop. That's the goal.
+
+PTC Therapeutics — ticker PTCT.
+
+Helps the body read past genetic 'typos' in rare childhood muscle diseases and produce functional protein anyway.
+
+PTC Therapeutics works on rare childhood diseases where the genetic instructions for building muscle protein contain an error, like a typo in a recipe, causing muscles to gradually weaken over time. Their therapies aim to help the body read past that error and produce functional protein anyway.
+
+Memorable line: Teaching the body to read past a typo in its own recipe book.
+
+Relay Therapeutics — ticker RLAY.
+
+Drug discovery powered by protein motion simulation — highly selective FGFR2 inhibitor for bile duct cancer leading the pipeline.
+
+Relay Therapeutics uses its Dynamo computational platform — which simulates the physical motion of proteins in unprecedented detail — to design drugs against targets previously considered undruggable. Their lead drug lirafugratinib (RLY-4008) is an exquisitely selective FGFR2 inhibitor for bile duct cancer and other FGFR2-altered solid tumors. In Phase 1 trials, 88% of bile duct cancer patients responded at the selected dose — more than twice the response rate of existing FGFR inhibitors — with much lower hyperphosphatemia side effects because the drug leaves FGFR1 alone.
+
+Memorable line: Drugging proteins by watching them move — computational drug design at a new resolution.
+
+Rhythm Pharmaceuticals — ticker RYTM.
+
+Restores the brain's hunger-signaling system in rare genetic forms of extreme obesity — not willpower, broken biology.
+
+Rhythm Pharmaceuticals addresses rare genetic forms of extreme obesity caused by a mutation that breaks the brain's hunger-signaling system. Imagine never feeling full, no matter how much you eat — not a willpower problem, but a broken biological thermostat. Rhythm's medication restores that signal.
+
+Memorable line: For patients whose 'full' signal is permanently broken, Rhythm fixes the thermostat.
+
+Tarsus Pharmaceuticals — ticker TARS.
+
+First approved treatment for an eye condition caused by microscopic mites on eyelashes — 25M Americans affected.
+
+Tarsus Pharmaceuticals created the first approved treatment for a surprisingly common eye condition caused by microscopic mites that live on eyelashes and cause chronic redness and irritation in an estimated 25 million Americans who previously had no effective remedy.
+
+Memorable line: 25 million Americans have it. Until recently, nobody had a treatment.
+
+TransMedics — ticker TMDX.
+
+Keeps donor organs alive and functioning during transport instead of packing them in ice — more organs, more lives saved.
+
+TransMedics has revolutionized organ transplantation. Traditionally, a donor organ is packed in ice and raced to the recipient in a desperate sprint against time, with the organ deteriorating every minute. TransMedics built a portable system that keeps the organ warm, pumps blood through it, and maintains it in a living, functioning state during the entire journey. This extends how far an organ can travel, allows doctors to evaluate its quality before implanting it, and has dramatically expanded the number of transplants that can be performed.
+
+Memorable line: Organs arriving alive instead of on ice. More transplants, more lives.
+
+
+--- MAIN STREET ---
+Where people live, shop, eat, learn, and have fun — the biggest district in the city
+
+A city is ultimately about people. Main Street is where they actually spend their days — buying things, eating things, traveling, training for jobs, working out, being entertained, and living their lives. It is by far the largest district in the city by company count, because the consumer economy is enormous.
+
+It starts with the megaliths. Apple (AAPL) puts a supercomputer in a billion pockets and sells the services that run on it. Amazon (AMZN) is the everything-store that ships, the cloud that hosts most of the internet, and the advertising platform that monetizes the rest. Costco (COST) is the bulk-buying institution that earned a cult following by treating its customers and its employees better than retail conventionally allows. Tesla (TSLA) is the EV company that became an energy company that became an AI company. Mega names dominate by market cap, but the smaller names tell more interesting stories.
+
+The retail and lifestyle block. Boot Barn (BOOT) outfits the workforce that physically builds America. Deckers (DECK) owns Hoka and Ugg, two cult footwear brands. Ross Stores (ROST) runs the off-price treasure-hunt model. Warby Parker (WRBY) brought eyewear online with $95 prescription glasses. SharkNinja (SN) builds household appliances that punch above their price. Amer Sports (AS) owns Wilson, Salomon, Arc'teryx, and a portfolio of premium outdoor brands.
+
+Food and drink. Celsius (CELH) turned energy drinks healthier and became a cultural phenomenon. CAVA (CAVA) is the Mediterranean Chipotle, scaling toward 1,000 restaurants. Vita Coco (COCO) owns 42% of the U.S. coconut water market. The Chefs' Warehouse (CHEF) distributes specialty ingredients to the country's best restaurants. Mama's Creations (MAMA) makes the deli-prepared meals at your grocery store. Neogen (NEOG) keeps food and animal products safe across the supply chain.
+
+Travel, hospitality, and experiences. Hilton (HLT) operates one of the world's largest hotel networks. Royal Caribbean (RCL) and Viking (VIK) run the cruise industry's two most-loved brands — Royal at scale, Viking at the premium end. Lindblad Expeditions (LIND) runs the polar adventure travel category in partnership with National Geographic. DoorDash (DASH) delivers the food that gets ordered when no one wants to leave. MercadoLibre (MELI) is the Amazon of Latin America, plus a fintech business as big as the marketplace.
+
+Entertainment — the part of Main Street where people go for fun. Netflix (NFLX) defined and now defends the streaming category with over 300 million subscribers worldwide. Take-Two Interactive (TTWO) owns Rockstar Games and 2K Sports, with Grand Theft Auto VI arriving in 2026 as likely the biggest entertainment launch in history. Live Nation (LYV) runs the global concert business through Ticketmaster and its venue network. TKO Group (TKO) houses both UFC and WWE under one roof. IMAX (IMAX) operates the premium large-format theater network. And Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen, now the top-grossing venue in the world.
+
+The skilled-trades and wellness block. UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC technicians, diesel mechanics, welders, and electricians the country cannot build data centers without. American Public Education (APEI) runs the largest online university serving the U.S. military and federal workforce. Life Time Holdings (LTH) operates resort-style wellness campuses. Hinge Health (HNGE) treats chronic back and joint pain through a smartphone app and wearable sensors.
+
+Finally, the freight and identity infrastructure of the consumer economy. Saia (SAIA) and XPO (XPO) move the freight that keeps shelves full. Carvana (CVNA) reinvented used car retail. Clear Secure (YOU) runs biometric identity verification at airports with 30+ million members.
+
+American Public Education — ticker APEI.
+
+Online university serving the U.S. military, federal workforce, and adult learners.
+
+American Public Education runs American Military University and American Public University — the largest online university serving the U.S. military, plus adult learners and the federal workforce. The student base is highly stable (military tuition assistance is a reliable funding source), and the model has scaled to over 100,000 students.
+
+Memorable line: Higher education for the people who already have full-time jobs — and serve the country.
+
+The Chefs' Warehouse — ticker CHEF.
+
+Specialty food distribution to the country's best independent restaurants.
+
+The Chefs' Warehouse distributes specialty ingredients — artisanal cheeses, charcuterie, oils, pastries, premium proteins — to the country's best independent restaurants and high-end hotels. The business has grown through acquisition and organic share gains as consolidation reshapes a fragmented foodservice industry.
+
+Memorable line: If you ate at a great restaurant in America last week, the cheese probably came from Chefs'.
+
+The Vita Coco Company — ticker COCO.
+
+The dominant coconut water brand — 42% U.S. market share, growing internationally.
+
+Vita Coco is the dominant coconut water brand in the U.S. with a 42% market share, now growing faster than almost any other beverage category. 2025 net sales grew 18% with the Vita Coco brand itself up 26% globally. Growth is driven by expanding household penetration (positioning as a sports-drink alternative), international expansion in Europe, and product innovation like Vita Coco Treats.
+
+Memorable line: Coconut water became a real beverage category. Vita Coco owns it.
+
+Hinge Health — ticker HNGE.
+
+Digital physical therapy for chronic back and joint pain — the largest cause of missed work in America.
+
+Hinge Health tackles the single largest cause of missed work in America: chronic back and joint pain. Their program works through a smartphone app paired with wearable motion sensors that guide patients through personalized exercises, track form in real time, and connect them with a dedicated coach. The combination of physical therapy, technology, and human support helps people manage pain without surgery or addictive painkillers.
+
+Memorable line: Physical therapy through your phone — and it actually works.
+
+IMAX Corporation — ticker IMAX.
+
+The premium large-format theater network that movie studios use to make blockbusters feel like events.
+
+IMAX runs a global network of premium large-format theaters that show the biggest movies on screens designed specifically for that format. The business model is asset-light — IMAX licenses its technology and shares revenue with theater operators rather than owning the theaters. As streaming has eaten most of the movie business, IMAX has become the format where Hollywood concentrates its biggest, most cinematic releases.
+
+Memorable line: The screen for the movies that have to be experienced in a theater.
+
+Lincoln Educational Services — ticker LINC.
+
+Lincoln Tech — career-oriented post-secondary education in skilled trades, automotive, and health sciences.
+
+Lincoln Educational Services operates Lincoln Tech, a group of career-oriented post-secondary vocational schools with campuses across a dozen states. They train recent high school graduates and working adults in skilled trades, automotive, health sciences, and IT — the exact same thesis as UTI, targeting the same skills gap. Lincoln Tech was founded in 1946 to retrain WWII veterans and continues that mission today.
+
+Memorable line: America has a trades gap. Lincoln Tech has been closing it since 1946.
+
+Lindblad Expeditions — ticker LIND.
+
+Polar and adventure expedition travel in partnership with National Geographic.
+
+Lindblad Expeditions runs small-ship expedition cruises to remote destinations — Antarctica, the Arctic, the Galápagos, Alaska — in long-running partnership with National Geographic. The customer base is older, affluent, and willing to pay premium prices for once-in-a-lifetime experiences with naturalists and photographers on board.
+
+Memorable line: The cruise where the destination is Antarctica and the lecturer is a Nat Geo photographer.
+
+Mama's Creations — ticker MAMA.
+
+Fresh deli-prepared foods sold next to the rotisserie chicken — targeting $1B in revenue by 2030.
+
+Mama's Creations (formerly MamaMancini's) makes fresh deli-prepared foods — meatballs, meat loaf, chicken, sausage products, pasta and rice entrées — that show up in the prepared-foods section of grocery stores next to the rotisserie chicken. The brand has scaled by adding distribution and acquiring complementary businesses, with a stated goal of $1 billion in annual revenue by 2030.
+
+Memorable line: The Italian comfort food brand sitting in the deli case at your grocery store.
+
+Neogen Corporation — ticker NEOG.
+
+Food safety, animal health, and biosecurity products for the global food supply chain.
+
+Neogen makes diagnostic test kits and consumables that food producers, animal health customers, and biosecurity programs use to keep the food supply safe. Tests for pathogens (salmonella, listeria), allergens, mycotoxins, and animal disease screening — the unglamorous infrastructure that keeps the world's food supply trustworthy.
+
+Memorable line: Food safety, behind the scenes. The world relies on it without ever noticing.
+
+Sphere Entertainment — ticker SPHR.
+
+Operator of the Las Vegas Sphere — 17,600-seat immersive venue with a 16K wraparound screen, the top-grossing venue in the world.
+
+Sphere Entertainment operates the Las Vegas Sphere, a 17,600-seat immersive entertainment venue with a 16K resolution wraparound interior LED screen, speaker arrays using beamforming and wave-field synthesis, and 4D physical effects. The exterior is 580,000 sq ft of LED displays — the largest in the world — and pulls in separate advertising revenue. The venue was ranked #1 on Billboard's and Pollstar's 2025 lists of top-grossing venues worldwide, and the 'Wizard of Oz' immersive experience plus concert residencies are expanding utilization. A second U.S. Sphere is planned for National Harbor outside Washington, D.C., and a venue in Abu Dhabi is also in development. The company also owns MSG Networks, a legacy regional sports network in structural decline — one of the main investor debates around the stock.
+
+Memorable line: The most talked-about venue in the world. And there are more coming.
+
+Universal Technical Institute — ticker UTI.
+
+Trains the HVAC techs, diesel mechanics, welders, and electricians the country cannot build data centers without.
+
+UTI addresses one of the most critical and overlooked gaps in the American economy: training skilled tradespeople. HVAC technicians, diesel mechanics, welders, electricians — you cannot build data centers, power plants, or hospitals without them. As the country embarks on the largest infrastructure buildout in a generation, UTI is one of the only companies positioned to help close the workforce gap.
+
+Memorable line: You can't build data centers without welders. UTI trains the welders.
+
+Warby Parker — ticker WRBY.
+
+Brought eyewear online with $95 prescription glasses and a vertically integrated brand.
+
+Warby Parker built the direct-to-consumer eyewear category by selling stylish prescription glasses for $95 — a fraction of what Luxottica's brands charge — and bypassing the traditional optical retail markup. The company started online, then expanded into physical retail (now hundreds of stores), prescriptions, contact lenses, and eye exams.
+
+Memorable line: Glasses for $95 instead of $400. Then they opened actual stores.
+
+
+That's the Micro Cap fund — 79 holdings across 11 districts of the city.
