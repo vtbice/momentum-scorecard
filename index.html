@@ -1519,6 +1519,17 @@ function renderMarketPulse() {
             svg += '<text x="50" y="' + (y + 4) + '" style="font-size:10px;fill:#94a3b8;font-family:JetBrains Mono,monospace;" text-anchor="end">' + tick + '%</text>';
         });
 
+        // Current-bucket color tells the real story — derived from the CURRENT row's
+        // forward return, used consistently across both charts (bar, pill, connector).
+        function fwdColor(fwd) {
+            if (fwd >= 15) return '#10b981';  // emerald — strong
+            if (fwd >= 10) return '#22c55e';  // green
+            if (fwd >= 7)  return '#f59e0b';  // amber — muted
+            return '#f97316';                  // orange — weak
+        }
+        var curRow = sortedBreadth[currentIdx] || {};
+        var curColor = fwdColor(curRow.fwd || 0);
+
         // Bars
         sortedBreadth.forEach(function(row, i) {
             var val = type === 'freq' ? row.pctTime : row.fwd;
@@ -1530,32 +1541,28 @@ function renderMarketPulse() {
             // Color logic
             var color;
             if (type === 'freq') {
-                color = isCurrent ? '#10b981' : '#94a3b8';
+                // Current bar wears the fwd-return color so it tells the same story as the chart below
+                color = isCurrent ? curColor : '#94a3b8';
             } else {
                 // Forward return colors
-                if (val >= 15) color = '#10b981';
-                else if (val >= 10) color = '#22c55e';
-                else if (val >= 7) color = '#f59e0b';
-                else color = '#f97316';
+                color = fwdColor(row.fwd);
             }
 
-            var stroke = (type === 'fwd' && isCurrent) ? ' stroke="#10b981" stroke-width="2"' : '';
+            var stroke = (type === 'fwd' && isCurrent) ? ' stroke="' + curColor + '" stroke-width="2"' : '';
             svg += '<rect x="' + x + '" y="' + barY + '" width="' + barWidthPx + '" height="' + barH + '" fill="' + color + '"' + stroke + '/>';
 
             // Value label above bar
-            var labelColor = isCurrent ? '#10b981' : (type === 'freq' ? '#475569' : (val >= 10 ? '#166534' : val >= 7 ? '#92400e' : '#9a3412'));
+            var labelColor = isCurrent ? curColor : (type === 'freq' ? '#475569' : (val >= 10 ? '#166534' : val >= 7 ? '#92400e' : '#9a3412'));
             var labelSize = isCurrent ? '12' : '10';
             svg += '<text x="' + (x + barWidthPx/2) + '" y="' + (barY - 5) + '" style="font-size:' + labelSize + 'px;fill:' + labelColor + ';font-family:JetBrains Mono,monospace;font-weight:700;" text-anchor="middle">' + Math.round(val) + '%</text>';
         });
 
-        // HERE callout above current bar
+        // HERE callout above current bar — color matches the current bucket's fwd-return color
         if (currentIdx >= 0) {
             var currentX = startX + currentIdx * (barWidthPx + gap) + barWidthPx/2;
-            var lineStartY = type === 'freq'
-                ? chartBotY - (values[currentIdx] / maxVal) * chartH - 20  // stop above value label
-                : chartBotY - (values[currentIdx] / maxVal) * chartH - 20;
-            svg += '<line x1="' + currentX + '" y1="' + lineStartY + '" x2="' + currentX + '" y2="26" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2"/>';
-            svg += '<rect x="' + (currentX - 50) + '" y="2" width="100" height="22" rx="11" fill="#10b981"/>';
+            var lineStartY = chartBotY - (values[currentIdx] / maxVal) * chartH - 20;
+            svg += '<line x1="' + currentX + '" y1="' + lineStartY + '" x2="' + currentX + '" y2="26" stroke="' + curColor + '" stroke-width="1.5" stroke-dasharray="3,2"/>';
+            svg += '<rect x="' + (currentX - 50) + '" y="2" width="100" height="22" rx="11" fill="' + curColor + '"/>';
             svg += '<text x="' + currentX + '" y="17" text-anchor="middle" style="font-size:11px;font-weight:800;fill:white;letter-spacing:1.5px;">YOU ARE HERE</text>';
         }
 
@@ -1565,7 +1572,7 @@ function renderMarketPulse() {
             // Simplify labels: "Above 90%" → ">90", "Below 10%" → "<10", "40-50%" → "40-50"
             var label = row.range.replace('Above ', '&gt;').replace('Below ', '&lt;').replace('%', '');
             var isCurrent = i === currentIdx;
-            var color = isCurrent ? '#10b981' : '#94a3b8';
+            var color = isCurrent ? curColor : '#94a3b8';
             var weight = isCurrent ? '700' : '400';
             svg += '<text x="' + x + '" y="120" text-anchor="middle" style="font-size:10px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
         });
@@ -1702,6 +1709,17 @@ function renderMarketPulse() {
                 svg += '<text x="50" y="' + (y + 4) + '" style="font-size:10px;fill:#94a3b8;font-family:JetBrains Mono,monospace;" text-anchor="end">' + tick + '%</text>';
             });
 
+            // Derive current-bucket color from its fwd return so every chart element
+            // (current bar, pill, connector, labels) tells the same visual story.
+            function fwdColor(fwd) {
+                if (fwd >= 15) return '#10b981';
+                if (fwd >= 10) return '#22c55e';
+                if (fwd >= 7)  return '#f59e0b';
+                return '#f97316';
+            }
+            var tsCurRow = tsSorted[currentIdx] || {};
+            var tsCurColor = fwdColor(tsCurRow.fwd || 0);
+
             tsSorted.forEach(function(row, i) {
                 var val = type === 'freq' ? row.pctTime : row.fwd;
                 var barH = (val / maxVal) * chartH;
@@ -1711,18 +1729,15 @@ function renderMarketPulse() {
 
                 var color;
                 if (type === 'freq') {
-                    color = isCurrent ? '#10b981' : '#94a3b8';
+                    color = isCurrent ? tsCurColor : '#94a3b8';
                 } else {
-                    if (val >= 15) color = '#10b981';
-                    else if (val >= 10) color = '#22c55e';
-                    else if (val >= 7) color = '#f59e0b';
-                    else color = '#f97316';
+                    color = fwdColor(row.fwd);
                 }
 
-                var stroke = (type === 'fwd' && isCurrent) ? ' stroke="#10b981" stroke-width="2"' : '';
+                var stroke = (type === 'fwd' && isCurrent) ? ' stroke="' + tsCurColor + '" stroke-width="2"' : '';
                 svg += '<rect x="' + x + '" y="' + barY + '" width="' + barWidthPx + '" height="' + barH + '" fill="' + color + '"' + stroke + '/>';
 
-                var labelColor = isCurrent ? '#10b981' : (type === 'freq' ? '#475569' : (val >= 10 ? '#166534' : val >= 7 ? '#92400e' : '#9a3412'));
+                var labelColor = isCurrent ? tsCurColor : (type === 'freq' ? '#475569' : (val >= 10 ? '#166534' : val >= 7 ? '#92400e' : '#9a3412'));
                 var labelSize = isCurrent ? '12' : '10';
                 svg += '<text x="' + (x + barWidthPx/2) + '" y="' + (barY - 5) + '" style="font-size:' + labelSize + 'px;fill:' + labelColor + ';font-family:JetBrains Mono,monospace;font-weight:700;" text-anchor="middle">' + Math.round(val) + '%</text>';
             });
@@ -1730,8 +1745,8 @@ function renderMarketPulse() {
             if (currentIdx >= 0) {
                 var currentX = startX + currentIdx * (barWidthPx + gap) + barWidthPx/2;
                 var lineStartY = chartBotY - (values[currentIdx] / maxVal) * chartH - 20;
-                svg += '<line x1="' + currentX + '" y1="' + lineStartY + '" x2="' + currentX + '" y2="26" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2"/>';
-                svg += '<rect x="' + (currentX - 50) + '" y="2" width="100" height="22" rx="11" fill="#10b981"/>';
+                svg += '<line x1="' + currentX + '" y1="' + lineStartY + '" x2="' + currentX + '" y2="26" stroke="' + tsCurColor + '" stroke-width="1.5" stroke-dasharray="3,2"/>';
+                svg += '<rect x="' + (currentX - 50) + '" y="2" width="100" height="22" rx="11" fill="' + tsCurColor + '"/>';
                 svg += '<text x="' + currentX + '" y="17" text-anchor="middle" style="font-size:11px;font-weight:800;fill:white;letter-spacing:1.5px;">YOU ARE HERE</text>';
             }
 
@@ -1744,7 +1759,7 @@ function renderMarketPulse() {
                     .replace('>+20%', '≥ +20')
                     .replace('%', '');
                 var isCurrent = i === currentIdx;
-                var color = isCurrent ? '#10b981' : '#94a3b8';
+                var color = isCurrent ? tsCurColor : '#94a3b8';
                 var weight = isCurrent ? '700' : '400';
                 svg += '<text x="' + x + '" y="120" text-anchor="middle" style="font-size:9px;fill:' + color + ';font-family:JetBrains Mono,monospace;font-weight:' + weight + ';">' + label + '</text>';
             });
