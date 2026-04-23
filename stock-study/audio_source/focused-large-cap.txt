@@ -19,10 +19,6 @@ Where silicon begins — and where rare earths come from
 
 Every city starts with a foundry. In this one, the foundry makes silicon. Modern chips have features measured in billionths of a meter — structures so small that a single virus would tower over them like a skyscraper. Building something at that scale requires extraordinary precision at every step, and the Chips is the district where it happens.
 
-It begins in the ground. MP Materials (MP) mines and processes rare-earth elements — the minerals that create the powerful permanent magnets inside electric car motors, wind turbines, fighter jets, and chip-making equipment itself. MP is the only large-scale rare-earth producer in the Western Hemisphere, which makes it a strategic asset as well as a commercial one.
-
-Inside the fab, Nova (NVMI) builds the inspection tools that photograph microscopic chip layers with beams of light and electrons, catching defects invisible to any human eye. MKS Instruments (MKSI) controls the gases, temperatures, and energy inside the fabrication chambers — imagine maintaining perfect weather inside a sealed room where a single stray particle could ruin everything. Amkor (AMKR) handles the final step, taking a finished chip thinner than a fingernail and encasing it in a protective housing with hundreds of tiny electrical connections so it can survive the heat and vibration of a working computer. Lattice Semiconductor (LSCC) makes programmable chips that can be reconfigured after installation — a toolbox that transforms into whatever tool you need at the moment. And Rambus (RMBS) designs the rules that govern how processors and memory chips talk to each other, which is another way of saying Rambus decides how fast the entire computer can think. Without these six companies, the AI revolution would be a slideshow.
-
 Broadcom — ticker AVGO.
 
 Designs custom AI chips for hyperscalers and dominates AI networking — plus a recurring software business in VMware.
@@ -61,10 +57,6 @@ The interconnect that lets the city talk to itself
 
 A chip by itself is useless. Chips only matter when they can talk to each other — and in the era of AI, talking means moving vast amounts of data at extraordinary speeds between racks, between buildings, between cities, and across oceans. The Wires is the district where signals travel.
 
-Credo Technology (CRDO) builds the high-speed cables and connection chips that let thousands of AI processors pass notes at billions of cycles per second. Picture a room full of brilliant people trying to solve a problem together, but they can only communicate by passing notes — the speed of those notes determines how fast the group can think. Credo makes the notes move at light speed. Astera Labs (ALAB) controls the data flows inside a single rack the way traffic cops manage a highway interchange, preventing collisions and making sure nothing gets stuck. MACOM (MTSI) turns electrical signals into laser light and back again so data can ride glass fibers across continents, billions of times per second.
-
-SiTime (SITM) makes the precision silicon clocks that keep every signal perfectly synchronized — the conductor's baton inside every electronic orchestra. Semtech (SMTC) cleans up degraded signals so data arrives crisp instead of fuzzy, like preventing a photocopy-of-a-photocopy from losing quality with every pass. And Allegro MicroSystems (ALGM) builds the sensors that measure exactly how fast things are moving inside EVs, factory robots, and data-center cooling fans so control systems can respond in milliseconds. None of these companies make headlines. All of them are essential.
-
 Arista Networks — ticker ANET.
 
 AI networking switches — the high-speed highways inside hyperscale AI data centers.
@@ -86,12 +78,6 @@ Memorable line: When the world needs more glass, Corning has been making it for 
 Precision parts, specialty metals, and the hidden hands that assemble the city
 
 Chips and wires are useful only if someone can turn them into physical things — airplanes, satellites, medical devices, data-center cooling loops, circuit boards, power supplies. The Machine Shop is the district where raw materials and components become real machines. These are the hidden hands that turn brilliant designs into actual products.
-
-Carpenter Technology (CRS) forges specialty metals and advanced alloys engineered at the atomic level to withstand 2,000-degree temperatures, corrosive chemicals, and thousands of pounds of pressure. These go into jet-engine turbine blades, surgical implants, and nuclear reactor components — applications where a material failure isn't an inconvenience but a catastrophe. RBC Bearings (RBC) makes the precision bearings that enable smooth rotation inside helicopter rotors, submarine propulsion systems, and industrial machinery — a deceptively simple concept, engineered to survive where nothing else can.
-
-Sanmina (SANM) handles complex electronic contract manufacturing: the densely packed circuit boards inside medical imaging machines, the communication systems inside military vehicles, the server boards that run cloud computing. Fabrinet (FN) specializes in optical components aligned to tolerances thinner than a wavelength of light. TTM Technologies (TTMI) is one of the top five PCB manufacturers in the world and the largest supplier of printed circuit boards to the U.S. military, and the fastest-growing segment of its business is now data center computing and AI accelerators. Modine Manufacturing (MOD) designs the liquid cooling systems that absorb heat from AI racks the way a car radiator cools an engine — transforming a legacy auto-parts company into an AI infrastructure play. And Bel Fuse (BELFB) makes the power supplies and connectivity components that quietly sit inside almost every piece of essential equipment.
-
-The last group is about control. Woodward (WWD) designs the fuel-metering control systems inside aircraft engines and industrial turbines — what happens when a pilot pushes the throttle forward is Woodward's responsibility. Crane Company (CR) supplies the engineered valves, sensors, and fluid-handling systems used in aircraft, naval vessels, and factories. And Littelfuse (LFUS) makes circuit-protection components that sacrifice themselves during power surges, absorbing excess energy before expensive equipment is damaged. Every physical machine in the city passes through a shop like one of these.
 
 Carpenter Technology — ticker CRS.
 
@@ -119,10 +105,6 @@ The contractors who turn empty land into functioning infrastructure
 
 Generating power is still just half the battle. Someone has to build the buildings, pour the foundations, pull the wire, connect the pipes, lay the roads, and keep it all environmentally responsible. When a new data center rises out of empty desert, a small army of specialty contractors shows up first. The Construction Yards is where that army lives.
 
-Sterling Infrastructure (STRL) grades the site and pours the foundations, turning empty land into a functioning campus. Cardinal Infrastructure Group (CDNL) handles the wet utilities — water, sewer, stormwater — and the site work that has to happen before anything vertical can begin. MasTec (MTZ) runs the heavy power lines from the grid to the property line, plus the pipelines and cell towers that connect the larger network. Construction Partners (ROAD) builds the highways that get everyone from the outside world to the facility, because every data center still needs roads to reach it.
-
-Inside the building, Comfort Systems USA (FIX) installs the HVAC, plumbing, and electrical systems while IES Holdings (IESC) handles the specialized high-voltage electrical work — wiring facilities that draw as much power as small towns. Legence (LGN) provides engineering, installation, and maintenance for the mission-critical mechanical systems inside technology, life sciences, healthcare, and education buildings. Applied Digital (APLD) takes it one step further, designing entire AI-native data-center facilities from scratch with electrical and cooling systems engineered for demands traditional buildings were never meant to handle. And CECO Environmental (CECO) installs the scrubbers, filters, and wastewater-treatment equipment that ensure all this growth doesn't come at the expense of the air and water around it. Before a single server rack spins up, these companies have already done most of the real work.
-
 Comfort Systems USA — ticker FIX.
 
 Installs the HVAC, plumbing, and electrical guts of every new data center and hospital being built.
@@ -136,10 +118,6 @@ Memorable line: Every data center America builds, Comfort Systems plumbs and wir
 Where the electrons come from — and where they get used
 
 Intelligence without electricity is just an expensive pile of metal. And the amount of electricity that AI requires is almost hard to believe — a single large AI training run can consume as much power as 120 American homes use in an entire year. The existing grid was never designed for this.
-
-Bloom Energy (BE) is building a bridge. Their ceramic fuel cells generate electricity through an electrochemical reaction — continuous, on-site, no combustion, no connection to the traditional grid required. A stack can be installed in 90 days and start generating power immediately, compared to the five-to-ten-year timeline for a new power plant. Nextracker (NXT) takes a very different approach to the same crisis: scale the cheapest source of new electricity ever created. Their motorized mounting systems let fields of solar panels follow the sun across the sky, squeezing up to 25% more energy from the same equipment, and have become standard equipment at the largest solar installations in the world. And Argan (AGX) does something more traditional but increasingly rare: it designs, engineers, and actually builds power plants from the ground up. As demand for gas turbine generation surges to feed AI data centers, Argan's skillset is suddenly in short supply.
-
-But generating power is only half the equation. Someone also has to own the physical sites where those electrons get converted into compute. Three companies in this district were originally built to mine Bitcoin — which required exactly the same infrastructure an AI data center needs: massive power connections, serious cooling systems, and dense racks of processors. It turns out that infrastructure is worth a lot more to an AI customer than to a Bitcoin miner. Hut 8 (HUT) flexes between mining and AI hosting depending on which customer pays more. TeraWulf (WULF) does the same with a distinctive emphasis on clean energy, running primarily on nuclear and hydroelectric power. And Cipher Mining (CIFR) has leaned hardest into the pivot, signing a roughly $5.5 billion 15-year lease with Amazon Web Services to deliver 300 MW of AI capacity in 2026, plus a 168 MW 10-year HPC agreement with Fluidstack worth about $3 billion, plus a 200 MW Ohio site and 95% of a 1-gigawatt West Texas campus. Cipher is transforming into a hybrid Bitcoin miner and power landlord for AI tenants — and is increasingly priced that way.
 
 Bloom Energy — ticker BE.
 
@@ -167,10 +145,6 @@ Where the money moves and the deals get done
 
 None of this gets built without capital. The Financial District is where the money for the rest of the city flows — the investment banks, the exchanges, and a few specialists where finance meets the physical world in interesting ways.
 
-Evercore (EVR) is one of the most respected independent investment banks in the world — the financial architect behind some of the most consequential M&A deals and IPOs in the economy. Piper Sandler (PIPR) does similar work with particular depth in healthcare and technology, helping innovative smaller companies raise the capital they need to grow from promising startup to established player. MIAX runs electronic options exchanges — the marketplaces where a farmer locks in next year's crop price and a money manager buys insurance against a market drop.
-
-FTAI Aviation (FTAI) occupies a fascinating niche where finance meets aerospace — leasing commercial jet engines to airlines and, crucially, rebuilding them in-house through a process that requires years of specialized knowledge and is extremely hard for newcomers to replicate.
-
 Circle Internet Group — ticker CRCL.
 
 The largest publicly traded stablecoin issuer — USDC powers a growing share of digital payments.
@@ -192,10 +166,6 @@ Memorable line: The broker for people who actually know what they're doing.
 The code that runs quietly beneath everything else
 
 Not every software company belongs in a futuristic city. These six do, because they build the scaffolding that lets everything else work — the cloud, the edge, the insurance backbone, the trades management system, and the business travel platform. Unsexy, essential, and increasingly AI-powered.
-
-JFrog (FROG) manages what you might call the supply chain of software — moving code from a developer's laptop through testing and security checks to the servers that run it in production, making sure no malicious code slips in along the way. DigitalOcean (DOCN) is the developer-friendly cloud for startups and small businesses that can't afford the complexity of AWS; its AI-native revenue has been doubling for five straight quarters as AI startups look for a simpler home. Fastly (FSLY) runs a programmable edge network that speeds up the internet and stops attacks, concentrating servers in the most network-dense hubs rather than spreading them everywhere.
-
-Guidewire (GWRE) is the operating system of the property and casualty insurance industry — more than 570 insurers in 42 countries, including Allianz, AXA, and Liberty Mutual, run their core claims, policy, and billing systems on it. The shift from on-premise to Guidewire Cloud is a multi-year migration that is now hitting full stride. ServiceTitan (TTAN) is doing for the skilled trades what Guidewire did for insurance — plumbers, electricians, HVAC contractors, landscapers — a full business management suite that lets a family-owned contractor compete with a national chain. And Navan (NAVN) is rebuilding corporate travel and expense management around a traveler-first experience, with $7.6B in annual gross bookings across 10,000+ business customers.
 
 AppLovin — ticker APP.
 
@@ -273,8 +243,6 @@ Before there can be treatment, there has to be detection. The idea at the heart 
 
 Guardant Health (GH) pioneered a way to detect and monitor cancer from a simple blood draw. When tumor cells die, they release tiny fragments of their DNA into the bloodstream — Guardant's test captures those fragments, sequences them, and reads the genetic mutations they carry. The result reveals not just that cancer is present, but what specific type it is and which treatments are most likely to work. No surgery, no biopsy needle, just a tube of blood. They can now even screen seemingly healthy people for early-stage colorectal cancer before symptoms appear.
 
-Natera (NTRA) uses the same basic concept — reading DNA fragments floating in blood — for different purposes. During pregnancy, their test can detect genetic conditions in the baby as early as the first trimester. After cancer treatment, their test can find microscopic traces of residual disease months before a traditional scan would catch it, giving doctors the chance to act before the cancer regains a foothold. Adaptive Biotechnologies (ADPT) takes the idea even further: every infection, every vaccine, every cancer a person has ever encountered leaves a unique molecular fingerprint on their immune cells — and Adaptive's technology decodes those fingerprints to detect disease, match treatments, and understand immune response at a level previously impossible. Three companies, one mission: don't wait until the damage is done.
-
 Guardant Health — ticker GH.
 
 Detects and monitors cancer from a simple blood draw — no biopsy needle required.
@@ -296,14 +264,6 @@ Memorable line: Sees cancer coming back months before any scan would.
 Treating disease by its molecular mechanism — the largest district in the city
 
 The Research Labs is by far the largest district in the city — thirty companies working on some of the most remarkable medical innovation in human history. The unifying thesis is to move beyond treating diseases by where they happen in the body, and start treating them by their molecular mechanism. Some of these companies will face setbacks. Some will deliver breakthroughs that reshape medicine. The breadth of what is happening here is extraordinary.
-
-Start with the giants. Eli Lilly (LLY) is the most valuable healthcare company in the world, riding the GLP-1 obesity wave with Mounjaro and Zepbound while building a deep next-generation pipeline. Vertex Pharmaceuticals (VRTX) effectively cured cystic fibrosis and is now expanding into pain (suzetrigine), kidney disease, and gene therapy with Casgevy for sickle cell. Gilead (GILD) built the franchise that turned HIV into a manageable condition and is now pushing into oncology and inflammation. argenx (ARGX) created Vyvgart, the first FcRn-blocker, which has become the new standard of care for myasthenia gravis and is being expanded into a half-dozen autoimmune indications.
-
-The mid-cap rare-disease specialists do extraordinary work. Madrigal (MDGL) developed the first real medication for serious liver disease — a once-daily pill for what used to have only one prescription, 'eat better and exercise more.' BridgeBio (BBIO) hunts rare genetic diseases that individually affect few but collectively touch tens of millions. Insmed (INSM) is rebuilding pulmonary medicine with Arikayce for serious lung infections and brensocatib (TPIP) for bronchiectasis. Tarsus (TARS), Glaukos (GKOS), Rhythm (RYTM), Ascendis (ASND), PTC (PTCT), and Mirum (MIRM) each tackle specific diseases that had no good treatment before — eye mites affecting 25 million Americans, glaucoma, broken hunger signals, daily injections turned weekly, childhood muscle disorders, and bile-processing failures in kids.
-
-In oncology, Celcuity (CELC) and Cogent (COGT) match patients to therapies based on their tumor's molecular fingerprint — stop guessing which cancer drug works, test it on the actual tumor first. Arrowhead (ARWR) silences disease-causing genes before they can do damage, like shredding a bad recipe before the kitchen can use it. Revolution Medicines (RVMD) finally found a way to drug a cancer target considered impossible for decades — a set of mutations found in roughly one out of every three cancers, including many of the deadliest forms. Nuvalent (NUVL) designs precision lung cancer therapies engineered to block the escape routes tumors use to develop resistance. CG Oncology (CGON) built an engineered virus that selectively infects bladder tumors and bursts them from the inside. Abivax (ABVX) is developing what could become the first oral pill for moderate-to-severe inflammatory bowel disease. And TransMedics (TMDX) has revolutionized organ transplantation — keeping donor organs warm and functioning during transport instead of racing them in ice.
-
-The next wave includes companies in registration or late-stage clinical work. NewAmsterdam Pharma (NAMS) is bringing obicetrapib — an oral CETP inhibitor that reduced LDL cholesterol by 33% in a Phase 3 trial — to market in Europe with partner Menarini, with EMA decision expected 2H26. Mineralys (MLYS) is developing lorundrostat for treatment-resistant hypertension, a massive market with no good options. Praxis Precision (PRAX) is in late-stage trials for essential tremor and epilepsy. Forte Biosciences (FBRX) targets autoimmune diseases through a novel anti-CD122 mechanism. Dianthus (DNTH), Protagonist (PTGX), and Nektar (NKTR) round out the late-stage block — claseprubart in Phase 3 CIDP, rusfertide NDA filed for polycythemia vera with Takeda, and rezpegaldesleukin hitting endpoints in atopic dermatitis. Thirty companies, one thesis, and a staggering pipeline of medicine that did not exist a decade ago.
 
 Abivax — ticker ABVX.
 
@@ -366,20 +326,6 @@ Memorable line: The 'undruggable' target that finally has a door.
 Where people live, shop, eat, learn, and have fun — the biggest district in the city
 
 A city is ultimately about people. Main Street is where they actually spend their days — buying things, eating things, traveling, training for jobs, working out, being entertained, and living their lives. It is by far the largest district in the city by company count, because the consumer economy is enormous.
-
-It starts with the megaliths. Apple (AAPL) puts a supercomputer in a billion pockets and sells the services that run on it. Amazon (AMZN) is the everything-store that ships, the cloud that hosts most of the internet, and the advertising platform that monetizes the rest. Costco (COST) is the bulk-buying institution that earned a cult following by treating its customers and its employees better than retail conventionally allows. Tesla (TSLA) is the EV company that became an energy company that became an AI company. Mega names dominate by market cap, but the smaller names tell more interesting stories.
-
-The retail and lifestyle block. Boot Barn (BOOT) outfits the workforce that physically builds America. Deckers (DECK) owns Hoka and Ugg, two cult footwear brands. Ross Stores (ROST) runs the off-price treasure-hunt model. Warby Parker (WRBY) brought eyewear online with $95 prescription glasses. SharkNinja (SN) builds household appliances that punch above their price. Amer Sports (AS) owns Wilson, Salomon, Arc'teryx, and a portfolio of premium outdoor brands.
-
-Food and drink. Celsius (CELH) turned energy drinks healthier and became a cultural phenomenon. CAVA (CAVA) is the Mediterranean Chipotle, scaling toward 1,000 restaurants. Vita Coco (COCO) owns 42% of the U.S. coconut water market. The Chefs' Warehouse (CHEF) distributes specialty ingredients to the country's best restaurants. Mama's Creations (MAMA) makes the deli-prepared meals at your grocery store. Neogen (NEOG) keeps food and animal products safe across the supply chain.
-
-Travel, hospitality, and experiences. Hilton (HLT) operates one of the world's largest hotel networks. Royal Caribbean (RCL) and Viking (VIK) run the cruise industry's two most-loved brands — Royal at scale, Viking at the premium end. Lindblad Expeditions (LIND) runs the polar adventure travel category in partnership with National Geographic. DoorDash (DASH) delivers the food that gets ordered when no one wants to leave. MercadoLibre (MELI) is the Amazon of Latin America, plus a fintech business as big as the marketplace.
-
-Entertainment — the part of Main Street where people go for fun. Netflix (NFLX) defined and now defends the streaming category with over 300 million subscribers worldwide. Take-Two Interactive (TTWO) owns Rockstar Games and 2K Sports, with Grand Theft Auto VI arriving in 2026 as likely the biggest entertainment launch in history. Live Nation (LYV) runs the global concert business through Ticketmaster and its venue network. TKO Group (TKO) houses both UFC and WWE under one roof. IMAX (IMAX) operates the premium large-format theater network. And Sphere Entertainment (SPHR) operates the most talked-about venue in the world — a 17,600-seat immersive arena in Las Vegas with a 16K wraparound LED screen, now the top-grossing venue in the world.
-
-The skilled-trades and wellness block. UTI (Universal Technical Institute) and Lincoln Educational Services (LINC) train the HVAC technicians, diesel mechanics, welders, and electricians the country cannot build data centers without. American Public Education (APEI) runs the largest online university serving the U.S. military and federal workforce. Life Time Holdings (LTH) operates resort-style wellness campuses. Hinge Health (HNGE) treats chronic back and joint pain through a smartphone app and wearable sensors.
-
-Finally, the freight and identity infrastructure of the consumer economy. Saia (SAIA) and XPO (XPO) move the freight that keeps shelves full. Carvana (CVNA) reinvented used car retail. Clear Secure (YOU) runs biometric identity verification at airports with 30+ million members.
 
 Apple — ticker AAPL.
 
