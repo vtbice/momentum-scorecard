@@ -16,3 +16,12 @@ presentations/node_modules/
 presentations/Market_Pulse_Overview_*.pptx
 presentations/node_modules
 presentations/~$*.pptx
+
+# NotebookLM generated outputs — large binaries, regeneratable from audio_source/
+stock-study/notebook_lm_outputs/**/*.mp3
+stock-study/notebook_lm_outputs/**/*.mp4
+stock-study/notebook_lm_outputs/**/*.pdf
+stock-study/notebook_lm_outputs/**/*.mov
+stock-study/notebook_lm_outputs/**/*.m4a
+stock-study/notebook_lm_outputs/**/*.webm
+stock-study/notebook_lm_outputs/**/*.pptx
