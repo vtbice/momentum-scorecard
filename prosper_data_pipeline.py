@@ -1079,6 +1079,12 @@ def pull_fred_data():
             # Chicago Fed National Activity Index (CFNAI) — a broader, weighted average
             # of 85 economic indicators centered on zero (positive = above-trend growth).
             "CFNAI":           ("cfnai",          "Chicago Fed Nat'l Activity Index"),
+            # ── Strategas-balance-sheet additions (April 28, 2026) ──
+            "DPCERA3M086SBEA": ("realPceIdx",     "Real PCE Index"),       # YoY computed below
+            "INDPRO":          ("indproIdx",      "Industrial Production Index"),  # YoY computed below
+            "EXHOSLUSM495S":   ("existingHome",   "Existing Home Sales"),  # raw value (millions, annualized)
+            "MTSDS133FMS":     ("monthlyDeficit", "Monthly Federal Deficit"),  # 12-mo sum computed below
+            "NETEXP":          ("netExports",     "Net Exports (Quarterly)"),  # raw quarterly $billions
         }
         
         import time as _time
@@ -1127,7 +1133,70 @@ def pull_fred_data():
                     print(f"  ✅ CPI Inflation (YoY): {macro['inflation']['value']}%")
             except Exception as e:
                 print(f"  ❌ Inflation calc: {e}")
-        
+
+        # ── Derived: Real PCE YoY % (Strategas Consumer Spending) ──
+        if "realPceIdx" in macro:
+            try:
+                pce = fred.get_series("DPCERA3M086SBEA").dropna()
+                if len(pce) >= 13:
+                    pce_yoy = (pce.iloc[-1] / pce.iloc[-13] - 1) * 100
+                    macro["realPce"] = {
+                        "value": round(pce_yoy, 2),
+                        "asOf": str(pce.index[-1].date()),
+                    }
+                    print(f"  ✅ Real PCE (YoY): {macro['realPce']['value']}%")
+            except Exception as e:
+                print(f"  ❌ Real PCE YoY calc: {e}")
+
+        # ── Derived: Industrial Production YoY % ──
+        if "indproIdx" in macro:
+            try:
+                ip = fred.get_series("INDPRO").dropna()
+                if len(ip) >= 13:
+                    ip_yoy = (ip.iloc[-1] / ip.iloc[-13] - 1) * 100
+                    macro["indpro"] = {
+                        "value": round(ip_yoy, 2),
+                        "asOf": str(ip.index[-1].date()),
+                    }
+                    print(f"  ✅ Industrial Production (YoY): {macro['indpro']['value']}%")
+            except Exception as e:
+                print(f"  ❌ Industrial Production YoY calc: {e}")
+
+        # ── Derived: 12-month rolling Federal Deficit (sum of monthly Treasury statement) ──
+        if "monthlyDeficit" in macro:
+            try:
+                md = fred.get_series("MTSDS133FMS").dropna()
+                if len(md) >= 12:
+                    # MTSDS is in millions; sum last 12 months for trailing-year deficit
+                    rolling_12 = md.tail(12).sum() / 1000.0  # → $billions
+                    macro["fedDeficit12mo"] = {
+                        "value": round(rolling_12, 1),  # negative = deficit
+                        "asOf": str(md.index[-1].date()),
+                    }
+                    print(f"  ✅ Federal Deficit (12-mo trailing): ${rolling_12/1000:.2f}T")
+            except Exception as e:
+                print(f"  ❌ 12-mo deficit calc: {e}")
+
+        # ── Derived: Net Exports — Y/Y improvement check (improving = good) ──
+        if "netExports" in macro:
+            try:
+                nx = fred.get_series("NETEXP").dropna()
+                if len(nx) >= 5:
+                    # NETEXP is quarterly. Compare latest to 4 quarters ago.
+                    latest_nx = nx.iloc[-1]
+                    year_ago_nx = nx.iloc[-5]
+                    improving = latest_nx > year_ago_nx  # "less negative" = improvement
+                    macro["netExportsTrend"] = {
+                        "value": round(latest_nx, 1),       # current quarter level
+                        "yearAgo": round(year_ago_nx, 1),
+                        "improving": bool(improving),
+                        "asOf": str(nx.index[-1].date()),
+                    }
+                    print(f"  ✅ Net Exports: ${latest_nx:.0f}B (1y prior: ${year_ago_nx:.0f}B, "
+                          f"{'improving' if improving else 'deteriorating'})")
+            except Exception as e:
+                print(f"  ❌ Net Exports calc: {e}")
+
         return macro
         
     except ImportError:
@@ -1509,6 +1578,52 @@ def calculate_signals(market, breadth, macro, auto_data=None):
     add(25 <= aaii_val <= 45, "Technical",
         f"AAII Bull Sentiment · Now: {aaii_val:.0f}% · Healthy: 25-45% (extremes are contrarian)")
 
+    # ── Strategas-balance-sheet additions ──
+    # Real Consumer Spending (PCE Y/Y) — biggest piece of GDP; >2% healthy
+    real_pce = _mv("realPce")
+    if real_pce is not None:
+        add(real_pce > 2.0, "Macro",
+            f"Real Consumer Spending (PCE Y/Y) · Now: {real_pce:+.1f}% · Healthy: above 2%")
+    else:
+        add_skip("Macro", "Real Consumer Spending (PCE Y/Y)", "FRED fetch failed")
+
+    # Industrial Production (Y/Y) — manufacturing pulse; >0 = expanding
+    indpro_yoy = _mv("indpro")
+    if indpro_yoy is not None:
+        add(indpro_yoy > 0, "Macro",
+            f"Industrial Production Y/Y · Now: {indpro_yoy:+.1f}% · Healthy: positive")
+    else:
+        add_skip("Macro", "Industrial Production Y/Y", "FRED fetch failed")
+
+    # Existing Home Sales (millions, annualized) — >4.5M = healthy housing pulse
+    home_sales = _mv("existingHome")
+    if home_sales is not None:
+        # FRED returns annualized rate as raw number (e.g. 3,630,000). Display in millions.
+        home_sales_m = home_sales / 1_000_000
+        add(home_sales_m > 4.5, "Macro",
+            f"Existing Home Sales · Now: {home_sales_m:.2f}M · Healthy: above 4.5M annualized")
+    else:
+        add_skip("Macro", "Existing Home Sales", "FRED fetch failed")
+
+    # Federal Deficit (12-mo trailing, $billions) — smaller than -$1.0T = healthy
+    fed_deficit = _mv("fedDeficit12mo")
+    if fed_deficit is not None:
+        # fedDeficit12mo stored as negative billions (deficit). Threshold: above -1000 = healthier.
+        add(fed_deficit > -1000, "Macro",
+            f"Federal Deficit (12-mo) · Now: ${fed_deficit/1000:+.2f}T · Healthy: smaller than -$1.0T")
+    else:
+        add_skip("Macro", "Federal Deficit (12-mo)", "FRED fetch failed")
+
+    # Net Exports (Trade Balance trend) — improving Y/Y = healthy
+    net_exports = macro.get("netExportsTrend") or {}
+    if net_exports.get("value") is not None:
+        nx_val = net_exports["value"]
+        improving = net_exports.get("improving", False)
+        add(improving, "Macro",
+            f"Trade Balance (Net Exports) · Now: ${nx_val:.0f}B · Healthy: improving year-over-year")
+    else:
+        add_skip("Macro", "Trade Balance (Net Exports)", "FRED fetch failed")
+
     # ── Risk appetite & cross-asset signals ──
     # Real interest rate (Fed Funds - Inflation) — needs BOTH to be live
     ff = _mv("fedFunds")
@@ -1878,6 +1993,12 @@ def assemble_output(stocks, market, macro, breadth, sectors, signals, skipped_co
                 "gasPrice":      (macro.get("gasPrice", {})      or {}).get("value"),
                 "joblessClaims": (macro.get("joblessClaims", {}) or {}).get("value"),
                 "cfnai":         (macro.get("cfnai", {})         or {}).get("value"),
+                "realPce":       (macro.get("realPce", {})       or {}).get("value"),
+                "indpro":        (macro.get("indpro", {})        or {}).get("value"),
+                "existingHome":  (macro.get("existingHome", {})  or {}).get("value"),
+                "fedDeficit12mo":(macro.get("fedDeficit12mo", {})or {}).get("value"),
+                "netExports":    (macro.get("netExportsTrend", {})or {}).get("value"),
+                "netExportsImproving": (macro.get("netExportsTrend", {}) or {}).get("improving"),
                 "fiscalPolicy":  MANUAL_INPUTS["policy"]["fiscal"],
                 "monetaryPolicy":MANUAL_INPUTS["policy"]["monetary"],
                 "geopolitical":  MANUAL_INPUTS["geopolitical"]["level"],
@@ -2064,6 +2185,11 @@ def main():
         ("tenYear",      "10-Year Yield"),
         ("twoYear",      "2-Year Yield"),
         ("cfnai",        "CFNAI (Chicago Fed)"),
+        ("realPce",      "Real PCE Y/Y"),
+        ("indpro",       "Industrial Production Y/Y"),
+        ("existingHome", "Existing Home Sales"),
+        ("fedDeficit12mo","Federal Deficit (12-mo)"),
+        ("netExportsTrend","Net Exports"),
         ("gasPrice",     "Gas Price"),
         ("joblessClaims","Jobless Claims"),
         ("fedFunds",     "Fed Funds"),
