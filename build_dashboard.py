@@ -1658,10 +1658,12 @@ function renderMarketPulse() {
         // Current-bucket color tells the real story — derived from the CURRENT row's
         // forward return, used consistently across both charts (bar, pill, connector).
         function fwdColor(fwd) {
-            if (fwd >= 15) return '#10b981';  // emerald — strong
-            if (fwd >= 10) return '#22c55e';  // green
-            if (fwd >= 7)  return '#f59e0b';  // amber — muted
-            return '#f97316';                  // orange — weak
+            // Use the rounded value so the color matches what's displayed on the bar
+            var v = Math.round(fwd);
+            if (v >= 15) return '#10b981';  // emerald — strong
+            if (v >= 10) return '#22c55e';  // green
+            if (v >= 7)  return '#f59e0b';  // amber — muted
+            return '#f97316';                // orange — weak
         }
         var curRow = sortedBreadth[currentIdx] || {};
         var curColor = fwdColor(curRow.fwd || 0);
@@ -1848,9 +1850,11 @@ function renderMarketPulse() {
             // Derive current-bucket color from its fwd return so every chart element
             // (current bar, pill, connector, labels) tells the same visual story.
             function fwdColor(fwd) {
-                if (fwd >= 15) return '#10b981';
-                if (fwd >= 10) return '#22c55e';
-                if (fwd >= 7)  return '#f59e0b';
+                // Use the rounded value so the color matches what's displayed on the bar
+                var v = Math.round(fwd);
+                if (v >= 15) return '#10b981';
+                if (v >= 10) return '#22c55e';
+                if (v >= 7)  return '#f59e0b';
                 return '#f97316';
             }
             var tsCurRow = tsSorted[currentIdx] || {};
