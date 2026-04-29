@@ -671,16 +671,37 @@ def fetch_edgar_fundamentals():
 # ═══════════════════════════════════════════════════════════
 
 def load_tickers():
-    """Load tickers from CSV or use watch list."""
+    """Load tickers from CSV or use watch list.
+
+    Robust to header drift: accepts either a 'Symbol' column header or
+    a header-less single column of tickers (which can happen if the
+    CSV was sorted alphabetically and the header got mixed into the
+    body). Filters out any 'Symbol' rows that may be in the data.
+    """
     if USE_FULL_UNIVERSE and TICKERS_CSV.exists():
-        df = pd.read_csv(TICKERS_CSV)
-        if 'Symbol' in df.columns:
-            tickers = df['Symbol'].tolist()
-            print(f"📋 Loaded {len(tickers)} tickers from {TICKERS_CSV}")
-            return tickers
-        else:
-            print(f"⚠️  CSV missing 'Symbol' column, using watch list")
-    
+        try:
+            # Read raw lines so we don't depend on header detection
+            with open(TICKERS_CSV) as f:
+                raw = [line.strip() for line in f if line.strip()]
+            # Filter out header rows wherever they are, dedupe, keep alphanumeric
+            tickers = [t for t in raw if t.upper() != 'SYMBOL']
+            # Basic ticker sanity: 1-6 chars, alphanumeric / dot / dash, uppercase preferred
+            import re
+            valid = re.compile(r'^[A-Za-z][A-Za-z0-9.\-]{0,7}$')
+            tickers = [t.upper() for t in tickers if valid.match(t)]
+            # Dedupe, preserve order
+            seen = set()
+            out = []
+            for t in tickers:
+                if t not in seen:
+                    seen.add(t)
+                    out.append(t)
+            if out:
+                print(f"📋 Loaded {len(out)} tickers from {TICKERS_CSV}")
+                return out
+        except Exception as e:
+            print(f"⚠️  Failed to load {TICKERS_CSV}: {e}")
+
     print(f"📋 Using watch list ({len(WATCH_LIST)} tickers)")
     return WATCH_LIST
 
